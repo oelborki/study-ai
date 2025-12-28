@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { notFound } from "next/navigation";
+import GenerateButtons from "./GenerateButtons";
 
 export default async function DeckPage(
     { params }: { params: Promise<{ id: string }> }
@@ -23,11 +24,7 @@ export default async function DeckPage(
             <a href="/" className="text-sm underline">← Upload another</a>
             <h1 className="mt-3 text-2xl font-bold">Deck processed</h1>
 
-            <div className="mt-6 flex gap-3">
-                <button className="rounded-md bg-black px-4 py-2 text-white">Summary</button>
-                <button className="rounded-md bg-black px-4 py-2 text-white">Flashcards</button>
-                <button className="rounded-md bg-black px-4 py-2 text-white">Practice Exam</button>
-            </div>
+            <GenerateButtons deckId={id} />
 
             <h2 className="mt-8 text-xl font-semibold">Extracted Slides</h2>
 
