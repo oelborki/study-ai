@@ -7,11 +7,11 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-type GenerateType = "summary";
+type GenerateType = "summary" | "flashcards";
 
 function deckToText(deck: any) {
     const slides = Array.isArray(deck?.slides) ? deck.slides : [];
-    
+
     const maxSlides = 60; // limit to 60 for now
 
     return slides.slice(0, maxSlides).map((s: any) => {
@@ -22,6 +22,23 @@ function deckToText(deck: any) {
         const notes = s.notes ? `Notes: ${s.notes}` : "Notes: (none)";
         return `Slide ${s.index}\n${title}\n${bullets}\n${notes}`;
     }).join("\n\n");
+}
+
+function extractJsonObject(text: string) {
+    // Try direct parse first
+    try {
+        return JSON.parse(text);
+    } catch { }
+
+    // Fallback: extract first {...} block
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}");
+    if (start !== -1 && end !== -1 && end > start) {
+        const candidate = text.slice(start, end + 1);
+        return JSON.parse(candidate);
+    }
+
+    throw new Error("Model did not return valid JSON.");
 }
 
 export async function POST(req: Request) {
@@ -39,7 +56,7 @@ export async function POST(req: Request) {
     if (!deckId) {
         return NextResponse.json({ error: "Missing deckId" }, { status: 400 });
     }
-    if (type !== "summary") {
+    if (type !== "summary" && type !== "flashcards") {
         return NextResponse.json({ error: "Unsupported type" }, { status: 400 });
     }
 
@@ -73,7 +90,11 @@ export async function POST(req: Request) {
         "Be concise and structured for studying.",
     ].join(" ");
 
-    const user = `
+    let userPrompt = "";
+    let responseFormat: any = undefined;
+
+    if (type === "summary") {
+        userPrompt = `
 Slide content:
 ${deckText}
 
@@ -85,27 +106,73 @@ Create a study summary with:
 Include slide references in parentheses like (Slides 3–5) when possible.
 Return in markdown.
 `.trim();
+    } else {
+        // flashcards
+        userPrompt = `
+Slide content:
+${deckText}
+
+Create an appropriate number of flashcards to help a student study.
+
+Return ONLY valid JSON in this exact shape:
+{
+  "flashcards": [
+    {
+      "q": "Question",
+      "a": "Answer",
+      "refs": [3,4],
+      "difficulty": "easy" | "medium" | "hard"
+    }
+  ]
+}
+
+Rules:
+- Use ONLY the slide content.
+- Keep answers short (1–3 sentences or a compact list).
+- refs must be slide numbers you used.
+- Avoid trivia; focus on high-yield concepts.
+`.trim();
+
+        // Ask the model to return JSON only (reduces formatting issues)
+        responseFormat = { type: "json_object" };
+    }
 
     const resp = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         temperature: 0.2,
+        ...(responseFormat ? { response_format: responseFormat } : {}),
         messages: [
             { role: "system", content: system },
-            { role: "user", content: user },
+            { role: "user", content: userPrompt },
         ],
     });
 
-    const summary = resp.choices?.[0]?.message?.content ?? "";
+    const content = resp.choices?.[0]?.message?.content ?? "";
 
-    const result = {
-        deckId,
-        type,
-        summary,
-        createdAt: new Date().toISOString(),
-        model: "gpt-4o-mini",
-    };
+    let result: any;
+
+    if (type === "summary") {
+        result = {
+            deckId,
+            type,
+            summary: content,
+            createdAt: new Date().toISOString(),
+            model: "gpt-4o-mini",
+        };
+    } else {
+        const parsed = extractJsonObject(content);
+        const flashcards = Array.isArray(parsed.flashcards) ? parsed.flashcards : [];
+
+        result = {
+            deckId,
+            type,
+            flashcards,
+            createdAt: new Date().toISOString(),
+            model: "gpt-4o-mini",
+        };
+    }
 
     await fs.writeFile(outPath, JSON.stringify(result, null, 2), "utf8");
-
     return NextResponse.json(result);
+
 }
