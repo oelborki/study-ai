@@ -7,7 +7,7 @@ const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
 });
 
-type GenerateType = "summary" | "flashcards";
+type GenerateType = "summary" | "flashcards" | "exam";
 
 function deckToText(deck: any) {
     const slides = Array.isArray(deck?.slides) ? deck.slides : [];
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     if (!deckId) {
         return NextResponse.json({ error: "Missing deckId" }, { status: 400 });
     }
-    if (type !== "summary" && type !== "flashcards") {
+    if (type !== "summary" && type !== "flashcards" && type !== "exam") {
         return NextResponse.json({ error: "Unsupported type" }, { status: 400 });
     }
 
@@ -106,7 +106,7 @@ Create a study summary with:
 Include slide references in parentheses like (Slides 3–5) when possible.
 Return in markdown.
 `.trim();
-    } else {
+    } else if (type === "flashcards") {
         // flashcards
         userPrompt = `
 Slide content:
@@ -135,6 +135,45 @@ Rules:
 
         // Ask the model to return JSON only (reduces formatting issues)
         responseFormat = { type: "json_object" };
+    } else if (type === "exam") {
+        // exam
+        userPrompt = `
+Slide content:
+${deckText}
+
+Create a practice exam based ONLY on the slide content.
+
+Return ONLY valid JSON in this exact shape:
+{
+  "exam": {
+    "title": "Practice Exam",
+    "instructions": "string",
+    "questions": [
+      {
+        "id": "Q1",
+        "type": "mcq" | "short",
+        "question": "string",
+        "choices": ["A) ...", "B) ...", "C) ...", "D) ..."],   // only for mcq
+        "answer": "A" | "B" | "C" | "D" | "string",          // letter for mcq, text for short
+        "explanation": "string",
+        "refs": [3,4],
+        "difficulty": "easy" | "medium" | "hard"
+      }
+    ]
+  }
+}
+
+Rules:
+- Make 12 questions total:
+  - 8 multiple-choice (mcq, 4 choices each)
+  - 4 short-answer (short)
+- Use ONLY the slide content.
+- Keep explanations short but helpful.
+- refs must be slide numbers you used.
+- If the deck doesn't support a question, DO NOT invent—omit it and generate fewer.
+`.trim();
+
+        responseFormat = { type: "json_object" };
     }
 
     const resp = await openai.chat.completions.create({
@@ -159,7 +198,7 @@ Rules:
             createdAt: new Date().toISOString(),
             model: "gpt-4o-mini",
         };
-    } else {
+    } else if (type === "flashcards") {
         const parsed = extractJsonObject(content);
         const flashcards = Array.isArray(parsed.flashcards) ? parsed.flashcards : [];
 
@@ -167,6 +206,17 @@ Rules:
             deckId,
             type,
             flashcards,
+            createdAt: new Date().toISOString(),
+            model: "gpt-4o-mini",
+        };
+    } else if (type === "exam") {
+        const parsed = extractJsonObject(content);
+        const exam = parsed.exam ?? null;
+
+        result = {
+            deckId,
+            type,
+            exam,
             createdAt: new Date().toISOString(),
             model: "gpt-4o-mini",
         };
