@@ -25,32 +25,6 @@ export default async function DeckPage(
             <h1 className="mt-3 text-2xl font-bold">Deck processed</h1>
 
             <GenerateButtons deckId={id} />
-
-            <h2 className="mt-8 text-xl font-semibold">Extracted Slides</h2>
-
-            <div className="mt-4 space-y-4">
-                {deck.slides?.map((s: any) => (
-                    <div key={s.index} className="rounded-lg border p-4">
-                        <div className="font-semibold">
-                            Slide {s.index}: {s.title || "(no title found)"}
-                        </div>
-
-                        {s.bullets?.length > 0 && (
-                            <ul className="mt-2 list-disc pl-5 text-sm">
-                                {s.bullets.map((b: string, i: number) => (
-                                    <li key={i}>{b}</li>
-                                ))}
-                            </ul>
-                        )}
-
-                        {s.notes && (
-                            <div className="mt-3 text-sm text-gray-600">
-                                <span className="font-medium">Notes:</span> {s.notes}
-                            </div>
-                        )}
-                    </div>
-                ))}
-            </div>
         </main>
     );
 }

@@ -74,6 +74,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
     const [progress, setProgress] = useState<Record<string, ExamProgress>>({});
     const [finished, setFinished] = useState(false);
 
+    type View = "summary" | "flashcards" | "exam";
+    const [active, setActive] = useState<View | null>(null);
+
+
     const current = useMemo(() => {
         if (!flashcards?.length) return null;
         return flashcards[Math.min(idx, flashcards.length - 1)];
@@ -100,11 +104,15 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
     }
 
     async function generateSummary() {
+        setActive("summary");
+        if (summary) return; // client-side cache
         const data = await callGenerate("summary");
         if (data?.summary) setSummary(data.summary);
     }
 
     async function generateFlashcards() {
+        setActive("flashcards");
+        if (flashcards?.length) return; // client-side cache
         const data = await callGenerate("flashcards");
         if (Array.isArray(data?.flashcards)) {
             setFlashcards(data.flashcards);
@@ -114,6 +122,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
     }
 
     async function generateExam() {
+        setActive("exam");
+        if (exam?.questions?.length) return; // client-side cache
         const data = await callGenerate("exam");
         if (data?.exam?.questions?.length) {
             setExam(data.exam);
@@ -123,6 +133,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
             setFinished(false);
         }
     }
+
 
     function nextCard() {
         if (!flashcards?.length) return;
@@ -198,7 +209,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateSummary}
                     disabled={loading !== null}
-                    className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50"
+                    className={`rounded-md px-4 py-2 text-white disabled:opacity-50 ${active === "summary" ? "bg-black ring-2 ring-black" : "bg-black"
+                        }`}
                 >
                     {loading === "summary" ? "Generating..." : "Summary"}
                 </button>
@@ -206,7 +218,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateFlashcards}
                     disabled={loading !== null}
-                    className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50"
+                    className={`rounded-md px-4 py-2 text-white disabled:opacity-50 ${active === "flashcards" ? "bg-black ring-2 ring-black" : "bg-black"
+                        }`}
                 >
                     {loading === "flashcards" ? "Generating..." : "Flashcards"}
                 </button>
@@ -214,11 +227,11 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateExam}
                     disabled={loading !== null}
-                    className="rounded-md bg-black px-4 py-2 text-white disabled:opacity-50"
+                    className={`rounded-md px-4 py-2 text-white disabled:opacity-50 ${active === "exam" ? "bg-black ring-2 ring-black" : "bg-black"
+                        }`}
                 >
                     {loading === "exam" ? "Generating..." : "Practice Exam"}
                 </button>
-
 
                 {flashcards?.length ? (
                     <>
@@ -242,14 +255,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
             {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
-            {summary && (
+            {active === "summary" && summary && (
                 <div className="mt-6 rounded-lg border p-4">
                     <h2 className="text-lg font-semibold">Summary</h2>
                     <pre className="mt-2 whitespace-pre-wrap text-sm">{summary}</pre>
                 </div>
             )}
 
-            {flashcards?.length ? (
+            {active === "flashcards" && flashcards?.length ? (
                 <div className="mt-6 rounded-lg border p-4">
                     <div className="flex items-center justify-between gap-3">
                         <h2 className="text-lg font-semibold">Flashcards</h2>
@@ -309,7 +322,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                     )}
                 </div>
             ) : null}
-            {exam?.questions?.length ? (
+            {active === "exam" && exam?.questions?.length ? (
                 <div className="mt-6 rounded-lg border p-4">
                     <div className="flex items-center justify-between gap-3">
                         <h2 className="text-lg font-semibold">{exam.title || "Practice Exam"}</h2>
@@ -473,21 +486,23 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                     disabled={loading !== null || p.graded}
                                                 />
 
+                                                {/* Actions before grading */}
                                                 {!p.graded ? (
-                                                    <button
-                                                        onClick={() => {
-                                                            // reveal expected answer, then self-grade
-                                                            setShowAnswer(true);
-                                                        }}
-                                                        className="mt-3 rounded-md bg-black px-4 py-2 text-white"
-                                                    >
-                                                        Reveal Expected Answer
-                                                    </button>
+                                                    <div className="mt-3 flex flex-wrap gap-3">
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => setShowAnswer(true)}
+                                                            className="rounded-md bg-black px-4 py-2 text-white"
+                                                        >
+                                                            Enter
+                                                        </button>
+                                                    </div>
                                                 ) : null}
 
+                                                {/* Revealed answer + grading */}
                                                 {showAnswer ? (
                                                     <div className="mt-3 rounded-md bg-gray-50 p-3 text-sm whitespace-pre-wrap">
-                                                        <div className="font-semibold">Expected answer:</div>
+                                                        <div className="font-semibold">Correct answer:</div>
                                                         <div className="mt-1">{q.answer}</div>
 
                                                         {q.explanation ? (
@@ -500,6 +515,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                         {!p.graded ? (
                                                             <div className="mt-4 flex gap-3">
                                                                 <button
+                                                                    type="button"
                                                                     onClick={() => {
                                                                         setProgress((prev) => ({
                                                                             ...prev,
@@ -510,7 +526,9 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                 >
                                                                     I was correct
                                                                 </button>
+
                                                                 <button
+                                                                    type="button"
                                                                     onClick={() => {
                                                                         setProgress((prev) => ({
                                                                             ...prev,
@@ -534,6 +552,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                 ) : null}
                                             </div>
                                         ) : null}
+
 
                                         {/* Navigation */}
                                         <div className="mt-5 flex gap-3">
@@ -564,8 +583,6 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                     )}
                 </div>
             ) : null}
-
         </div>
     );
-
 }
