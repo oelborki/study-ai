@@ -10,6 +10,8 @@
   --color-foreground: var(--foreground);
   --color-royal-blue: #4169E1;
   --color-royal-blue-hover: #365ECC;
+  --color-royal-blue-light: #E8EFFC;
+  --color-royal-blue-lighter: #F5F8FE;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

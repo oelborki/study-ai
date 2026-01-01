@@ -1,17 +1,7 @@
 export default function Home() {
   return (
-    <main className="min-h-screen p-8">
-      <nav className="flex items-center justify-between">
-        <div className="text-lg font-semibold">Study-AI</div>
-        <a
-          href="/upload"
-          className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-white hover:bg-[#365ECC] transition-colors duration-200 shadow-sm hover:shadow-md"
-        >
-          Upload
-        </a>
-      </nav>
-
-      <section className="mx-auto mt-24 md:mt-32 lg:mt-40 max-w-4xl text-center">
+    <main className="min-h-[calc(100vh-73px)] px-6 py-16">
+      <section className="mx-auto mt-16 md:mt-24 lg:mt-32 max-w-4xl text-center">
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
           Turn lecture slides into a study session in seconds.
         </h1>

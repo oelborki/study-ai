@@ -20,11 +20,13 @@ export default async function DeckPage(
     const deck = JSON.parse(raw);
 
     return (
-        <main className="min-h-screen p-8">
-            <a href="/" className="text-sm underline">← Upload another</a>
-            <h1 className="mt-3 text-2xl font-bold">Deck processed</h1>
+        <main className="min-h-[calc(100vh-73px)] px-6 py-12">
+            <div className="max-w-7xl mx-auto">
+                <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Your Study Materials</h1>
+                <p className="mt-3 text-lg text-gray-600">Choose a study mode to get started.</p>
 
-            <GenerateButtons deckId={id} />
+                <GenerateButtons deckId={id} />
+            </div>
         </main>
     );
 }

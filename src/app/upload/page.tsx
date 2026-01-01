@@ -1,19 +1,18 @@
 export default function UploadPage() {
   return (
-    <main className="min-h-screen p-8">
-      <a href="/" className="text-sm underline">← Home</a>
+    <main className="min-h-[calc(100vh-73px)] px-6 py-12">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Upload a PowerPoint</h1>
+        <p className="mt-3 text-lg text-gray-600 max-w-3xl">
+          Upload a .pptx and generate a summary, flashcards, or a practice exam.
+        </p>
 
-      <h1 className="mt-6 text-3xl md:text-4xl font-bold">Upload a PowerPoint</h1>
-      <p className="mt-2 text-gray-600">
-        Upload a .pptx and generate a summary, flashcards, or a practice exam.
-      </p>
-
-      <form
-        className="mt-8 flex flex-col gap-4 max-w-xl"
-        action="/api/upload"
-        method="post"
-        encType="multipart/form-data"
-      >
+        <form
+          className="mt-8 flex flex-col gap-4 max-w-xl"
+          action="/api/upload"
+          method="post"
+          encType="multipart/form-data"
+        >
         <input
           type="file"
           name="file"
@@ -29,10 +28,11 @@ export default function UploadPage() {
           Upload
         </button>
 
-        <p className="text-xs text-gray-500">
-          Tip: Results are cached, so re-clicking modes won’t regenerate.
-        </p>
-      </form>
+          <p className="text-xs text-gray-500">
+            Tip: Results are cached, so re-clicking modes won't regenerate.
+          </p>
+        </form>
+      </div>
     </main>
   );
 }

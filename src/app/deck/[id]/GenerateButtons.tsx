@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import AnimatedPanel from "@/components/ui/AnimatedPanel";
+import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 
 type Flashcard = {
     q: string;
@@ -210,10 +211,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateSummary}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md ${
+                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 ${
                         active === "summary"
-                            ? "bg-[#4169E1] ring-2 ring-[#365ECC]"
-                            : "bg-[#4169E1] hover:bg-[#365ECC]"
+                            ? "bg-[#4169E1] ring-2 ring-[#365ECC] ring-offset-2 shadow-md"
+                            : "bg-[#4169E1] hover:bg-[#365ECC] shadow-sm hover:shadow-md"
                     }`}
                 >
                     {loading === "summary" ? "Generating..." : "Summary"}
@@ -222,10 +223,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateFlashcards}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md ${
+                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 ${
                         active === "flashcards"
-                            ? "bg-[#4169E1] ring-2 ring-[#365ECC]"
-                            : "bg-[#4169E1] hover:bg-[#365ECC]"
+                            ? "bg-[#4169E1] ring-2 ring-[#365ECC] ring-offset-2 shadow-md"
+                            : "bg-[#4169E1] hover:bg-[#365ECC] shadow-sm hover:shadow-md"
                     }`}
                 >
                     {loading === "flashcards" ? "Generating..." : "Flashcards"}
@@ -234,10 +235,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateExam}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md ${
+                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 ${
                         active === "exam"
-                            ? "bg-[#4169E1] ring-2 ring-[#365ECC]"
-                            : "bg-[#4169E1] hover:bg-[#365ECC]"
+                            ? "bg-[#4169E1] ring-2 ring-[#365ECC] ring-offset-2 shadow-md"
+                            : "bg-[#4169E1] hover:bg-[#365ECC] shadow-sm hover:shadow-md"
                     }`}
                 >
                     {loading === "exam" ? "Generating..." : "Practice Exam"}
@@ -247,14 +248,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                     <>
                         <button
                             onClick={shuffleCards}
-                            className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                            className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                             title="Shuffle flashcards"
                         >
                             Shuffle
                         </button>
                         <button
                             onClick={exportCsv}
-                            className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                            className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                             title="Export to CSV"
                         >
                             Export CSV
@@ -267,19 +268,21 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
             {active === "summary" && summary && (
                 <AnimatedPanel activeKey="summary">
-                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm">
-                        <h2 className="text-xl font-semibold mb-3">Summary</h2>
-                        <pre className="mt-2 whitespace-pre-wrap text-sm">{summary}</pre>
+                    <div className="mt-8 rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 shadow-md">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">
+                            Summary
+                        </h2>
+                        <MarkdownRenderer content={summary} />
                     </div>
                 </AnimatedPanel>
             )}
 
             {active === "flashcards" && flashcards?.length ? (
                 <AnimatedPanel activeKey="flashcards">
-                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm flashcard-background">
-                        <div className="flex items-center justify-between gap-3 mb-6">
-                            <h2 className="text-xl font-semibold">Flashcards</h2>
-                            <div className="text-sm text-gray-600">
+                    <div className="mt-8 rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 shadow-md">
+                        <div className="flex items-center justify-between gap-3 mb-6 pb-3 border-b border-gray-200">
+                            <h2 className="text-2xl font-bold text-gray-900">Flashcards</h2>
+                            <div className="text-sm text-gray-600 font-medium">
                                 {idx + 1} / {flashcards.length}
                             </div>
                         </div>
@@ -324,14 +327,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                     <button
                                         onClick={prevCard}
                                         disabled={idx === 0}
-                                        className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                                     >
                                         Prev
                                     </button>
                                     <button
                                         onClick={nextCard}
                                         disabled={idx === flashcards.length - 1}
-                                        className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                                     >
                                         Next
                                     </button>
@@ -343,12 +346,12 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
             ) : null}
             {active === "exam" && exam?.questions?.length ? (
                 <AnimatedPanel activeKey="exam">
-                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between gap-3">
-                            <h2 className="text-xl font-semibold">{exam.title || "Practice Exam"}</h2>
+                    <div className="mt-8 rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 shadow-md">
+                        <div className="flex items-center justify-between gap-3 pb-3 border-b border-gray-200 mb-4">
+                            <h2 className="text-2xl font-bold text-gray-900">{exam.title || "Practice Exam"}</h2>
 
                             {!finished ? (
-                                <div className="text-sm text-gray-600">
+                                <div className="text-sm text-gray-600 font-medium">
                                     {qIdx + 1} / {exam.questions.length}
                                 </div>
                             ) : null}
@@ -377,14 +380,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                             <div className="mt-4 flex gap-3">
                                                 <button
                                                     onClick={retakeExam}
-                                                    className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-white hover:bg-[#365ECC] transition-colors duration-200 shadow-sm hover:shadow-md"
+                                                    className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#365ECC] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2"
                                                 >
                                                     Retake
                                                 </button>
 
                                                 <button
                                                     onClick={() => setFinished(false)}
-                                                    className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
+                                                    className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                                                     title="Go back to review questions"
                                                 >
                                                     Review
@@ -526,7 +529,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => setShowAnswer(true)}
-                                                                className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-white hover:bg-[#365ECC] transition-colors duration-200 shadow-sm hover:shadow-md"
+                                                                className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#365ECC] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2"
                                                             >
                                                                 Enter
                                                             </button>
@@ -556,7 +559,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                                 [q.id]: { ...(prev[q.id] || {}), graded: true, correct: true },
                                                                             }));
                                                                         }}
-                                                                        className="rounded-lg border-2 border-green-300 bg-green-50 px-4 py-2 text-green-700 hover:bg-green-100 hover:border-green-400 transition-all duration-200 font-medium"
+                                                                        className="rounded-lg border-2 border-green-300 bg-green-50 px-5 py-2.5 text-sm text-green-700 hover:bg-green-100 hover:border-green-400 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
                                                                     >
                                                                         I was correct
                                                                     </button>
@@ -569,7 +572,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                                 [q.id]: { ...(prev[q.id] || {}), graded: true, correct: false },
                                                                             }));
                                                                         }}
-                                                                        className="rounded-lg border-2 border-red-300 bg-red-50 px-4 py-2 text-red-700 hover:bg-red-100 hover:border-red-400 transition-all duration-200 font-medium"
+                                                                        className="rounded-lg border-2 border-red-300 bg-red-50 px-5 py-2.5 text-sm text-red-700 hover:bg-red-100 hover:border-red-400 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
                                                                     >
                                                                         I was incorrect
                                                                     </button>
@@ -595,7 +598,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                         setShowAnswer(false);
                                                     }}
                                                     disabled={qIdx === 0}
-                                                    className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                                                 >
                                                     Prev
                                                 </button>
@@ -603,7 +606,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                 <button
                                                     onClick={goNextQuestion}
                                                     disabled={!canAdvanceCurrent()}
-                                                    className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                                                     title={!canAdvanceCurrent() ? "Answer/grade this question first" : ""}
                                                 >
                                                     {qIdx === exam.questions.length - 1 ? "Finish" : "Next"}
