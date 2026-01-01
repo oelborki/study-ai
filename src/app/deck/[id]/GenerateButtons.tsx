@@ -210,8 +210,11 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateSummary}
                     disabled={loading !== null}
-                    className={`rounded-md px-4 py-2 text-white disabled:opacity-50 ${active === "summary" ? "bg-black ring-2 ring-black" : "bg-black"
-                        }`}
+                    className={`rounded-lg px-6 py-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md ${
+                        active === "summary"
+                            ? "bg-[#4169E1] ring-2 ring-[#365ECC]"
+                            : "bg-[#4169E1] hover:bg-[#365ECC]"
+                    }`}
                 >
                     {loading === "summary" ? "Generating..." : "Summary"}
                 </button>
@@ -219,8 +222,11 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateFlashcards}
                     disabled={loading !== null}
-                    className={`rounded-md px-4 py-2 text-white disabled:opacity-50 ${active === "flashcards" ? "bg-black ring-2 ring-black" : "bg-black"
-                        }`}
+                    className={`rounded-lg px-6 py-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md ${
+                        active === "flashcards"
+                            ? "bg-[#4169E1] ring-2 ring-[#365ECC]"
+                            : "bg-[#4169E1] hover:bg-[#365ECC]"
+                    }`}
                 >
                     {loading === "flashcards" ? "Generating..." : "Flashcards"}
                 </button>
@@ -228,8 +234,11 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateExam}
                     disabled={loading !== null}
-                    className={`rounded-md px-4 py-2 text-white disabled:opacity-50 ${active === "exam" ? "bg-black ring-2 ring-black" : "bg-black"
-                        }`}
+                    className={`rounded-lg px-6 py-2.5 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-sm hover:shadow-md ${
+                        active === "exam"
+                            ? "bg-[#4169E1] ring-2 ring-[#365ECC]"
+                            : "bg-[#4169E1] hover:bg-[#365ECC]"
+                    }`}
                 >
                     {loading === "exam" ? "Generating..." : "Practice Exam"}
                 </button>
@@ -238,14 +247,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                     <>
                         <button
                             onClick={shuffleCards}
-                            className="rounded-md border px-4 py-2"
+                            className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
                             title="Shuffle flashcards"
                         >
                             Shuffle
                         </button>
                         <button
                             onClick={exportCsv}
-                            className="rounded-md border px-4 py-2"
+                            className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
                             title="Export to CSV"
                         >
                             Export CSV
@@ -258,8 +267,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
             {active === "summary" && summary && (
                 <AnimatedPanel activeKey="summary">
-                    <div className="mt-6 rounded-lg border p-4">
-                        <h2 className="text-lg font-semibold">Summary</h2>
+                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm">
+                        <h2 className="text-xl font-semibold mb-3">Summary</h2>
                         <pre className="mt-2 whitespace-pre-wrap text-sm">{summary}</pre>
                     </div>
                 </AnimatedPanel>
@@ -267,9 +276,9 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
             {active === "flashcards" && flashcards?.length ? (
                 <AnimatedPanel activeKey="flashcards">
-                    <div className="mt-6 rounded-lg border p-4">
+                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between gap-3">
-                            <h2 className="text-lg font-semibold">Flashcards</h2>
+                            <h2 className="text-xl font-semibold">Flashcards</h2>
                             <div className="text-sm text-gray-600">
                                 {idx + 1} / {flashcards.length}
                             </div>
@@ -278,7 +287,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                         {current && (
                             <div className="mt-4">
-                                <div className="rounded-lg border p-4">
+                                <div className="rounded-lg border border-gray-200 p-4 bg-white shadow-sm">
                                     <div className="text-sm text-gray-600">
                                         Difficulty: <span className="font-medium">{current.difficulty}</span>
                                         {Array.isArray(current.refs) && current.refs.length ? (
@@ -294,7 +303,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                         {!revealed ? (
                                             <button
                                                 onClick={() => setRevealed(true)}
-                                                className="rounded-md bg-black px-4 py-2 text-white"
+                                                className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-white hover:bg-[#365ECC] transition-colors duration-200 shadow-sm hover:shadow-md"
                                             >
                                                 Reveal Answer
                                             </button>
@@ -311,14 +320,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                     <button
                                         onClick={prevCard}
                                         disabled={idx === 0}
-                                        className="rounded-md border px-4 py-2 disabled:opacity-50"
+                                        className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Prev
                                     </button>
                                     <button
                                         onClick={nextCard}
                                         disabled={idx === flashcards.length - 1}
-                                        className="rounded-md border px-4 py-2 disabled:opacity-50"
+                                        className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         Next
                                     </button>
@@ -330,9 +339,9 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
             ) : null}
             {active === "exam" && exam?.questions?.length ? (
                 <AnimatedPanel activeKey="exam">
-                    <div className="mt-6 rounded-lg border p-4">
+                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm">
                         <div className="flex items-center justify-between gap-3">
-                            <h2 className="text-lg font-semibold">{exam.title || "Practice Exam"}</h2>
+                            <h2 className="text-xl font-semibold">{exam.title || "Practice Exam"}</h2>
 
                             {!finished ? (
                                 <div className="text-sm text-gray-600">
@@ -347,14 +356,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                         {/* FINISHED SCREEN */}
                         {finished ? (
-                            <div className="mt-4 rounded-lg border p-4">
+                            <div className="mt-4 rounded-lg border border-gray-200 p-6 bg-gray-50">
                                 {(() => {
                                     const { correct, total } = scoreSummary();
                                     const percent = total ? Math.round((correct / total) * 100) : 0;
 
                                     return (
                                         <>
-                                            <h3 className="text-base font-semibold">Results</h3>
+                                            <h3 className="text-lg font-semibold mb-2">Results</h3>
                                             <p className="mt-2 text-sm text-gray-700">
                                                 Score: <span className="font-semibold">{correct}</span> /{" "}
                                                 <span className="font-semibold">{total}</span>{" "}
@@ -364,14 +373,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                             <div className="mt-4 flex gap-3">
                                                 <button
                                                     onClick={retakeExam}
-                                                    className="rounded-md bg-black px-4 py-2 text-white"
+                                                    className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-white hover:bg-[#365ECC] transition-colors duration-200 shadow-sm hover:shadow-md"
                                                 >
                                                     Retake
                                                 </button>
 
                                                 <button
                                                     onClick={() => setFinished(false)}
-                                                    className="rounded-md border px-4 py-2"
+                                                    className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200"
                                                     title="Go back to review questions"
                                                 >
                                                     Review
@@ -387,7 +396,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                             </div>
                         ) : (
                             /* QUESTION SCREEN */
-                            <div className="mt-4 rounded-lg border p-4">
+                            <div className="mt-4 rounded-lg border border-gray-200 p-4 bg-white">
                                 {(() => {
                                     const q = exam.questions[Math.min(qIdx, exam.questions.length - 1)];
                                     const p = progress[q.id] || {};
@@ -438,17 +447,25 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                     }));
                                                                     setShowAnswer(true);
                                                                 }}
-                                                                className="w-full rounded border px-3 py-2 text-left disabled:opacity-50"
+                                                                className={`w-full rounded-lg px-4 py-3 text-left transition-all duration-200 disabled:cursor-not-allowed ${
+                                                                    answered
+                                                                        ? isCorrectChoice
+                                                                            ? "bg-green-50 border-2 border-green-200 text-green-900"
+                                                                            : selected
+                                                                            ? "bg-red-50 border-2 border-red-200 text-red-900"
+                                                                            : "border-2 border-gray-200 opacity-60"
+                                                                        : "border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                                                                }`}
                                                                 aria-pressed={selected}
                                                             >
                                                                 <div className="flex items-start justify-between gap-3">
-                                                                    <span>{choice}</span>
+                                                                    <span className="font-medium">{choice}</span>
 
                                                                     {answered ? (
                                                                         isCorrectChoice ? (
-                                                                            <span className="text-xs font-semibold">Correct Answer</span>
+                                                                            <span className="text-xs font-semibold text-green-600">Correct</span>
                                                                         ) : selected ? (
-                                                                            <span className="text-xs font-semibold">Your Choice</span>
+                                                                            <span className="text-xs font-semibold text-red-600">Incorrect</span>
                                                                         ) : null
                                                                     ) : null}
                                                                 </div>
@@ -458,9 +475,15 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                                                     {/* Reveal / Feedback */}
                                                     {p.graded && showAnswer ? (
-                                                        <div className="mt-3 rounded-md bg-gray-50 p-3 text-sm whitespace-pre-wrap">
-                                                            <div className="font-semibold">
-                                                                {p.correct ? "✅ Correct" : "❌ Incorrect"}
+                                                        <div className={`mt-4 rounded-lg border-2 p-4 text-sm whitespace-pre-wrap ${
+                                                            p.correct
+                                                                ? "bg-green-50 border-green-200"
+                                                                : "bg-red-50 border-red-200"
+                                                        }`}>
+                                                            <div className={`font-semibold text-base ${
+                                                                p.correct ? "text-green-700" : "text-red-700"
+                                                            }`}>
+                                                                {p.correct ? "Correct!" : "Incorrect"}
                                                             </div>
                                                             <div className="mt-2">
                                                                 Correct answer: <span className="font-semibold">{correctLetter}</span>
@@ -487,7 +510,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                 [q.id]: { ...(prev[q.id] || {}), shortText: e.target.value },
                                                             }))
                                                         }
-                                                        className="w-full rounded-md border p-3 text-sm"
+                                                        className="w-full rounded-lg border-2 border-gray-300 p-3 text-sm focus:border-[#4169E1] focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-opacity-20 transition-all"
                                                         rows={4}
                                                         placeholder="Type your answer here..."
                                                         disabled={loading !== null || p.graded}
@@ -499,7 +522,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => setShowAnswer(true)}
-                                                                className="rounded-md bg-black px-4 py-2 text-white"
+                                                                className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-white hover:bg-[#365ECC] transition-colors duration-200 shadow-sm hover:shadow-md"
                                                             >
                                                                 Enter
                                                             </button>
@@ -508,8 +531,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                                                     {/* Revealed answer + grading */}
                                                     {showAnswer ? (
-                                                        <div className="mt-3 rounded-md bg-gray-50 p-3 text-sm whitespace-pre-wrap">
-                                                            <div className="font-semibold">Correct answer:</div>
+                                                        <div className="mt-4 rounded-lg border-2 border-gray-200 bg-gray-50 p-4 text-sm whitespace-pre-wrap">
+                                                            <div className="font-semibold text-base">Correct answer:</div>
                                                             <div className="mt-1">{q.answer}</div>
 
                                                             {q.explanation ? (
@@ -529,7 +552,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                                 [q.id]: { ...(prev[q.id] || {}), graded: true, correct: true },
                                                                             }));
                                                                         }}
-                                                                        className="rounded-md border px-4 py-2"
+                                                                        className="rounded-lg border-2 border-green-300 bg-green-50 px-4 py-2 text-green-700 hover:bg-green-100 hover:border-green-400 transition-all duration-200 font-medium"
                                                                     >
                                                                         I was correct
                                                                     </button>
@@ -542,17 +565,16 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                                 [q.id]: { ...(prev[q.id] || {}), graded: true, correct: false },
                                                                             }));
                                                                         }}
-                                                                        className="rounded-md border px-4 py-2"
+                                                                        className="rounded-lg border-2 border-red-300 bg-red-50 px-4 py-2 text-red-700 hover:bg-red-100 hover:border-red-400 transition-all duration-200 font-medium"
                                                                     >
                                                                         I was incorrect
                                                                     </button>
                                                                 </div>
                                                             ) : (
-                                                                <div className="mt-3 text-sm">
-                                                                    Marked:{" "}
-                                                                    <span className="font-semibold">
-                                                                        {p.correct ? "Correct" : "Incorrect"}
-                                                                    </span>
+                                                                <div className={`mt-3 text-sm font-medium ${
+                                                                    p.correct ? "text-green-700" : "text-red-700"
+                                                                }`}>
+                                                                    Marked as: {p.correct ? "Correct" : "Incorrect"}
                                                                 </div>
                                                             )}
                                                         </div>
@@ -569,7 +591,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                         setShowAnswer(false);
                                                     }}
                                                     disabled={qIdx === 0}
-                                                    className="rounded-md border px-4 py-2 disabled:opacity-50"
+                                                    className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                                 >
                                                     Prev
                                                 </button>
@@ -577,7 +599,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                 <button
                                                     onClick={goNextQuestion}
                                                     disabled={!canAdvanceCurrent()}
-                                                    className="rounded-md border px-4 py-2 disabled:opacity-50"
+                                                    className="rounded-lg border-2 border-gray-300 px-4 py-2 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                                                     title={!canAdvanceCurrent() ? "Answer/grade this question first" : ""}
                                                 >
                                                     {qIdx === exam.questions.length - 1 ? "Finish" : "Next"}
