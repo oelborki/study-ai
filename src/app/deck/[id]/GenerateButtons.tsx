@@ -276,47 +276,51 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
             {active === "flashcards" && flashcards?.length ? (
                 <AnimatedPanel activeKey="flashcards">
-                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm">
-                        <div className="flex items-center justify-between gap-3">
+                    <div className="mt-6 rounded-lg border border-gray-200 p-6 shadow-sm flashcard-background">
+                        <div className="flex items-center justify-between gap-3 mb-6">
                             <h2 className="text-xl font-semibold">Flashcards</h2>
                             <div className="text-sm text-gray-600">
                                 {idx + 1} / {flashcards.length}
                             </div>
                         </div>
 
-
                         {current && (
-                            <div className="mt-4">
-                                <div className="rounded-lg border border-gray-200 p-4 bg-white shadow-sm">
-                                    <div className="text-sm text-gray-600">
-                                        Difficulty: <span className="font-medium">{current.difficulty}</span>
-                                        {Array.isArray(current.refs) && current.refs.length ? (
-                                            <span className="ml-3">
-                                                Refs: <span className="font-medium">{current.refs.join(", ")}</span>
-                                            </span>
-                                        ) : null}
-                                    </div>
+                            <div className="flex flex-col items-center">
+                                <div className="flashcard-container w-full max-w-md mb-6">
+                                    <div
+                                        className={`flashcard ${revealed ? 'flipped' : ''}`}
+                                        onClick={() => setRevealed(!revealed)}
+                                    >
+                                        {/* Front of card (Question) */}
+                                        <div className="flashcard-front">
+                                            <div className="text-xs text-gray-500 mb-2">
+                                                Difficulty: {current.difficulty}
+                                                {current.refs?.length ? ` • Refs: ${current.refs.join(', ')}` : ''}
+                                            </div>
+                                            <div className="text-lg font-semibold text-center flex-grow flex items-center justify-center">
+                                                {current.q}
+                                            </div>
+                                            <div className="text-xs text-gray-400 text-center mt-2">
+                                                Click to flip
+                                            </div>
+                                        </div>
 
-                                    <div className="mt-3 text-base font-semibold">Q: {current.q}</div>
-
-                                    <div className="mt-4">
-                                        {!revealed ? (
-                                            <button
-                                                onClick={() => setRevealed(true)}
-                                                className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-white hover:bg-[#365ECC] transition-colors duration-200 shadow-sm hover:shadow-md"
-                                            >
-                                                Reveal Answer
-                                            </button>
-                                        ) : (
-                                            <div className="rounded-md bg-gray-50 p-3 text-sm whitespace-pre-wrap">
-                                                <div className="font-semibold mb-1">A:</div>
+                                        {/* Back of card (Answer) */}
+                                        <div className="flashcard-back">
+                                            <div className="text-sm font-semibold text-gray-600 mb-3 text-center">
+                                                Answer:
+                                            </div>
+                                            <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">
                                                 {current.a}
                                             </div>
-                                        )}
+                                            <div className="text-xs text-gray-400 text-center mt-2">
+                                                Click to flip back
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div className="mt-4 flex gap-3">
+                                <div className="flex gap-3">
                                     <button
                                         onClick={prevCard}
                                         disabled={idx === 0}
