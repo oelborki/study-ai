@@ -2,9 +2,9 @@ export default function UploadPage() {
   return (
     <main className="min-h-[calc(100vh-73px)] px-6 py-12">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Upload a PowerPoint</h1>
+        <h1 className="text-4xl font-bold text-gray-900 tracking-tight">Upload Your Document</h1>
         <p className="mt-3 text-lg text-gray-600 max-w-3xl">
-          Upload a .pptx and generate a summary, flashcards, or a practice exam.
+          Upload a PowerPoint (.pptx) or PDF and generate a summary, flashcards, or a practice exam.
         </p>
 
         <form
@@ -16,7 +16,7 @@ export default function UploadPage() {
         <input
           type="file"
           name="file"
-          accept=".pptx"
+          accept=".pptx,.pdf"
           className="block w-full rounded-lg border border-gray-300 p-3 text-sm file:mr-4 file:rounded-md file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-medium hover:file:bg-gray-200 transition-colors"
           required
         />

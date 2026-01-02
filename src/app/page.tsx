@@ -3,10 +3,10 @@ export default function Home() {
     <main className="min-h-[calc(100vh-73px)] px-6 py-16">
       <section className="mx-auto mt-16 md:mt-24 lg:mt-32 max-w-4xl text-center">
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight tracking-tight">
-          Turn lecture slides into a study session in seconds.
+          Turn lecture materials into a study session in seconds.
         </h1>
         <p className="mt-6 text-xl md:text-2xl max-w-2xl mx-auto">
-          Upload a PowerPoint and generate a summary, flashcards, and an interactive
+          Upload your lecture materials (PowerPoint or PDF) and generate a summary, flashcards, and an interactive
           practice exam with scoring. All results are cached for instant access.
         </p>
 
@@ -26,9 +26,9 @@ export default function Home() {
         <div className="grid gap-6 md:gap-8 grid-cols-1 md:grid-cols-3">
           <div className="rounded-lg border border-gray-300 p-6 shadow-sm hover:shadow-lg transition-shadow duration-200">
             <div className="text-xs font-bold uppercase tracking-wide text-[#4169E1]">Step 1</div>
-            <div className="mt-2 font-semibold text-lg">Upload a .pptx</div>
+            <div className="mt-2 font-semibold text-lg">Upload a document</div>
             <p className="mt-3 text-sm text-gray-600 leading-relaxed">
-              We extract slide text + speaker notes.
+              We extract text and structure from your materials.
             </p>
           </div>
 
