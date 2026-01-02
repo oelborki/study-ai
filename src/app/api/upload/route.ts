@@ -4,11 +4,11 @@ import path from "path";
 import { mkdir, writeFile } from "fs/promises";
 import { spawn } from "child_process";
 
-function runExtractor(pptxPath: string): Promise<any> {
+function runExtractor(filePath: string, scriptName: string): Promise<any> {
     return new Promise((resolve, reject) => {
         const p = spawn(
             "python",
-            ["-X", "utf8", "scripts/extract_pptx.py", pptxPath],
+            ["-X", "utf8", `scripts/${scriptName}`, filePath],
             { env: { ...process.env, PYTHONUTF8: "1" } }
         );
 
@@ -38,17 +38,39 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    //Save pptx to /data
+    // Detect file type
+    const fileName = file.name.toLowerCase();
+    const fileExt = fileName.endsWith('.pdf') ? 'pdf'
+                  : fileName.endsWith('.pptx') ? 'pptx'
+                  : null;
+
+    if (!fileExt) {
+        return NextResponse.json(
+            { error: "Please upload a .pptx or .pdf file" },
+            { status: 400 }
+        );
+    }
+
+    // Save file to /data with appropriate extension
     const id = randomUUID();
     const dataDir = path.join(process.cwd(), "data");
     await mkdir(dataDir, { recursive: true });
 
-    const pptxPath = path.join(dataDir, `${id}.pptx`);
+    const filePath = path.join(dataDir, `${id}.${fileExt}`);
     const buf = Buffer.from(await file.arrayBuffer());
-    await writeFile(pptxPath, buf);
+    await writeFile(filePath, buf);
 
-    // Extract slide text -> JSON
-    const extracted = await runExtractor(pptxPath);
+    // Extract content using appropriate script
+    const scriptName = fileExt === 'pdf' ? 'extract_pdf.py' : 'extract_pptx.py';
+    const extracted = await runExtractor(filePath, scriptName);
+
+    // Check for extraction errors
+    if (extracted?.error) {
+        return NextResponse.json(
+            { error: extracted.error },
+            { status: 400 }
+        );
+    }
 
     // Save extracted JSON
     const jsonPath = path.join(dataDir, `${id}.json`);

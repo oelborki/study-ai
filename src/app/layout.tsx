@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Study-AI - Turn lecture slides into study sessions",
-  description: "Upload PowerPoint slides and generate summaries, flashcards, and practice exams with scoring. All results are cached for instant access.",
+  title: "Study-AI - Turn lecture materials into study sessions",
+  description: "Upload PowerPoint or PDF documents and generate summaries, flashcards, and practice exams with scoring. All results are cached for instant access.",
 };
 
 export default function RootLayout({
