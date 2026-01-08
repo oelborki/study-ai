@@ -1,17 +1,44 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #000000;
+  --foreground: #ffffff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-royal-blue: #4169E1;
-  --color-royal-blue-hover: #365ECC;
-  --color-royal-blue-light: #E8EFFC;
-  --color-royal-blue-lighter: #F5F8FE;
+
+  /* Purple System */
+  --color-purple-primary: #6B21A8;
+  --color-purple-hover: #581C87;
+  --color-purple-light: #A855F7;
+  --color-purple-lighter: #C084FC;
+  --color-purple-dark: #4C1D95;
+
+  /* Dark Mode Backgrounds */
+  --color-bg-primary: #000000;
+  --color-bg-secondary: #0A0A0A;
+  --color-bg-elevated: #121212;
+  --color-bg-hover: #1A1A1A;
+
+  /* Borders & Text */
+  --color-border-subtle: #262626;
+  --color-border-default: #404040;
+  --color-border-strong: #525252;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #D4D4D4;
+  --color-text-tertiary: #A3A3A3;
+  --color-text-disabled: #737373;
+
+  /* Semantic Colors (Exam Feedback) */
+  --color-success-bg: #052e16;
+  --color-success-border: #166534;
+  --color-success-text: #4ade80;
+  --color-error-bg: #450a0a;
+  --color-error-border: #991b1b;
+  --color-error-text: #f87171;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -20,12 +47,6 @@ html {
   scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   background: var(--background);
@@ -46,6 +67,46 @@ body {
 
 .animate-panel {
   animation: panelEnter 180ms ease-out;
+}
+
+@keyframes buttonGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3),
+                0 0 20px rgba(107, 33, 168, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5),
+                0 0 40px rgba(168, 85, 247, 0.3);
+  }
+}
+
+@keyframes cardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-card {
+  animation: cardEnter 350ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-step-1 { animation-delay: 0ms; }
+.card-step-2 { animation-delay: 100ms; }
+.card-step-3 { animation-delay: 200ms; }
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease-in-out infinite;
 }
 
 /* Flashcard 3D flip animation */
@@ -82,19 +143,21 @@ body {
 }
 
 .flashcard-front {
-  background: white;
-  border: 2px solid #e5e7eb;
+  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
+  border: 2px solid #404040;
+  color: #ffffff;
 }
 
 .flashcard-back {
-  background: #f9fafb;
-  border: 2px solid #d1d5db;
+  background: linear-gradient(135deg, #4C1D95 0%, #6B21A8 100%);
+  border: 2px solid #A855F7;
   transform: rotateY(180deg);
+  color: #ffffff;
 }
 
 /* Gradient background for flashcard area */
 .flashcard-background {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  background: linear-gradient(135deg, #1a0033 0%, #000000 100%);
 }
 
 /* Responsive flashcard sizing */

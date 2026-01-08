@@ -211,10 +211,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateSummary}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 ${
+                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black ${
                         active === "summary"
-                            ? "bg-[#4169E1] ring-2 ring-[#365ECC] ring-offset-2 shadow-md"
-                            : "bg-[#4169E1] hover:bg-[#365ECC] shadow-sm hover:shadow-md"
+                            ? "bg-gradient-to-br from-[#6B21A8] to-[#A855F7] ring-2 ring-[#A855F7] ring-offset-2 shadow-md"
+                            : "bg-gradient-to-br from-[#6B21A8] to-[#A855F7] hover:from-[#581C87] hover:to-[#9333EA] shadow-sm hover:shadow-md"
                     }`}
                 >
                     {loading === "summary" ? "Generating..." : "Summary"}
@@ -223,10 +223,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateFlashcards}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 ${
+                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black ${
                         active === "flashcards"
-                            ? "bg-[#4169E1] ring-2 ring-[#365ECC] ring-offset-2 shadow-md"
-                            : "bg-[#4169E1] hover:bg-[#365ECC] shadow-sm hover:shadow-md"
+                            ? "bg-gradient-to-br from-[#6B21A8] to-[#A855F7] ring-2 ring-[#A855F7] ring-offset-2 shadow-md"
+                            : "bg-gradient-to-br from-[#6B21A8] to-[#A855F7] hover:from-[#581C87] hover:to-[#9333EA] shadow-sm hover:shadow-md"
                     }`}
                 >
                     {loading === "flashcards" ? "Generating..." : "Flashcards"}
@@ -235,10 +235,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 <button
                     onClick={generateExam}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2 ${
+                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black ${
                         active === "exam"
-                            ? "bg-[#4169E1] ring-2 ring-[#365ECC] ring-offset-2 shadow-md"
-                            : "bg-[#4169E1] hover:bg-[#365ECC] shadow-sm hover:shadow-md"
+                            ? "bg-gradient-to-br from-[#6B21A8] to-[#A855F7] ring-2 ring-[#A855F7] ring-offset-2 shadow-md"
+                            : "bg-gradient-to-br from-[#6B21A8] to-[#A855F7] hover:from-[#581C87] hover:to-[#9333EA] shadow-sm hover:shadow-md"
                     }`}
                 >
                     {loading === "exam" ? "Generating..." : "Practice Exam"}
@@ -248,14 +248,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                     <>
                         <button
                             onClick={shuffleCards}
-                            className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                             title="Shuffle flashcards"
                         >
                             Shuffle
                         </button>
                         <button
                             onClick={exportCsv}
-                            className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                             title="Export to CSV"
                         >
                             Export CSV
@@ -268,8 +268,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
             {active === "summary" && summary && (
                 <AnimatedPanel activeKey="summary">
-                    <div className="mt-8 rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 shadow-md">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6 pb-3 border-b border-gray-200">
+                    <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                        <h2 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-[#404040]">
                             Summary
                         </h2>
                         <MarkdownRenderer content={summary} />
@@ -279,10 +279,10 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
             {active === "flashcards" && flashcards?.length ? (
                 <AnimatedPanel activeKey="flashcards">
-                    <div className="mt-8 rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 shadow-md">
-                        <div className="flex items-center justify-between gap-3 mb-6 pb-3 border-b border-gray-200">
-                            <h2 className="text-2xl font-bold text-gray-900">Flashcards</h2>
-                            <div className="text-sm text-gray-600 font-medium">
+                    <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                        <div className="flex items-center justify-between gap-3 mb-6 pb-3 border-b border-[#404040]">
+                            <h2 className="text-2xl font-bold text-white">Flashcards</h2>
+                            <div className="text-sm text-[#A3A3A3] font-medium">
                                 {idx + 1} / {flashcards.length}
                             </div>
                         </div>
@@ -296,27 +296,27 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                     >
                                         {/* Front of card (Question) */}
                                         <div className="flashcard-front">
-                                            <div className="text-xs text-gray-500 mb-2">
+                                            <div className="text-xs text-[#A3A3A3] mb-2">
                                                 Difficulty: {current.difficulty}
                                                 {current.refs?.length ? ` • Refs: ${current.refs.join(', ')}` : ''}
                                             </div>
                                             <div className="text-lg font-semibold text-center flex-grow flex items-center justify-center">
                                                 {current.q}
                                             </div>
-                                            <div className="text-xs text-gray-400 text-center mt-2">
+                                            <div className="text-xs text-[#737373] text-center mt-2">
                                                 Click to flip
                                             </div>
                                         </div>
 
                                         {/* Back of card (Answer) */}
                                         <div className="flashcard-back">
-                                            <div className="text-sm font-semibold text-gray-600 mb-3 text-center">
+                                            <div className="text-sm font-semibold text-[#D4D4D4] mb-3 text-center">
                                                 Answer:
                                             </div>
                                             <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">
                                                 {current.a}
                                             </div>
-                                            <div className="text-xs text-gray-400 text-center mt-2">
+                                            <div className="text-xs text-[#C084FC] text-center mt-2">
                                                 Click to flip back
                                             </div>
                                         </div>
@@ -327,14 +327,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                     <button
                                         onClick={prevCard}
                                         disabled={idx === 0}
-                                        className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                     >
                                         Prev
                                     </button>
                                     <button
                                         onClick={nextCard}
                                         disabled={idx === flashcards.length - 1}
-                                        className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                     >
                                         Next
                                     </button>
@@ -346,32 +346,32 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
             ) : null}
             {active === "exam" && exam?.questions?.length ? (
                 <AnimatedPanel activeKey="exam">
-                    <div className="mt-8 rounded-xl border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-8 shadow-md">
-                        <div className="flex items-center justify-between gap-3 pb-3 border-b border-gray-200 mb-4">
-                            <h2 className="text-2xl font-bold text-gray-900">{exam.title || "Practice Exam"}</h2>
+                    <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                        <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#404040] mb-4">
+                            <h2 className="text-2xl font-bold text-white">{exam.title || "Practice Exam"}</h2>
 
                             {!finished ? (
-                                <div className="text-sm text-gray-600 font-medium">
+                                <div className="text-sm text-[#A3A3A3] font-medium">
                                     {qIdx + 1} / {exam.questions.length}
                                 </div>
                             ) : null}
                         </div>
 
                         {exam.instructions && !finished ? (
-                            <p className="mt-2 text-sm text-gray-600">{exam.instructions}</p>
+                            <p className="mt-2 text-sm text-[#D4D4D4]">{exam.instructions}</p>
                         ) : null}
 
                         {/* FINISHED SCREEN */}
                         {finished ? (
-                            <div className="mt-4 rounded-lg border border-gray-200 p-6 bg-gray-50">
+                            <div className="mt-4 rounded-lg border border-[#404040] p-6 bg-[#0A0A0A]">
                                 {(() => {
                                     const { correct, total } = scoreSummary();
                                     const percent = total ? Math.round((correct / total) * 100) : 0;
 
                                     return (
                                         <>
-                                            <h3 className="text-lg font-semibold mb-2">Results</h3>
-                                            <p className="mt-2 text-sm text-gray-700">
+                                            <h3 className="text-lg font-semibold mb-2 text-white">Results</h3>
+                                            <p className="mt-2 text-sm text-[#D4D4D4]">
                                                 Score: <span className="font-semibold">{correct}</span> /{" "}
                                                 <span className="font-semibold">{total}</span>{" "}
                                                 {total ? `(${percent}%)` : "(No graded questions yet)"}
@@ -380,21 +380,21 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                             <div className="mt-4 flex gap-3">
                                                 <button
                                                     onClick={retakeExam}
-                                                    className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#365ECC] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2"
+                                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                                 >
                                                     Retake
                                                 </button>
 
                                                 <button
                                                     onClick={() => setFinished(false)}
-                                                    className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                                     title="Go back to review questions"
                                                 >
                                                     Review
                                                 </button>
                                             </div>
 
-                                            <p className="mt-3 text-xs text-gray-500">
+                                            <p className="mt-3 text-xs text-[#737373]">
                                                 Short-answer questions are scored based on your self-marking.
                                             </p>
                                         </>
@@ -403,7 +403,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                             </div>
                         ) : (
                             /* QUESTION SCREEN */
-                            <div className="mt-4 rounded-lg border border-gray-200 p-4 bg-white">
+                            <div className="mt-4 rounded-lg border border-[#404040] p-4 bg-[#0A0A0A]">
                                 {(() => {
                                     const q = exam.questions[Math.min(qIdx, exam.questions.length - 1)];
                                     const p = progress[q.id] || {};
@@ -414,7 +414,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                                     return (
                                         <>
-                                            <div className="text-sm text-gray-600">
+                                            <div className="text-sm text-[#A3A3A3]">
                                                 Difficulty: <span className="font-medium">{q.difficulty}</span>
                                                 {q.refs?.length ? (
                                                     <span className="ml-3">
@@ -423,7 +423,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                 ) : null}
                                             </div>
 
-                                            <div className="mt-3 text-base font-semibold">
+                                            <div className="mt-3 text-base font-semibold text-white">
                                                 {q.id}: {q.question}
                                             </div>
 
@@ -457,11 +457,11 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                 className={`w-full rounded-lg px-4 py-3 text-left transition-all duration-200 disabled:cursor-not-allowed ${
                                                                     answered
                                                                         ? isCorrectChoice
-                                                                            ? "bg-green-50 border-2 border-green-200 text-green-900"
+                                                                            ? "bg-[#052e16] border-2 border-[#166534] text-[#4ade80]"
                                                                             : selected
-                                                                            ? "bg-red-50 border-2 border-red-200 text-red-900"
-                                                                            : "border-2 border-gray-200 opacity-60"
-                                                                        : "border-2 border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                                                                            ? "bg-[#450a0a] border-2 border-[#991b1b] text-[#f87171]"
+                                                                            : "border-2 border-[#404040] opacity-60 text-[#737373]"
+                                                                        : "border-2 border-[#404040] hover:border-[#525252] hover:bg-[#1A1A1A] text-[#D4D4D4]"
                                                                 }`}
                                                                 aria-pressed={selected}
                                                             >
@@ -470,9 +470,9 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                                                                     {answered ? (
                                                                         isCorrectChoice ? (
-                                                                            <span className="text-xs font-semibold text-green-600">Correct</span>
+                                                                            <span className="text-xs font-semibold text-[#4ade80]">Correct</span>
                                                                         ) : selected ? (
-                                                                            <span className="text-xs font-semibold text-red-600">Incorrect</span>
+                                                                            <span className="text-xs font-semibold text-[#f87171]">Incorrect</span>
                                                                         ) : null
                                                                     ) : null}
                                                                 </div>
@@ -484,11 +484,11 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                     {p.graded && showAnswer ? (
                                                         <div className={`mt-4 rounded-lg border-2 p-4 text-sm whitespace-pre-wrap ${
                                                             p.correct
-                                                                ? "bg-green-50 border-green-200"
-                                                                : "bg-red-50 border-red-200"
+                                                                ? "bg-[#052e16] border-[#166534] text-[#4ade80]"
+                                                                : "bg-[#450a0a] border-[#991b1b] text-[#f87171]"
                                                         }`}>
                                                             <div className={`font-semibold text-base ${
-                                                                p.correct ? "text-green-700" : "text-red-700"
+                                                                p.correct ? "text-[#4ade80]" : "text-[#f87171]"
                                                             }`}>
                                                                 {p.correct ? "Correct!" : "Incorrect"}
                                                             </div>
@@ -517,7 +517,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                 [q.id]: { ...(prev[q.id] || {}), shortText: e.target.value },
                                                             }))
                                                         }
-                                                        className="w-full rounded-lg border-2 border-gray-300 p-3 text-sm focus:border-[#4169E1] focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-opacity-20 transition-all"
+                                                        className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373]"
                                                         rows={4}
                                                         placeholder="Type your answer here..."
                                                         disabled={loading !== null || p.graded}
@@ -529,7 +529,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                             <button
                                                                 type="button"
                                                                 onClick={() => setShowAnswer(true)}
-                                                                className="rounded-lg bg-[#4169E1] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#365ECC] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#4169E1] focus:ring-offset-2"
+                                                                className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                                             >
                                                                 Enter
                                                             </button>
@@ -538,13 +538,13 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                                                     {/* Revealed answer + grading */}
                                                     {showAnswer ? (
-                                                        <div className="mt-4 rounded-lg border-2 border-gray-200 bg-gray-50 p-4 text-sm whitespace-pre-wrap">
-                                                            <div className="font-semibold text-base">Correct answer:</div>
+                                                        <div className="mt-4 rounded-lg border-2 border-[#404040] bg-[#121212] p-4 text-sm whitespace-pre-wrap text-[#D4D4D4]">
+                                                            <div className="font-semibold text-base text-white">Correct answer:</div>
                                                             <div className="mt-1">{q.answer}</div>
 
                                                             {q.explanation ? (
                                                                 <>
-                                                                    <div className="mt-3 font-semibold">Explanation:</div>
+                                                                    <div className="mt-3 font-semibold text-white">Explanation:</div>
                                                                     <div className="mt-1">{q.explanation}</div>
                                                                 </>
                                                             ) : null}
@@ -559,7 +559,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                                 [q.id]: { ...(prev[q.id] || {}), graded: true, correct: true },
                                                                             }));
                                                                         }}
-                                                                        className="rounded-lg border-2 border-green-300 bg-green-50 px-5 py-2.5 text-sm text-green-700 hover:bg-green-100 hover:border-green-400 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2"
+                                                                        className="rounded-lg border-2 border-[#166534] bg-[#052e16] px-5 py-2.5 text-sm text-[#4ade80] hover:bg-[#14532d] hover:border-[#16a34a] transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-[#4ade80] focus:ring-offset-2 focus:ring-offset-black"
                                                                     >
                                                                         I was correct
                                                                     </button>
@@ -572,14 +572,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                                                 [q.id]: { ...(prev[q.id] || {}), graded: true, correct: false },
                                                                             }));
                                                                         }}
-                                                                        className="rounded-lg border-2 border-red-300 bg-red-50 px-5 py-2.5 text-sm text-red-700 hover:bg-red-100 hover:border-red-400 transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
+                                                                        className="rounded-lg border-2 border-[#991b1b] bg-[#450a0a] px-5 py-2.5 text-sm text-[#f87171] hover:bg-[#7f1d1d] hover:border-[#dc2626] transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-[#f87171] focus:ring-offset-2 focus:ring-offset-black"
                                                                     >
                                                                         I was incorrect
                                                                     </button>
                                                                 </div>
                                                             ) : (
                                                                 <div className={`mt-3 text-sm font-medium ${
-                                                                    p.correct ? "text-green-700" : "text-red-700"
+                                                                    p.correct ? "text-[#4ade80]" : "text-[#f87171]"
                                                                 }`}>
                                                                     Marked as: {p.correct ? "Correct" : "Incorrect"}
                                                                 </div>
@@ -598,7 +598,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                         setShowAnswer(false);
                                                     }}
                                                     disabled={qIdx === 0}
-                                                    className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                                 >
                                                     Prev
                                                 </button>
@@ -606,7 +606,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                 <button
                                                     onClick={goNextQuestion}
                                                     disabled={!canAdvanceCurrent()}
-                                                    className="rounded-lg border-2 border-gray-300 px-5 py-2.5 text-sm font-medium text-gray-700 hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                                     title={!canAdvanceCurrent() ? "Answer/grade this question first" : ""}
                                                 >
                                                     {qIdx === exam.questions.length - 1 ? "Finish" : "Next"}
