@@ -109,6 +109,34 @@ body {
   animation: gradientShift 8s ease-in-out infinite;
 }
 
+/* Loading Spinner Animation */
+@keyframes spinSmooth {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-smooth {
+  animation: spinSmooth 1s linear infinite;
+}
+
+/* Gradient ring mask - creates ring effect with gradient */
+.spinner-ring {
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4px),
+    #fff calc(100% - 4px)
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 4px),
+    #fff calc(100% - 4px)
+  );
+}
+
 /* Flashcard 3D flip animation */
 .flashcard-container {
   perspective: 1000px;
