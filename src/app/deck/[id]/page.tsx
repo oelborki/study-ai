@@ -20,7 +20,7 @@ export default async function DeckPage(
     const deck = JSON.parse(raw);
 
     return (
-        <main className="min-h-[calc(100vh-73px)] px-6 py-12 bg-[#000000]">
+        <main className="min-h-[calc(100vh-73px)] px-6 py-12 bg-gradient-to-b from-[#1a0033] via-[#000000] to-[#000000]">
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold text-white tracking-tight">Your Study Materials</h1>
                 <p className="mt-3 text-lg text-[#A3A3A3]">Choose a study mode to get started.</p>
