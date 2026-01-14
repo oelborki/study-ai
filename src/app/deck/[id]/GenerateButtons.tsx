@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import AnimatedPanel from "@/components/ui/AnimatedPanel";
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import ShareModal from "@/components/share/ShareModal";
 
 type Flashcard = {
     q: string;
@@ -56,6 +57,7 @@ function downloadText(filename: string, text: string) {
 export default function GenerateButtons({ deckId }: { deckId: string }) {
     const [loading, setLoading] = useState<null | "summary" | "flashcards" | "exam">(null);
     const [error, setError] = useState<string | null>(null);
+    const [isShareOpen, setIsShareOpen] = useState(false);
 
     const [summary, setSummary] = useState<string | null>(null);
 
@@ -243,6 +245,14 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                     }`}
                 >
                     {loading === "exam" ? "Generating..." : "Practice Exam"}
+                </button>
+
+                <button
+                    onClick={() => setIsShareOpen(true)}
+                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                    title="Share this deck"
+                >
+                    Share
                 </button>
 
                 {flashcards?.length ? (
@@ -645,6 +655,12 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 </AnimatedPanel>
                 ) : null
             )}
+
+            <ShareModal
+                deckId={deckId}
+                isOpen={isShareOpen}
+                onClose={() => setIsShareOpen(false)}
+            />
         </div>
     );
 }
