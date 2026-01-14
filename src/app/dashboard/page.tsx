@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { db, schema } from "@/lib/db";
 import { eq, or, inArray } from "drizzle-orm";
 import Link from "next/link";
+import DeckCard from "@/components/dashboard/DeckCard";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -84,48 +85,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {decks.map((deck) => (
-              <Link
-                key={deck.id}
-                href={`/deck/${deck.id}`}
-                className="group rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-6 hover:border-[#6B21A8] transition-all duration-200"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
-                    {deck.fileType === "pdf" ? (
-                      <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 15.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5 text-orange-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M6 2h12a2 2 0 012 2v16a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2zm0 2v16h12V4H6zm2 3h8v2H8V7zm0 4h8v2H8v-2zm0 4h5v2H8v-2z" />
-                      </svg>
-                    )}
-                  </div>
-                  <span className="text-xs text-[#737373] uppercase tracking-wider">
-                    {deck.fileType || "pptx"}
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-[#A855F7] transition-colors line-clamp-2">
-                  {deck.title}
-                </h3>
-
-                {deck.originalFileName && (
-                  <p className="text-sm text-[#737373] truncate mb-3">
-                    {deck.originalFileName}
-                  </p>
-                )}
-
-                <p className="text-xs text-[#525252]">
-                  {deck.createdAt
-                    ? new Date(deck.createdAt).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                    : "Unknown date"}
-                </p>
-              </Link>
+              <DeckCard key={deck.id} deck={deck} />
             ))}
           </div>
         )}
