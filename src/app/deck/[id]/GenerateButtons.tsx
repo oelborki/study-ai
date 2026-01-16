@@ -56,6 +56,7 @@ function downloadText(filename: string, text: string) {
 
 export default function GenerateButtons({ deckId }: { deckId: string }) {
     const [loading, setLoading] = useState<null | "summary" | "flashcards" | "exam">(null);
+    const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isShareOpen, setIsShareOpen] = useState(false);
 
@@ -317,20 +318,39 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                     />
                                     <div className="mt-4 flex gap-3">
                                         <button
-                                            onClick={() => {
-                                                setSummary(editedSummary);
-                                                setIsEditingSummary(false);
+                                            onClick={async () => {
+                                                setSaving(true);
+                                                setError(null);
+                                                try {
+                                                    const res = await fetch(`/api/decks/${deckId}/content`, {
+                                                        method: "PATCH",
+                                                        headers: { "Content-Type": "application/json" },
+                                                        body: JSON.stringify({ type: "summary", content: editedSummary }),
+                                                    });
+                                                    if (!res.ok) {
+                                                        const data = await res.json();
+                                                        throw new Error(data.error || "Failed to save");
+                                                    }
+                                                    setSummary(editedSummary);
+                                                    setIsEditingSummary(false);
+                                                } catch (e: any) {
+                                                    setError(e.message || "Failed to save summary");
+                                                } finally {
+                                                    setSaving(false);
+                                                }
                                             }}
-                                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md"
+                                            disabled={saving}
+                                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
                                         >
-                                            Save
+                                            {saving ? "Saving..." : "Save"}
                                         </button>
                                         <button
                                             onClick={() => {
                                                 setIsEditingSummary(false);
                                                 setEditedSummary("");
                                             }}
-                                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200"
+                                            disabled={saving}
+                                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50"
                                         >
                                             Cancel
                                         </button>
@@ -385,21 +405,39 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                             </div>
                                             <div className="mt-4 flex gap-3 justify-center">
                                                 <button
-                                                    onClick={() => {
-                                                        if (flashcards) {
+                                                    onClick={async () => {
+                                                        if (!flashcards) return;
+                                                        setSaving(true);
+                                                        setError(null);
+                                                        try {
                                                             const updated = [...flashcards];
                                                             updated[idx] = { ...updated[idx], q: editedQuestion, a: editedAnswer };
+                                                            const res = await fetch(`/api/decks/${deckId}/content`, {
+                                                                method: "PATCH",
+                                                                headers: { "Content-Type": "application/json" },
+                                                                body: JSON.stringify({ type: "flashcards", content: updated }),
+                                                            });
+                                                            if (!res.ok) {
+                                                                const data = await res.json();
+                                                                throw new Error(data.error || "Failed to save");
+                                                            }
                                                             setFlashcards(updated);
+                                                            setEditingCardIdx(null);
+                                                        } catch (e: any) {
+                                                            setError(e.message || "Failed to save flashcard");
+                                                        } finally {
+                                                            setSaving(false);
                                                         }
-                                                        setEditingCardIdx(null);
                                                     }}
-                                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md"
+                                                    disabled={saving}
+                                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
                                                 >
-                                                    Save
+                                                    {saving ? "Saving..." : "Save"}
                                                 </button>
                                                 <button
                                                     onClick={() => setEditingCardIdx(null)}
-                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200"
+                                                    disabled={saving}
+                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50"
                                                 >
                                                     Cancel
                                                 </button>
