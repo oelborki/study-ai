@@ -66,6 +66,9 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
     const [flashcards, setFlashcards] = useState<Flashcard[] | null>(null);
     const [idx, setIdx] = useState(0);
     const [revealed, setRevealed] = useState(false);
+    const [editingCardIdx, setEditingCardIdx] = useState<number | null>(null);
+    const [editedQuestion, setEditedQuestion] = useState("");
+    const [editedAnswer, setEditedAnswer] = useState("");
 
     const [exam, setExam] = useState<Exam | null>(null);
     const [qIdx, setQIdx] = useState(0);
@@ -360,51 +363,107 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
 
                             {current && (
                                 <div className="flex flex-col items-center">
-                                    <div className="flashcard-container w-full max-w-md mb-6">
-                                        <div
-                                            className={`flashcard ${revealed ? 'flipped' : ''}`}
-                                            onClick={() => setRevealed(!revealed)}
-                                        >
-                                            {/* Front of card (Question) */}
-                                            <div className="flashcard-front">
-                                                <div className="text-xs text-[#A3A3A3] mb-2">
-                                                    Difficulty: {current.difficulty}
-                                                    {current.refs?.length ? ` • Refs: ${current.refs.join(', ')}` : ''}
+                                    {editingCardIdx === idx ? (
+                                        <div className="w-full max-w-md mb-6">
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Question</label>
+                                                    <textarea
+                                                        value={editedQuestion}
+                                                        onChange={(e) => setEditedQuestion(e.target.value)}
+                                                        className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                    />
                                                 </div>
-                                                <div className="text-lg font-semibold text-center flex-grow flex items-center justify-center">
-                                                    {current.q}
-                                                </div>
-                                                <div className="text-xs text-[#737373] text-center mt-2">
-                                                    Click to flip
+                                                <div>
+                                                    <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Answer</label>
+                                                    <textarea
+                                                        value={editedAnswer}
+                                                        onChange={(e) => setEditedAnswer(e.target.value)}
+                                                        className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                    />
                                                 </div>
                                             </div>
+                                            <div className="mt-4 flex gap-3 justify-center">
+                                                <button
+                                                    onClick={() => {
+                                                        if (flashcards) {
+                                                            const updated = [...flashcards];
+                                                            updated[idx] = { ...updated[idx], q: editedQuestion, a: editedAnswer };
+                                                            setFlashcards(updated);
+                                                        }
+                                                        setEditingCardIdx(null);
+                                                    }}
+                                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md"
+                                                >
+                                                    Save
+                                                </button>
+                                                <button
+                                                    onClick={() => setEditingCardIdx(null)}
+                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="flashcard-container w-full max-w-md mb-6">
+                                            <div
+                                                className={`flashcard ${revealed ? 'flipped' : ''}`}
+                                                onClick={() => setRevealed(!revealed)}
+                                            >
+                                                {/* Front of card (Question) */}
+                                                <div className="flashcard-front">
+                                                    <div className="text-xs text-[#A3A3A3] mb-2">
+                                                        Difficulty: {current.difficulty}
+                                                        {current.refs?.length ? ` • Refs: ${current.refs.join(', ')}` : ''}
+                                                    </div>
+                                                    <div className="text-lg font-semibold text-center flex-grow flex items-center justify-center">
+                                                        {current.q}
+                                                    </div>
+                                                    <div className="text-xs text-[#737373] text-center mt-2">
+                                                        Click to flip
+                                                    </div>
+                                                </div>
 
-                                            {/* Back of card (Answer) */}
-                                            <div className="flashcard-back">
-                                                <div className="text-sm font-semibold text-[#D4D4D4] mb-3 text-center">
-                                                    Answer:
-                                                </div>
-                                                <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">
-                                                    {current.a}
-                                                </div>
-                                                <div className="text-xs text-[#C084FC] text-center mt-2">
-                                                    Click to flip back
+                                                {/* Back of card (Answer) */}
+                                                <div className="flashcard-back">
+                                                    <div className="text-sm font-semibold text-[#D4D4D4] mb-3 text-center">
+                                                        Answer:
+                                                    </div>
+                                                    <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">
+                                                        {current.a}
+                                                    </div>
+                                                    <div className="text-xs text-[#C084FC] text-center mt-2">
+                                                        Click to flip back
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     <div className="flex gap-3">
                                         <button
                                             onClick={prevCard}
-                                            disabled={idx === 0}
+                                            disabled={idx === 0 || editingCardIdx !== null}
                                             className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                         >
                                             Prev
                                         </button>
+                                        {editingCardIdx === null && (
+                                            <button
+                                                onClick={() => {
+                                                    setEditedQuestion(current.q);
+                                                    setEditedAnswer(current.a);
+                                                    setEditingCardIdx(idx);
+                                                }}
+                                                className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                            >
+                                                Edit
+                                            </button>
+                                        )}
                                         <button
                                             onClick={nextCard}
-                                            disabled={idx === flashcards.length - 1}
+                                            disabled={idx === flashcards.length - 1 || editingCardIdx !== null}
                                             className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                         >
                                             Next
