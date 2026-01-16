@@ -60,6 +60,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
     const [isShareOpen, setIsShareOpen] = useState(false);
 
     const [summary, setSummary] = useState<string | null>(null);
+    const [isEditingSummary, setIsEditingSummary] = useState(false);
+    const [editedSummary, setEditedSummary] = useState<string>("");
 
     const [flashcards, setFlashcards] = useState<Flashcard[] | null>(null);
     const [idx, setIdx] = useState(0);
@@ -287,10 +289,53 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                 ) : summary ? (
                     <AnimatedPanel activeKey="summary">
                         <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                            <h2 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-[#404040]">
-                                Summary
-                            </h2>
-                            <MarkdownRenderer content={summary} />
+                            <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
+                                <h2 className="text-2xl font-bold text-white">
+                                    Summary
+                                </h2>
+                                {!isEditingSummary && (
+                                    <button
+                                        onClick={() => {
+                                            setEditedSummary(summary);
+                                            setIsEditingSummary(true);
+                                        }}
+                                        className="rounded-lg border-2 border-[#404040] px-4 py-2 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200"
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                            </div>
+                            {isEditingSummary ? (
+                                <div>
+                                    <textarea
+                                        value={editedSummary}
+                                        onChange={(e) => setEditedSummary(e.target.value)}
+                                        className="w-full h-96 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-4 text-sm font-mono focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373]"
+                                    />
+                                    <div className="mt-4 flex gap-3">
+                                        <button
+                                            onClick={() => {
+                                                setSummary(editedSummary);
+                                                setIsEditingSummary(false);
+                                            }}
+                                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md"
+                                        >
+                                            Save
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                setIsEditingSummary(false);
+                                                setEditedSummary("");
+                                            }}
+                                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <MarkdownRenderer content={summary} />
+                            )}
                         </div>
                     </AnimatedPanel>
                 ) : null
