@@ -75,6 +75,11 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
     const [exam, setExam] = useState<Exam | null>(null);
     const [qIdx, setQIdx] = useState(0);
     const [showAnswer, setShowAnswer] = useState(false);
+    const [editingExamIdx, setEditingExamIdx] = useState<number | null>(null);
+    const [editedExamQuestion, setEditedExamQuestion] = useState("");
+    const [editedExamAnswer, setEditedExamAnswer] = useState("");
+    const [editedExamChoices, setEditedExamChoices] = useState<string[]>([]);
+    const [editedExamExplanation, setEditedExamExplanation] = useState("");
 
     type ExamProgress = {
         selected?: string;      // for mcq: "A" | "B" | "C" | "D"
@@ -633,9 +638,118 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                 ) : null}
                                             </div>
 
-                                            <div className="mt-3 text-base font-semibold text-white">
-                                                {q.id}: {q.question}
-                                            </div>
+                                            {editingExamIdx === qIdx ? (
+                                                <div className="mt-4 space-y-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Question</label>
+                                                        <textarea
+                                                            value={editedExamQuestion}
+                                                            onChange={(e) => setEditedExamQuestion(e.target.value)}
+                                                            className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Answer</label>
+                                                        {q.type === "mcq" ? (
+                                                            <select
+                                                                value={editedExamAnswer}
+                                                                onChange={(e) => setEditedExamAnswer(e.target.value)}
+                                                                className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                            >
+                                                                <option value="A">A</option>
+                                                                <option value="B">B</option>
+                                                                <option value="C">C</option>
+                                                                <option value="D">D</option>
+                                                            </select>
+                                                        ) : (
+                                                            <textarea
+                                                                value={editedExamAnswer}
+                                                                onChange={(e) => setEditedExamAnswer(e.target.value)}
+                                                                className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                    {q.type === "mcq" && editedExamChoices.length > 0 && (
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Choices</label>
+                                                            <div className="space-y-2">
+                                                                {editedExamChoices.map((choice, i) => (
+                                                                    <input
+                                                                        key={i}
+                                                                        type="text"
+                                                                        value={choice}
+                                                                        onChange={(e) => {
+                                                                            const updated = [...editedExamChoices];
+                                                                            updated[i] = e.target.value;
+                                                                            setEditedExamChoices(updated);
+                                                                        }}
+                                                                        className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Explanation</label>
+                                                        <textarea
+                                                            value={editedExamExplanation}
+                                                            onChange={(e) => setEditedExamExplanation(e.target.value)}
+                                                            className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                            placeholder="Explain the correct answer..."
+                                                        />
+                                                    </div>
+                                                    <div className="flex gap-3">
+                                                        <button
+                                                            onClick={async () => {
+                                                                if (!exam) return;
+                                                                setSaving(true);
+                                                                setError(null);
+                                                                try {
+                                                                    const updatedQuestions = [...exam.questions];
+                                                                    updatedQuestions[qIdx] = {
+                                                                        ...updatedQuestions[qIdx],
+                                                                        question: editedExamQuestion,
+                                                                        answer: editedExamAnswer,
+                                                                        choices: editedExamChoices.length > 0 ? editedExamChoices : updatedQuestions[qIdx].choices,
+                                                                        explanation: editedExamExplanation
+                                                                    };
+                                                                    const updatedExam = { ...exam, questions: updatedQuestions };
+                                                                    const res = await fetch(`/api/decks/${deckId}/content`, {
+                                                                        method: "PATCH",
+                                                                        headers: { "Content-Type": "application/json" },
+                                                                        body: JSON.stringify({ type: "exam", content: updatedExam }),
+                                                                    });
+                                                                    if (!res.ok) {
+                                                                        const data = await res.json();
+                                                                        throw new Error(data.error || "Failed to save");
+                                                                    }
+                                                                    setExam(updatedExam);
+                                                                    setEditingExamIdx(null);
+                                                                } catch (e: any) {
+                                                                    setError(e.message || "Failed to save question");
+                                                                } finally {
+                                                                    setSaving(false);
+                                                                }
+                                                            }}
+                                                            disabled={saving}
+                                                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                                        >
+                                                            {saving ? "Saving..." : "Save"}
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setEditingExamIdx(null)}
+                                                            disabled={saving}
+                                                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="mt-3 text-base font-semibold text-white">
+                                                        {q.id}: {q.question}
+                                                    </div>
 
                                             {/* MCQ */}
                                             {q.type === "mcq" && Array.isArray(q.choices) && q.choices.length ? (
@@ -798,7 +912,8 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                     ) : null}
                                                 </div>
                                             ) : null}
-
+                                                </>
+                                            )}
 
                                             {/* Navigation */}
                                             <div className="mt-5 flex gap-3">
@@ -806,16 +921,32 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                     onClick={() => {
                                                         setQIdx((i) => Math.max(i - 1, 0));
                                                         setShowAnswer(false);
+                                                        setEditingExamIdx(null);
                                                     }}
-                                                    disabled={qIdx === 0}
+                                                    disabled={qIdx === 0 || editingExamIdx !== null}
                                                     className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                                 >
                                                     Prev
                                                 </button>
 
+                                                {editingExamIdx === null && (
+                                                    <button
+                                                        onClick={() => {
+                                                            setEditedExamQuestion(q.question);
+                                                            setEditedExamAnswer(q.answer);
+                                                            setEditedExamChoices(q.choices || []);
+                                                            setEditedExamExplanation(q.explanation || "");
+                                                            setEditingExamIdx(qIdx);
+                                                        }}
+                                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                )}
+
                                                 <button
                                                     onClick={goNextQuestion}
-                                                    disabled={!canAdvanceCurrent()}
+                                                    disabled={!canAdvanceCurrent() || editingExamIdx !== null}
                                                     className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
                                                     title={!canAdvanceCurrent() ? "Answer/grade this question first" : ""}
                                                 >
