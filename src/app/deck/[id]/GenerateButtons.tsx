@@ -70,6 +70,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
     const [editingCardIdx, setEditingCardIdx] = useState<number | null>(null);
     const [editedQuestion, setEditedQuestion] = useState("");
     const [editedAnswer, setEditedAnswer] = useState("");
+    const [isNewCard, setIsNewCard] = useState(false);
 
     const [exam, setExam] = useState<Exam | null>(null);
     const [qIdx, setQIdx] = useState(0);
@@ -423,6 +424,7 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                             }
                                                             setFlashcards(updated);
                                                             setEditingCardIdx(null);
+                                                            setIsNewCard(false);
                                                         } catch (e: any) {
                                                             setError(e.message || "Failed to save flashcard");
                                                         } finally {
@@ -435,7 +437,16 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                                     {saving ? "Saving..." : "Save"}
                                                 </button>
                                                 <button
-                                                    onClick={() => setEditingCardIdx(null)}
+                                                    onClick={() => {
+                                                        if (isNewCard && flashcards) {
+                                                            // Remove the new card if canceling
+                                                            const updated = flashcards.slice(0, -1);
+                                                            setFlashcards(updated);
+                                                            setIdx(Math.max(0, updated.length - 1));
+                                                        }
+                                                        setEditingCardIdx(null);
+                                                        setIsNewCard(false);
+                                                    }}
                                                     disabled={saving}
                                                     className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50"
                                                 >
@@ -488,16 +499,39 @@ export default function GenerateButtons({ deckId }: { deckId: string }) {
                                             Prev
                                         </button>
                                         {editingCardIdx === null && (
-                                            <button
-                                                onClick={() => {
-                                                    setEditedQuestion(current.q);
-                                                    setEditedAnswer(current.a);
-                                                    setEditingCardIdx(idx);
-                                                }}
-                                                className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
-                                            >
-                                                Edit
-                                            </button>
+                                            <>
+                                                <button
+                                                    onClick={() => {
+                                                        setEditedQuestion(current.q);
+                                                        setEditedAnswer(current.a);
+                                                        setEditingCardIdx(idx);
+                                                    }}
+                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                >
+                                                    Edit
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        if (!flashcards) return;
+                                                        const newCard: Flashcard = {
+                                                            q: "",
+                                                            a: "",
+                                                            refs: [],
+                                                            difficulty: "medium",
+                                                        };
+                                                        const updated = [...flashcards, newCard];
+                                                        setFlashcards(updated);
+                                                        setIdx(updated.length - 1);
+                                                        setEditedQuestion("");
+                                                        setEditedAnswer("");
+                                                        setEditingCardIdx(updated.length - 1);
+                                                        setIsNewCard(true);
+                                                    }}
+                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                >
+                                                    Add Card
+                                                </button>
+                                            </>
                                         )}
                                         <button
                                             onClick={nextCard}
