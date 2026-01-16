@@ -47,10 +47,10 @@ export async function PATCH(
   }
 
   const body = await request.json().catch(() => null);
-  const type = body?.type as "summary" | "flashcards" | undefined;
+  const type = body?.type as "summary" | "flashcards" | "exam" | undefined;
   const content = body?.content;
 
-  if (!type || (type !== "summary" && type !== "flashcards")) {
+  if (!type || (type !== "summary" && type !== "flashcards" && type !== "exam")) {
     return NextResponse.json({ error: "Invalid type" }, { status: 400 });
   }
 
@@ -71,6 +71,8 @@ export async function PATCH(
       data.summary = content;
     } else if (type === "flashcards") {
       data.flashcards = content;
+    } else if (type === "exam") {
+      data.exam = content;
     }
 
     data.updatedAt = new Date().toISOString();
