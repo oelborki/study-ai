@@ -16,7 +16,11 @@ export async function GET(
 
   try {
     const content = await fs.readFile(outPath, "utf8");
-    return NextResponse.json(JSON.parse(content));
+    try {
+      return NextResponse.json(JSON.parse(content));
+    } catch {
+      return NextResponse.json({ error: "Invalid content format" }, { status: 500 });
+    }
   } catch {
     // Return empty structure if file doesn't exist
     const emptyContent: Record<string, unknown> = {

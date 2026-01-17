@@ -102,36 +102,29 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
         if (!isManual) return;
 
         async function loadManualContent() {
-            // Load summary
-            try {
-                const res = await fetch(`/api/decks/${deckId}/content/summary`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.summary) setSummary(data.summary);
-                }
-            } catch { /* ignore */ }
+            const results = await Promise.allSettled([
+                fetch(`/api/decks/${deckId}/content/summary`).then(r => r.ok ? r.json() : null),
+                fetch(`/api/decks/${deckId}/content/flashcards`).then(r => r.ok ? r.json() : null),
+                fetch(`/api/decks/${deckId}/content/exam`).then(r => r.ok ? r.json() : null),
+            ]);
 
-            // Load flashcards
-            try {
-                const res = await fetch(`/api/decks/${deckId}/content/flashcards`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (Array.isArray(data.flashcards) && data.flashcards.length > 0) {
-                        setFlashcards(data.flashcards);
-                    }
-                }
-            } catch { /* ignore */ }
+            const [summaryResult, flashcardsResult, examResult] = results;
 
-            // Load exam
-            try {
-                const res = await fetch(`/api/decks/${deckId}/content/exam`);
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.exam?.questions?.length) {
-                        setExam(data.exam);
-                    }
-                }
-            } catch { /* ignore */ }
+            if (summaryResult.status === "fulfilled" && summaryResult.value?.summary) {
+                setSummary(summaryResult.value.summary);
+            }
+            if (flashcardsResult.status === "fulfilled" && Array.isArray(flashcardsResult.value?.flashcards) && flashcardsResult.value.flashcards.length > 0) {
+                setFlashcards(flashcardsResult.value.flashcards);
+            }
+            if (examResult.status === "fulfilled" && examResult.value?.exam?.questions?.length) {
+                setExam(examResult.value.exam);
+            }
+
+            // Show error if all fetches failed
+            const allFailed = results.every(r => r.status === "rejected");
+            if (allFailed) {
+                setError("Failed to load content");
+            }
         }
 
         loadManualContent();
@@ -595,7 +588,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                     {isEditingSummary || !summary ? (
                         <div>
                             <textarea
-                                value={isEditingSummary ? editedSummary : editedSummary}
+                                value={editedSummary}
                                 onChange={(e) => setEditedSummary(e.target.value)}
                                 placeholder="Write your summary notes here... (Markdown supported)"
                                 className="w-full h-64 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-4 text-sm font-mono focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373]"
