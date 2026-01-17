@@ -5,30 +5,17 @@ import AnimatedPanel from "@/components/ui/AnimatedPanel";
 import MarkdownRenderer from "@/components/ui/MarkdownRenderer";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import ShareModal from "@/components/share/ShareModal";
-
-type Flashcard = {
-    q: string;
-    a: string;
-    refs: number[];
-    difficulty: "easy" | "medium" | "hard";
-};
-
-type ExamQuestion = {
-    id: string;
-    type: "mcq" | "short";
-    question: string;
-    choices?: string[];
-    answer: string;
-    explanation: string;
-    refs: number[];
-    difficulty: "easy" | "medium" | "hard";
-};
-
-type Exam = {
-    title: string;
-    instructions: string;
-    questions: ExamQuestion[];
-};
+import {
+    ManualModeToggle,
+    FlashcardViewer,
+    ExamPractice,
+    SummarySection,
+    FlashcardsSection,
+    ExamSection,
+    Flashcard,
+    Exam,
+    ExamProgress,
+} from "@/components/deck";
 
 function toCsv(flashcards: Flashcard[]) {
     const escape = (s: string) => `"${String(s).replaceAll('"', '""')}"`;
@@ -80,13 +67,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
     const [editedExamAnswer, setEditedExamAnswer] = useState("");
     const [editedExamChoices, setEditedExamChoices] = useState<string[]>([]);
     const [editedExamExplanation, setEditedExamExplanation] = useState("");
-
-    type ExamProgress = {
-        selected?: string;      // for mcq: "A" | "B" | "C" | "D"
-        shortText?: string;     // for short: what user typed
-        graded?: boolean;       // answered/graded
-        correct?: boolean;      // whether marked correct
-    };
 
     const [progress, setProgress] = useState<Record<string, ExamProgress>>({});
     const [finished, setFinished] = useState(false);
@@ -147,8 +127,9 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
             const data = await res.json();
             if (!res.ok) throw new Error(data?.error || `Failed to generate ${type}`);
             return data;
-        } catch (e: any) {
-            setError(e.message || "Something went wrong");
+        } catch (e: unknown) {
+            const message = e instanceof Error ? e.message : "Something went wrong";
+            setError(message);
             return null;
         } finally {
             setLoading(null);
@@ -157,14 +138,14 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
 
     async function generateSummary() {
         setActive("summary");
-        if (summary) return; // client-side cache
+        if (summary) return;
         const data = await callGenerate("summary");
         if (data?.summary) setSummary(data.summary);
     }
 
     async function generateFlashcards() {
         setActive("flashcards");
-        if (flashcards?.length) return; // client-side cache
+        if (flashcards?.length) return;
         const data = await callGenerate("flashcards");
         if (Array.isArray(data?.flashcards)) {
             setFlashcards(data.flashcards);
@@ -175,7 +156,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
 
     async function generateExam() {
         setActive("exam");
-        if (exam?.questions?.length) return; // client-side cache
+        if (exam?.questions?.length) return;
         const data = await callGenerate("exam");
         if (data?.exam?.questions?.length) {
             setExam(data.exam);
@@ -185,7 +166,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
             setFinished(false);
         }
     }
-
 
     function nextCard() {
         if (!flashcards?.length) return;
@@ -230,23 +210,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
         return { correct, total };
     }
 
-    function canAdvanceCurrent() {
-        if (!exam?.questions?.length) return false;
-        const q = exam.questions[Math.min(qIdx, exam.questions.length - 1)];
-        return !!progress[q.id]?.graded; // must be answered/graded
-    }
-
-    function goNextQuestion() {
-        if (!exam?.questions?.length) return;
-        const last = qIdx >= exam.questions.length - 1;
-        if (last) {
-            setFinished(true);
-        } else {
-            setQIdx((i) => i + 1);
-            setShowAnswer(false);
-        }
-    }
-
     function retakeExam() {
         if (!exam) return;
         setProgress({});
@@ -262,7 +225,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
         try {
             const promises: Promise<Response>[] = [];
 
-            // Save summary if it exists
             if (summary || editedSummary) {
                 promises.push(
                     fetch(`/api/decks/${deckId}/content`, {
@@ -273,7 +235,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 );
             }
 
-            // Save flashcards if they exist
             if (flashcards?.length) {
                 promises.push(
                     fetch(`/api/decks/${deckId}/content`, {
@@ -284,7 +245,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 );
             }
 
-            // Save exam if it exists
             if (exam?.questions?.length) {
                 promises.push(
                     fetch(`/api/decks/${deckId}/content`, {
@@ -308,28 +268,16 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
         }
     }
 
-    // Manual mode: Render all sections expanded with Add interfaces
+    // Manual mode UI
     if (isManual) {
-        // Study mode - reuse the normal UI components
+        // Study mode - use extracted components
         if (manualMode === "study") {
             return (
                 <div className="mt-6">
-                    {/* Mode toggle */}
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setManualMode("edit")}
-                                className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all"
-                            >
-                                Edit
-                            </button>
-                            <button
-                                className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-5 py-2.5 text-sm font-medium text-white ring-2 ring-[#A855F7] ring-offset-2 ring-offset-black"
-                            >
-                                Study
-                            </button>
-                        </div>
-                    </div>
+                    <ManualModeToggle
+                        mode={manualMode}
+                        setMode={setManualMode}
+                    />
 
                     {/* Study mode buttons */}
                     <div className="flex flex-wrap gap-3 mb-6">
@@ -386,629 +334,50 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                     )}
 
                     {/* Flashcards study view */}
-                    {active === "flashcards" && flashcards && flashcards.length > 0 && current && (
-                        <AnimatedPanel activeKey="flashcards">
-                            <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                                <div className="flex items-center justify-between gap-3 mb-6 pb-3 border-b border-[#404040]">
-                                    <h2 className="text-2xl font-bold text-white">Flashcards</h2>
-                                    <div className="text-sm text-[#A3A3A3] font-medium">{idx + 1} / {flashcards.length}</div>
-                                </div>
-                                <div className="flex flex-col items-center">
-                                    <div className="flashcard-container w-full max-w-md mb-6">
-                                        <div className={`flashcard ${revealed ? 'flipped' : ''}`} onClick={() => setRevealed(!revealed)}>
-                                            <div className="flashcard-front">
-                                                <div className="text-xs text-[#A3A3A3] mb-2">Difficulty: {current.difficulty}</div>
-                                                <div className="text-lg font-semibold text-center flex-grow flex items-center justify-center">{current.q}</div>
-                                                <div className="text-xs text-[#737373] text-center mt-2">Click to flip</div>
-                                            </div>
-                                            <div className="flashcard-back">
-                                                <div className="text-sm font-semibold text-[#D4D4D4] mb-3 text-center">Answer:</div>
-                                                <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">{current.a}</div>
-                                                <div className="text-xs text-[#C084FC] text-center mt-2">Click to flip back</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <button onClick={() => { setIdx(i => Math.max(i - 1, 0)); setRevealed(false); }} disabled={idx === 0} className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] disabled:opacity-50">Prev</button>
-                                        <button onClick={() => { setIdx(i => Math.min(i + 1, flashcards.length - 1)); setRevealed(false); }} disabled={idx === flashcards.length - 1} className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] disabled:opacity-50">Next</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </AnimatedPanel>
+                    {active === "flashcards" && flashcards && flashcards.length > 0 && (
+                        <FlashcardViewer flashcards={flashcards} />
                     )}
 
-                    {/* Exam study view - simplified version */}
-                    {active === "exam" && exam?.questions && exam.questions.length > 0 && !finished && (
-                        <AnimatedPanel activeKey="exam">
-                            <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                                <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#404040] mb-4">
-                                    <h2 className="text-2xl font-bold text-white">{exam.title || "Practice Exam"}</h2>
-                                    <div className="text-sm text-[#A3A3A3] font-medium">{qIdx + 1} / {exam.questions.length}</div>
-                                </div>
-                                {(() => {
-                                    const q = exam.questions[Math.min(qIdx, exam.questions.length - 1)];
-                                    const p = progress[q.id] || {};
-                                    const correctLetter = typeof q.answer === "string" ? q.answer.trim().toUpperCase() : "";
-
-                                    return (
-                                        <div className="rounded-lg border border-[#404040] p-4 bg-[#0A0A0A]">
-                                            <div className="text-sm text-[#A3A3A3]">Difficulty: {q.difficulty}</div>
-                                            <div className="mt-3 text-base font-semibold text-white">{q.id}: {q.question}</div>
-
-                                            {q.type === "mcq" && q.choices?.length ? (
-                                                <div className="mt-4 space-y-2">
-                                                    {q.choices.map((choice, i) => {
-                                                        const letter = choice.trim().slice(0, 1).toUpperCase();
-                                                        const selected = p.selected === letter;
-                                                        const answered = !!p.graded;
-                                                        const isCorrectChoice = letter === correctLetter;
-
-                                                        return (
-                                                            <button
-                                                                key={i}
-                                                                disabled={answered}
-                                                                onClick={() => {
-                                                                    const correct = letter === correctLetter;
-                                                                    setProgress(prev => ({ ...prev, [q.id]: { selected: letter, graded: true, correct } }));
-                                                                    setShowAnswer(true);
-                                                                }}
-                                                                className={`w-full rounded-lg px-4 py-3 text-left transition-all ${
-                                                                    answered
-                                                                        ? isCorrectChoice ? "bg-[#052e16] border-2 border-[#166534] text-[#4ade80]"
-                                                                        : selected ? "bg-[#450a0a] border-2 border-[#991b1b] text-[#f87171]"
-                                                                        : "border-2 border-[#404040] opacity-60 text-[#737373]"
-                                                                        : "border-2 border-[#404040] hover:border-[#525252] hover:bg-[#1A1A1A] text-[#D4D4D4]"
-                                                                }`}
-                                                            >
-                                                                {choice}
-                                                            </button>
-                                                        );
-                                                    })}
-                                                    {p.graded && q.explanation && (
-                                                        <div className="mt-4 rounded-lg border-2 border-[#404040] bg-[#121212] p-4 text-sm text-[#D4D4D4]">
-                                                            <div className="font-semibold text-white">Explanation:</div>
-                                                            <div className="mt-1">{q.explanation}</div>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            ) : (
-                                                <div className="mt-4">
-                                                    <textarea
-                                                        value={p.shortText ?? ""}
-                                                        onChange={(e) => setProgress(prev => ({ ...prev, [q.id]: { ...prev[q.id], shortText: e.target.value } }))}
-                                                        className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm"
-                                                        rows={4}
-                                                        placeholder="Type your answer..."
-                                                        disabled={p.graded}
-                                                    />
-                                                    {!p.graded && (
-                                                        <button onClick={() => setShowAnswer(true)} className="mt-3 rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white">Show Answer</button>
-                                                    )}
-                                                    {showAnswer && (
-                                                        <div className="mt-4 rounded-lg border-2 border-[#404040] bg-[#121212] p-4 text-sm text-[#D4D4D4]">
-                                                            <div className="font-semibold text-white">Correct answer:</div>
-                                                            <div className="mt-1">{q.answer}</div>
-                                                            {q.explanation && <><div className="mt-3 font-semibold text-white">Explanation:</div><div className="mt-1">{q.explanation}</div></>}
-                                                            {!p.graded && (
-                                                                <div className="mt-4 flex gap-3">
-                                                                    <button onClick={() => setProgress(prev => ({ ...prev, [q.id]: { ...prev[q.id], graded: true, correct: true } }))} className="rounded-lg border-2 border-[#166534] bg-[#052e16] px-5 py-2 text-sm text-[#4ade80]">I was correct</button>
-                                                                    <button onClick={() => setProgress(prev => ({ ...prev, [q.id]: { ...prev[q.id], graded: true, correct: false } }))} className="rounded-lg border-2 border-[#991b1b] bg-[#450a0a] px-5 py-2 text-sm text-[#f87171]">I was incorrect</button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            <div className="mt-5 flex gap-3">
-                                                <button onClick={() => { setQIdx(i => Math.max(i - 1, 0)); setShowAnswer(false); }} disabled={qIdx === 0} className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] disabled:opacity-50">Prev</button>
-                                                <button onClick={() => { if (qIdx >= exam.questions.length - 1) setFinished(true); else { setQIdx(i => i + 1); setShowAnswer(false); } }} disabled={!p.graded} className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] disabled:opacity-50">{qIdx === exam.questions.length - 1 ? "Finish" : "Next"}</button>
-                                            </div>
-                                        </div>
-                                    );
-                                })()}
-                            </div>
-                        </AnimatedPanel>
-                    )}
-
-                    {/* Exam finished screen */}
-                    {active === "exam" && finished && exam && (
-                        <AnimatedPanel activeKey="exam-finished">
-                            <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                                <h2 className="text-2xl font-bold text-white mb-4">Results</h2>
-                                {(() => {
-                                    let correct = 0, total = 0;
-                                    for (const q of exam.questions) {
-                                        const p = progress[q.id];
-                                        if (p?.graded) { total++; if (p.correct) correct++; }
-                                    }
-                                    const percent = total ? Math.round((correct / total) * 100) : 0;
-                                    return (
-                                        <>
-                                            <p className="text-[#D4D4D4]">Score: <span className="font-semibold">{correct}</span> / <span className="font-semibold">{total}</span> ({percent}%)</p>
-                                            <div className="mt-4 flex gap-3">
-                                                <button onClick={() => { setProgress({}); setQIdx(0); setShowAnswer(false); setFinished(false); }} className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white">Retake</button>
-                                                <button onClick={() => setFinished(false)} className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4]">Review</button>
-                                            </div>
-                                        </>
-                                    );
-                                })()}
-                            </div>
-                        </AnimatedPanel>
+                    {/* Exam study view */}
+                    {active === "exam" && exam?.questions && exam.questions.length > 0 && (
+                        <ExamPractice exam={exam} />
                     )}
                 </div>
             );
         }
 
-        // Edit mode
+        // Edit mode - use extracted components
         return (
             <div className="mt-6 space-y-8">
-                {/* Mode toggle and Save All */}
-                <div className="flex items-center justify-between">
-                    <div className="flex gap-2">
-                        <button
-                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-5 py-2.5 text-sm font-medium text-white ring-2 ring-[#A855F7] ring-offset-2 ring-offset-black"
-                        >
-                            Edit
-                        </button>
-                        <button
-                            onClick={() => setManualMode("study")}
-                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all"
-                        >
-                            Study
-                        </button>
-                    </div>
-                    <button
-                        onClick={saveAll}
-                        disabled={saving}
-                        className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all disabled:opacity-50"
-                    >
-                        {saving ? "Saving..." : "Save All"}
-                    </button>
-                </div>
+                <ManualModeToggle
+                    mode={manualMode}
+                    setMode={setManualMode}
+                    onSaveAll={saveAll}
+                    saving={saving}
+                />
 
                 {error && <p className="text-sm text-red-600">{error}</p>}
 
-                {/* Summary Section */}
-                <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                    <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
-                        <h2 className="text-2xl font-bold text-white">Summary</h2>
-                        {summary && !isEditingSummary && (
-                            <button
-                                onClick={() => {
-                                    setEditedSummary(summary);
-                                    setIsEditingSummary(true);
-                                }}
-                                className="rounded-lg border-2 border-[#404040] px-4 py-2 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200"
-                            >
-                                Edit
-                            </button>
-                        )}
-                    </div>
-                    {isEditingSummary || !summary ? (
-                        <div>
-                            <textarea
-                                value={editedSummary}
-                                onChange={(e) => setEditedSummary(e.target.value)}
-                                placeholder="Write your summary notes here... (Markdown supported)"
-                                className="w-full h-64 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-4 text-sm font-mono focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373]"
-                            />
-                            <div className="mt-4 flex gap-3">
-                                <button
-                                    onClick={async () => {
-                                        if (!editedSummary.trim()) return;
-                                        setSaving(true);
-                                        setError(null);
-                                        try {
-                                            const res = await fetch(`/api/decks/${deckId}/content`, {
-                                                method: "PATCH",
-                                                headers: { "Content-Type": "application/json" },
-                                                body: JSON.stringify({ type: "summary", content: editedSummary }),
-                                            });
-                                            if (!res.ok) {
-                                                const data = await res.json();
-                                                throw new Error(data.error || "Failed to save");
-                                            }
-                                            setSummary(editedSummary);
-                                            setIsEditingSummary(false);
-                                        } catch (e: unknown) {
-                                            const message = e instanceof Error ? e.message : "Failed to save summary";
-                                            setError(message);
-                                        } finally {
-                                            setSaving(false);
-                                        }
-                                    }}
-                                    disabled={saving || !editedSummary.trim()}
-                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-                                >
-                                    {saving ? "Saving..." : "Save Summary"}
-                                </button>
-                                {isEditingSummary && (
-                                    <button
-                                        onClick={() => {
-                                            setIsEditingSummary(false);
-                                            setEditedSummary("");
-                                        }}
-                                        disabled={saving}
-                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50"
-                                    >
-                                        Cancel
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ) : (
-                        <MarkdownRenderer content={summary} />
-                    )}
-                </div>
+                <SummarySection
+                    summary={summary}
+                    setSummary={setSummary}
+                    deckId={deckId}
+                    onError={setError}
+                />
 
-                {/* Flashcards Section */}
-                <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                    <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
-                        <h2 className="text-2xl font-bold text-white">Flashcards</h2>
-                        {flashcards && flashcards.length > 0 && (
-                            <div className="text-sm text-[#A3A3A3] font-medium">
-                                {flashcards.length} card{flashcards.length !== 1 ? "s" : ""}
-                            </div>
-                        )}
-                    </div>
+                <FlashcardsSection
+                    flashcards={flashcards}
+                    setFlashcards={setFlashcards}
+                    deckId={deckId}
+                    onError={setError}
+                />
 
-                    {/* Existing flashcards list */}
-                    {flashcards && flashcards.length > 0 && (
-                        <div className="space-y-3 mb-6">
-                            {flashcards.map((card, i) => (
-                                <div
-                                    key={i}
-                                    className="rounded-lg border border-[#404040] bg-[#0A0A0A] p-4"
-                                >
-                                    {editingCardIdx === i ? (
-                                        <div className="space-y-3">
-                                            <div>
-                                                <label className="block text-xs font-medium text-[#A3A3A3] mb-1">Question</label>
-                                                <textarea
-                                                    value={editedQuestion}
-                                                    onChange={(e) => setEditedQuestion(e.target.value)}
-                                                    className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
-                                                />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-medium text-[#A3A3A3] mb-1">Answer</label>
-                                                <textarea
-                                                    value={editedAnswer}
-                                                    onChange={(e) => setEditedAnswer(e.target.value)}
-                                                    className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
-                                                />
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={async () => {
-                                                        if (!flashcards) return;
-                                                        setSaving(true);
-                                                        setError(null);
-                                                        try {
-                                                            const updated = [...flashcards];
-                                                            updated[i] = { ...updated[i], q: editedQuestion, a: editedAnswer };
-                                                            const res = await fetch(`/api/decks/${deckId}/content`, {
-                                                                method: "PATCH",
-                                                                headers: { "Content-Type": "application/json" },
-                                                                body: JSON.stringify({ type: "flashcards", content: updated }),
-                                                            });
-                                                            if (!res.ok) throw new Error("Failed to save");
-                                                            setFlashcards(updated);
-                                                            setEditingCardIdx(null);
-                                                            setIsNewCard(false);
-                                                        } catch (e: unknown) {
-                                                            const message = e instanceof Error ? e.message : "Failed to save";
-                                                            setError(message);
-                                                        } finally {
-                                                            setSaving(false);
-                                                        }
-                                                    }}
-                                                    disabled={saving}
-                                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
-                                                >
-                                                    {saving ? "Saving..." : "Save"}
-                                                </button>
-                                                <button
-                                                    onClick={() => {
-                                                        if (isNewCard) {
-                                                            setFlashcards(flashcards.slice(0, -1));
-                                                        }
-                                                        setEditingCardIdx(null);
-                                                        setIsNewCard(false);
-                                                    }}
-                                                    disabled={saving}
-                                                    className="rounded-lg border border-[#404040] px-4 py-2 text-xs font-medium text-[#D4D4D4] hover:bg-[#1A1A1A] disabled:opacity-50"
-                                                >
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="flex justify-between items-start gap-4">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="text-sm font-medium text-white mb-1">{card.q || "(No question)"}</div>
-                                                <div className="text-sm text-[#A3A3A3] truncate">{card.a || "(No answer)"}</div>
-                                            </div>
-                                            <button
-                                                onClick={() => {
-                                                    setEditedQuestion(card.q);
-                                                    setEditedAnswer(card.a);
-                                                    setEditingCardIdx(i);
-                                                }}
-                                                className="text-xs text-[#A3A3A3] hover:text-white transition-colors"
-                                            >
-                                                Edit
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Add new card button */}
-                    {editingCardIdx === null && (
-                        <button
-                            onClick={() => {
-                                const newCard: Flashcard = { q: "", a: "", refs: [], difficulty: "medium" };
-                                const updated = flashcards ? [...flashcards, newCard] : [newCard];
-                                setFlashcards(updated);
-                                setEditedQuestion("");
-                                setEditedAnswer("");
-                                setEditingCardIdx(updated.length - 1);
-                                setIsNewCard(true);
-                            }}
-                            className="w-full rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#A855F7] hover:text-white transition-all"
-                        >
-                            + Add Flashcard
-                        </button>
-                    )}
-                </div>
-
-                {/* Practice Exam Section */}
-                <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                    <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
-                        <h2 className="text-2xl font-bold text-white">Practice Exam</h2>
-                        {exam?.questions && exam.questions.length > 0 && (
-                            <div className="text-sm text-[#A3A3A3] font-medium">
-                                {exam.questions.length} question{exam.questions.length !== 1 ? "s" : ""}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Existing questions list */}
-                    {exam?.questions && exam.questions.length > 0 && (
-                        <div className="space-y-3 mb-6">
-                            {exam.questions.map((q, i) => (
-                                <div
-                                    key={q.id}
-                                    className="rounded-lg border border-[#404040] bg-[#0A0A0A] p-4"
-                                >
-                                    {editingExamIdx === i ? (
-                                        <div className="space-y-3">
-                                            <div>
-                                                <label className="block text-xs font-medium text-[#A3A3A3] mb-1">Question</label>
-                                                <textarea
-                                                    value={editedExamQuestion}
-                                                    onChange={(e) => setEditedExamQuestion(e.target.value)}
-                                                    className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
-                                                />
-                                            </div>
-                                            {/* Choices for MCQ */}
-                                            {q.type === "mcq" && (
-                                                <div>
-                                                    <label className="block text-xs font-medium text-[#A3A3A3] mb-1">Choices</label>
-                                                    <div className="space-y-2">
-                                                        {editedExamChoices.map((choice, choiceIdx) => (
-                                                            <div key={choiceIdx} className="flex gap-2">
-                                                                <input
-                                                                    type="text"
-                                                                    value={choice}
-                                                                    onChange={(e) => {
-                                                                        const updated = [...editedExamChoices];
-                                                                        updated[choiceIdx] = e.target.value;
-                                                                        setEditedExamChoices(updated);
-                                                                    }}
-                                                                    className="flex-1 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
-                                                                    placeholder={`Choice ${String.fromCharCode(65 + choiceIdx)}`}
-                                                                />
-                                                                {editedExamChoices.length > 2 && (
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => {
-                                                                            const updated = editedExamChoices.filter((_, idx) => idx !== choiceIdx);
-                                                                            setEditedExamChoices(updated);
-                                                                            // Adjust answer if it's now out of range
-                                                                            const maxLetter = String.fromCharCode(64 + updated.length);
-                                                                            if (editedExamAnswer > maxLetter) {
-                                                                                setEditedExamAnswer("A");
-                                                                            }
-                                                                        }}
-                                                                        className="px-3 py-2 text-red-400 hover:text-red-300 rounded-lg border border-[#404040] hover:border-red-500/30"
-                                                                    >
-                                                                        -
-                                                                    </button>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                        {editedExamChoices.length < 6 && (
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    const nextLetter = String.fromCharCode(65 + editedExamChoices.length);
-                                                                    setEditedExamChoices([...editedExamChoices, `${nextLetter}) `]);
-                                                                }}
-                                                                className="text-sm text-[#A855F7] hover:text-[#C084FC] transition-colors"
-                                                            >
-                                                                + Add Choice
-                                                            </button>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            )}
-                                            <div>
-                                                <label className="block text-xs font-medium text-[#A3A3A3] mb-1">Answer</label>
-                                                {q.type === "mcq" ? (
-                                                    <select
-                                                        value={editedExamAnswer}
-                                                        onChange={(e) => setEditedExamAnswer(e.target.value)}
-                                                        className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
-                                                    >
-                                                        {editedExamChoices.map((_, choiceIdx) => {
-                                                            const letter = String.fromCharCode(65 + choiceIdx);
-                                                            return <option key={letter} value={letter}>{letter}</option>;
-                                                        })}
-                                                    </select>
-                                                ) : (
-                                                    <textarea
-                                                        value={editedExamAnswer}
-                                                        onChange={(e) => setEditedExamAnswer(e.target.value)}
-                                                        className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
-                                                    />
-                                                )}
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs font-medium text-[#A3A3A3] mb-1">Explanation</label>
-                                                <textarea
-                                                    value={editedExamExplanation}
-                                                    onChange={(e) => setEditedExamExplanation(e.target.value)}
-                                                    className="w-full h-16 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
-                                                    placeholder="Explain the correct answer..."
-                                                />
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button
-                                                    onClick={async () => {
-                                                        if (!exam) return;
-                                                        setSaving(true);
-                                                        setError(null);
-                                                        try {
-                                                            const updatedQuestions = [...exam.questions];
-                                                            updatedQuestions[i] = {
-                                                                ...updatedQuestions[i],
-                                                                question: editedExamQuestion,
-                                                                answer: editedExamAnswer,
-                                                                choices: q.type === "mcq" ? editedExamChoices : undefined,
-                                                                explanation: editedExamExplanation,
-                                                            };
-                                                            const updatedExam = { ...exam, questions: updatedQuestions };
-                                                            const res = await fetch(`/api/decks/${deckId}/content`, {
-                                                                method: "PATCH",
-                                                                headers: { "Content-Type": "application/json" },
-                                                                body: JSON.stringify({ type: "exam", content: updatedExam }),
-                                                            });
-                                                            if (!res.ok) throw new Error("Failed to save");
-                                                            setExam(updatedExam);
-                                                            setEditingExamIdx(null);
-                                                        } catch (e: unknown) {
-                                                            const message = e instanceof Error ? e.message : "Failed to save";
-                                                            setError(message);
-                                                        } finally {
-                                                            setSaving(false);
-                                                        }
-                                                    }}
-                                                    disabled={saving}
-                                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
-                                                >
-                                                    {saving ? "Saving..." : "Save"}
-                                                </button>
-                                                <button
-                                                    onClick={() => setEditingExamIdx(null)}
-                                                    disabled={saving}
-                                                    className="rounded-lg border border-[#404040] px-4 py-2 text-xs font-medium text-[#D4D4D4] hover:bg-[#1A1A1A] disabled:opacity-50"
-                                                >
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="flex justify-between items-start gap-4">
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-2 mb-1">
-                                                    <span className="text-xs px-2 py-0.5 rounded bg-[#1A1A1A] text-[#A3A3A3]">
-                                                        {q.type === "mcq" ? "Multiple Choice" : "Short Answer"}
-                                                    </span>
-                                                </div>
-                                                <div className="text-sm font-medium text-white mb-1">{q.question || "(No question)"}</div>
-                                                <div className="text-sm text-[#A3A3A3] truncate">Answer: {q.answer || "(No answer)"}</div>
-                                            </div>
-                                            <button
-                                                onClick={() => {
-                                                    setEditedExamQuestion(q.question);
-                                                    setEditedExamAnswer(q.answer);
-                                                    setEditedExamChoices(q.choices || []);
-                                                    setEditedExamExplanation(q.explanation || "");
-                                                    setEditingExamIdx(i);
-                                                }}
-                                                className="text-xs text-[#A3A3A3] hover:text-white transition-colors"
-                                            >
-                                                Edit
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Add new question buttons - MCQ or Short Answer */}
-                    {editingExamIdx === null && (
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => {
-                                    const newQuestion: ExamQuestion = {
-                                        id: `Q${(exam?.questions?.length || 0) + 1}`,
-                                        type: "mcq",
-                                        question: "",
-                                        choices: ["A) ", "B) ", "C) ", "D) "],
-                                        answer: "A",
-                                        explanation: "",
-                                        refs: [],
-                                        difficulty: "medium",
-                                    };
-                                    const updatedExam: Exam = exam
-                                        ? { ...exam, questions: [...exam.questions, newQuestion] }
-                                        : { title: "Practice Exam", instructions: "", questions: [newQuestion] };
-                                    setExam(updatedExam);
-                                    setEditedExamQuestion("");
-                                    setEditedExamAnswer("A");
-                                    setEditedExamChoices(["A) ", "B) ", "C) ", "D) "]);
-                                    setEditedExamExplanation("");
-                                    setEditingExamIdx(updatedExam.questions.length - 1);
-                                }}
-                                className="flex-1 rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#A855F7] hover:text-white transition-all"
-                            >
-                                + Multiple Choice
-                            </button>
-                            <button
-                                onClick={() => {
-                                    const newQuestion: ExamQuestion = {
-                                        id: `Q${(exam?.questions?.length || 0) + 1}`,
-                                        type: "short",
-                                        question: "",
-                                        answer: "",
-                                        explanation: "",
-                                        refs: [],
-                                        difficulty: "medium",
-                                    };
-                                    const updatedExam: Exam = exam
-                                        ? { ...exam, questions: [...exam.questions, newQuestion] }
-                                        : { title: "Practice Exam", instructions: "", questions: [newQuestion] };
-                                    setExam(updatedExam);
-                                    setEditedExamQuestion("");
-                                    setEditedExamAnswer("");
-                                    setEditedExamChoices([]);
-                                    setEditedExamExplanation("");
-                                    setEditingExamIdx(updatedExam.questions.length - 1);
-                                }}
-                                className="flex-1 rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#A855F7] hover:text-white transition-all"
-                            >
-                                + Short Answer
-                            </button>
-                        </div>
-                    )}
-                </div>
+                <ExamSection
+                    exam={exam}
+                    setExam={setExam}
+                    deckId={deckId}
+                    onError={setError}
+                />
 
                 <ShareModal
                     deckId={deckId}
@@ -1139,8 +508,9 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                     }
                                                     setSummary(editedSummary);
                                                     setIsEditingSummary(false);
-                                                } catch (e: any) {
-                                                    setError(e.message || "Failed to save summary");
+                                                } catch (e: unknown) {
+                                                    const message = e instanceof Error ? e.message : "Failed to save summary";
+                                                    setError(message);
                                                 } finally {
                                                     setSaving(false);
                                                 }
@@ -1230,8 +600,9 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                             setFlashcards(updated);
                                                             setEditingCardIdx(null);
                                                             setIsNewCard(false);
-                                                        } catch (e: any) {
-                                                            setError(e.message || "Failed to save flashcard");
+                                                        } catch (e: unknown) {
+                                                            const message = e instanceof Error ? e.message : "Failed to save flashcard";
+                                                            setError(message);
                                                         } finally {
                                                             setSaving(false);
                                                         }
@@ -1244,7 +615,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                 <button
                                                     onClick={() => {
                                                         if (isNewCard && flashcards) {
-                                                            // Remove the new card if canceling
                                                             const updated = flashcards.slice(0, -1);
                                                             setFlashcards(updated);
                                                             setIdx(Math.max(0, updated.length - 1));
@@ -1265,7 +635,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                 className={`flashcard ${revealed ? 'flipped' : ''}`}
                                                 onClick={() => setRevealed(!revealed)}
                                             >
-                                                {/* Front of card (Question) */}
                                                 <div className="flashcard-front">
                                                     <div className="text-xs text-[#A3A3A3] mb-2">
                                                         Difficulty: {current.difficulty}
@@ -1278,8 +647,6 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                         Click to flip
                                                     </div>
                                                 </div>
-
-                                                {/* Back of card (Answer) */}
                                                 <div className="flashcard-back">
                                                     <div className="text-sm font-semibold text-[#D4D4D4] mb-3 text-center">
                                                         Answer:
@@ -1352,6 +719,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                     </AnimatedPanel>
                 ) : null
             )}
+
             {active === "exam" && (
                 loading === "exam" ? (
                     <AnimatedPanel activeKey="exam-loading">
@@ -1361,405 +729,363 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                     </AnimatedPanel>
                 ) : exam?.questions?.length ? (
                     <AnimatedPanel activeKey="exam">
-                    <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
-                        <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#404040] mb-4">
-                            <h2 className="text-2xl font-bold text-white">{exam.title || "Practice Exam"}</h2>
-
-                            {!finished ? (
-                                <div className="text-sm text-[#A3A3A3] font-medium">
-                                    {qIdx + 1} / {exam.questions.length}
-                                </div>
-                            ) : null}
-                        </div>
-
-                        {exam.instructions && !finished ? (
-                            <p className="mt-2 text-sm text-[#D4D4D4]">{exam.instructions}</p>
-                        ) : null}
-
-                        {/* FINISHED SCREEN */}
-                        {finished ? (
-                            <div className="mt-4 rounded-lg border border-[#404040] p-6 bg-[#0A0A0A]">
-                                {(() => {
-                                    const { correct, total } = scoreSummary();
-                                    const percent = total ? Math.round((correct / total) * 100) : 0;
-
-                                    return (
-                                        <>
-                                            <h3 className="text-lg font-semibold mb-2 text-white">Results</h3>
-                                            <p className="mt-2 text-sm text-[#D4D4D4]">
-                                                Score: <span className="font-semibold">{correct}</span> /{" "}
-                                                <span className="font-semibold">{total}</span>{" "}
-                                                {total ? `(${percent}%)` : "(No graded questions yet)"}
-                                            </p>
-
-                                            <div className="mt-4 flex gap-3">
-                                                <button
-                                                    onClick={retakeExam}
-                                                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
-                                                >
-                                                    Retake
-                                                </button>
-
-                                                <button
-                                                    onClick={() => setFinished(false)}
-                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
-                                                    title="Go back to review questions"
-                                                >
-                                                    Review
-                                                </button>
-                                            </div>
-
-                                            <p className="mt-3 text-xs text-[#737373]">
-                                                Short-answer questions are scored based on your self-marking.
-                                            </p>
-                                        </>
-                                    );
-                                })()}
+                        <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                            <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#404040] mb-4">
+                                <h2 className="text-2xl font-bold text-white">{exam.title || "Practice Exam"}</h2>
+                                {!finished && (
+                                    <div className="text-sm text-[#A3A3A3] font-medium">
+                                        {qIdx + 1} / {exam.questions.length}
+                                    </div>
+                                )}
                             </div>
-                        ) : (
-                            /* QUESTION SCREEN */
-                            <div className="mt-4 rounded-lg border border-[#404040] p-4 bg-[#0A0A0A]">
-                                {(() => {
-                                    const q = exam.questions[Math.min(qIdx, exam.questions.length - 1)];
-                                    const p = progress[q.id] || {};
 
-                                    // For MCQ we treat q.answer like "A" / "B" / "C" / "D"
-                                    const correctLetter =
-                                        typeof q.answer === "string" ? q.answer.trim().toUpperCase() : "";
+                            {exam.instructions && !finished && (
+                                <p className="mt-2 text-sm text-[#D4D4D4]">{exam.instructions}</p>
+                            )}
 
-                                    return (
-                                        <>
-                                            <div className="text-sm text-[#A3A3A3]">
-                                                Difficulty: <span className="font-medium">{q.difficulty}</span>
-                                                {q.refs?.length ? (
-                                                    <span className="ml-3">
-                                                        Refs: <span className="font-medium">{q.refs.join(", ")}</span>
-                                                    </span>
-                                                ) : null}
-                                            </div>
+                            {finished ? (
+                                <div className="mt-4 rounded-lg border border-[#404040] p-6 bg-[#0A0A0A]">
+                                    {(() => {
+                                        const { correct, total } = scoreSummary();
+                                        const percent = total ? Math.round((correct / total) * 100) : 0;
 
-                                            {editingExamIdx === qIdx ? (
-                                                <div className="mt-4 space-y-4">
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Question</label>
-                                                        <textarea
-                                                            value={editedExamQuestion}
-                                                            onChange={(e) => setEditedExamQuestion(e.target.value)}
-                                                            className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
-                                                        />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Answer</label>
-                                                        {q.type === "mcq" ? (
-                                                            <select
-                                                                value={editedExamAnswer}
-                                                                onChange={(e) => setEditedExamAnswer(e.target.value)}
-                                                                className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
-                                                            >
-                                                                <option value="A">A</option>
-                                                                <option value="B">B</option>
-                                                                <option value="C">C</option>
-                                                                <option value="D">D</option>
-                                                            </select>
-                                                        ) : (
+                                        return (
+                                            <>
+                                                <h3 className="text-lg font-semibold mb-2 text-white">Results</h3>
+                                                <p className="mt-2 text-sm text-[#D4D4D4]">
+                                                    Score: <span className="font-semibold">{correct}</span> /{" "}
+                                                    <span className="font-semibold">{total}</span>{" "}
+                                                    {total ? `(${percent}%)` : "(No graded questions yet)"}
+                                                </p>
+
+                                                <div className="mt-4 flex gap-3">
+                                                    <button
+                                                        onClick={retakeExam}
+                                                        className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                    >
+                                                        Retake
+                                                    </button>
+
+                                                    <button
+                                                        onClick={() => setFinished(false)}
+                                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                        title="Go back to review questions"
+                                                    >
+                                                        Review
+                                                    </button>
+                                                </div>
+
+                                                <p className="mt-3 text-xs text-[#737373]">
+                                                    Short-answer questions are scored based on your self-marking.
+                                                </p>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                            ) : (
+                                <div className="mt-4 rounded-lg border border-[#404040] p-4 bg-[#0A0A0A]">
+                                    {(() => {
+                                        const q = exam.questions[Math.min(qIdx, exam.questions.length - 1)];
+                                        const p = progress[q.id] || {};
+                                        const correctLetter = typeof q.answer === "string" ? q.answer.trim().toUpperCase() : "";
+
+                                        return (
+                                            <>
+                                                <div className="text-sm text-[#A3A3A3]">
+                                                    Difficulty: <span className="font-medium">{q.difficulty}</span>
+                                                    {q.refs?.length ? (
+                                                        <span className="ml-3">
+                                                            Refs: <span className="font-medium">{q.refs.join(", ")}</span>
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+
+                                                {editingExamIdx === qIdx ? (
+                                                    <div className="mt-4 space-y-4">
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Question</label>
                                                             <textarea
-                                                                value={editedExamAnswer}
-                                                                onChange={(e) => setEditedExamAnswer(e.target.value)}
+                                                                value={editedExamQuestion}
+                                                                onChange={(e) => setEditedExamQuestion(e.target.value)}
                                                                 className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
                                                             />
-                                                        )}
-                                                    </div>
-                                                    {q.type === "mcq" && editedExamChoices.length > 0 && (
+                                                        </div>
                                                         <div>
-                                                            <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Choices</label>
-                                                            <div className="space-y-2">
-                                                                {editedExamChoices.map((choice, i) => (
-                                                                    <input
-                                                                        key={i}
-                                                                        type="text"
-                                                                        value={choice}
-                                                                        onChange={(e) => {
-                                                                            const updated = [...editedExamChoices];
-                                                                            updated[i] = e.target.value;
-                                                                            setEditedExamChoices(updated);
-                                                                        }}
-                                                                        className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
-                                                                    />
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Explanation</label>
-                                                        <textarea
-                                                            value={editedExamExplanation}
-                                                            onChange={(e) => setEditedExamExplanation(e.target.value)}
-                                                            className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
-                                                            placeholder="Explain the correct answer..."
-                                                        />
-                                                    </div>
-                                                    <div className="flex gap-3">
-                                                        <button
-                                                            onClick={async () => {
-                                                                if (!exam) return;
-                                                                setSaving(true);
-                                                                setError(null);
-                                                                try {
-                                                                    const updatedQuestions = [...exam.questions];
-                                                                    updatedQuestions[qIdx] = {
-                                                                        ...updatedQuestions[qIdx],
-                                                                        question: editedExamQuestion,
-                                                                        answer: editedExamAnswer,
-                                                                        choices: editedExamChoices.length > 0 ? editedExamChoices : updatedQuestions[qIdx].choices,
-                                                                        explanation: editedExamExplanation
-                                                                    };
-                                                                    const updatedExam = { ...exam, questions: updatedQuestions };
-                                                                    const res = await fetch(`/api/decks/${deckId}/content`, {
-                                                                        method: "PATCH",
-                                                                        headers: { "Content-Type": "application/json" },
-                                                                        body: JSON.stringify({ type: "exam", content: updatedExam }),
-                                                                    });
-                                                                    if (!res.ok) {
-                                                                        const data = await res.json();
-                                                                        throw new Error(data.error || "Failed to save");
-                                                                    }
-                                                                    setExam(updatedExam);
-                                                                    setEditingExamIdx(null);
-                                                                } catch (e: any) {
-                                                                    setError(e.message || "Failed to save question");
-                                                                } finally {
-                                                                    setSaving(false);
-                                                                }
-                                                            }}
-                                                            disabled={saving}
-                                                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-                                                        >
-                                                            {saving ? "Saving..." : "Save"}
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setEditingExamIdx(null)}
-                                                            disabled={saving}
-                                                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50"
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <>
-                                                    <div className="mt-3 text-base font-semibold text-white">
-                                                        {q.id}: {q.question}
-                                                    </div>
-
-                                            {/* MCQ */}
-                                            {q.type === "mcq" && Array.isArray(q.choices) && q.choices.length ? (
-                                                <div className="mt-4 space-y-2 text-sm">
-                                                    {q.choices.map((choice, i) => {
-                                                        // Expect choices like "A) ...", "B) ..."
-                                                        const letter = choice.trim().slice(0, 1).toUpperCase();
-                                                        const selected = p.selected === letter;
-
-                                                        // After answered, show correct/incorrect styling via text only (no colors required)
-                                                        const answered = !!p.graded;
-                                                        const isCorrectChoice = letter === correctLetter;
-
-                                                        return (
-                                                            <button
-                                                                key={i}
-                                                                type="button"
-                                                                disabled={loading !== null || answered}
-                                                                onClick={() => {
-                                                                    // User selects -> immediately reveal + lock answer
-                                                                    const correct = letter === correctLetter;
-
-                                                                    setProgress((prev) => ({
-                                                                        ...prev,
-                                                                        [q.id]: { selected: letter, graded: true, correct },
-                                                                    }));
-                                                                    setShowAnswer(true);
-                                                                }}
-                                                                className={`w-full rounded-lg px-4 py-3 text-left transition-all duration-200 disabled:cursor-not-allowed ${
-                                                                    answered
-                                                                        ? isCorrectChoice
-                                                                            ? "bg-[#052e16] border-2 border-[#166534] text-[#4ade80]"
-                                                                            : selected
-                                                                            ? "bg-[#450a0a] border-2 border-[#991b1b] text-[#f87171]"
-                                                                            : "border-2 border-[#404040] opacity-60 text-[#737373]"
-                                                                        : "border-2 border-[#404040] hover:border-[#525252] hover:bg-[#1A1A1A] text-[#D4D4D4]"
-                                                                }`}
-                                                                aria-pressed={selected}
-                                                            >
-                                                                <div className="flex items-start justify-between gap-3">
-                                                                    <span className="font-medium">{choice}</span>
-
-                                                                    {answered ? (
-                                                                        isCorrectChoice ? (
-                                                                            <span className="text-xs font-semibold text-[#4ade80]">Correct</span>
-                                                                        ) : selected ? (
-                                                                            <span className="text-xs font-semibold text-[#f87171]">Incorrect</span>
-                                                                        ) : null
-                                                                    ) : null}
-                                                                </div>
-                                                            </button>
-                                                        );
-                                                    })}
-
-                                                    {/* Reveal / Feedback */}
-                                                    {p.graded && showAnswer ? (
-                                                        <div className={`mt-4 rounded-lg border-2 p-4 text-sm whitespace-pre-wrap ${
-                                                            p.correct
-                                                                ? "bg-[#052e16] border-[#166534] text-[#4ade80]"
-                                                                : "bg-[#450a0a] border-[#991b1b] text-[#f87171]"
-                                                        }`}>
-                                                            <div className={`font-semibold text-base ${
-                                                                p.correct ? "text-[#4ade80]" : "text-[#f87171]"
-                                                            }`}>
-                                                                {p.correct ? "Correct!" : "Incorrect"}
-                                                            </div>
-                                                            <div className="mt-2">
-                                                                Correct answer: <span className="font-semibold">{correctLetter}</span>
-                                                            </div>
-                                                            {q.explanation ? (
-                                                                <>
-                                                                    <div className="mt-3 font-semibold">Explanation:</div>
-                                                                    <div className="mt-1">{q.explanation}</div>
-                                                                </>
-                                                            ) : null}
-                                                        </div>
-                                                    ) : null}
-                                                </div>
-                                            ) : null}
-
-                                            {/* SHORT ANSWER */}
-                                            {q.type === "short" ? (
-                                                <div className="mt-4">
-                                                    <textarea
-                                                        value={p.shortText ?? ""}
-                                                        onChange={(e) =>
-                                                            setProgress((prev) => ({
-                                                                ...prev,
-                                                                [q.id]: { ...(prev[q.id] || {}), shortText: e.target.value },
-                                                            }))
-                                                        }
-                                                        className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373]"
-                                                        rows={4}
-                                                        placeholder="Type your answer here..."
-                                                        disabled={loading !== null || p.graded}
-                                                    />
-
-                                                    {/* Actions before grading */}
-                                                    {!p.graded ? (
-                                                        <div className="mt-3 flex flex-wrap gap-3">
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => setShowAnswer(true)}
-                                                                className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
-                                                            >
-                                                                Enter
-                                                            </button>
-                                                        </div>
-                                                    ) : null}
-
-                                                    {/* Revealed answer + grading */}
-                                                    {showAnswer ? (
-                                                        <div className="mt-4 rounded-lg border-2 border-[#404040] bg-[#121212] p-4 text-sm whitespace-pre-wrap text-[#D4D4D4]">
-                                                            <div className="font-semibold text-base text-white">Correct answer:</div>
-                                                            <div className="mt-1">{q.answer}</div>
-
-                                                            {q.explanation ? (
-                                                                <>
-                                                                    <div className="mt-3 font-semibold text-white">Explanation:</div>
-                                                                    <div className="mt-1">{q.explanation}</div>
-                                                                </>
-                                                            ) : null}
-
-                                                            {!p.graded ? (
-                                                                <div className="mt-4 flex gap-3">
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => {
-                                                                            setProgress((prev) => ({
-                                                                                ...prev,
-                                                                                [q.id]: { ...(prev[q.id] || {}), graded: true, correct: true },
-                                                                            }));
-                                                                        }}
-                                                                        className="rounded-lg border-2 border-[#166534] bg-[#052e16] px-5 py-2.5 text-sm text-[#4ade80] hover:bg-[#14532d] hover:border-[#16a34a] transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-[#4ade80] focus:ring-offset-2 focus:ring-offset-black"
-                                                                    >
-                                                                        I was correct
-                                                                    </button>
-
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={() => {
-                                                                            setProgress((prev) => ({
-                                                                                ...prev,
-                                                                                [q.id]: { ...(prev[q.id] || {}), graded: true, correct: false },
-                                                                            }));
-                                                                        }}
-                                                                        className="rounded-lg border-2 border-[#991b1b] bg-[#450a0a] px-5 py-2.5 text-sm text-[#f87171] hover:bg-[#7f1d1d] hover:border-[#dc2626] transition-all duration-200 font-medium focus:outline-none focus:ring-2 focus:ring-[#f87171] focus:ring-offset-2 focus:ring-offset-black"
-                                                                    >
-                                                                        I was incorrect
-                                                                    </button>
-                                                                </div>
+                                                            <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Answer</label>
+                                                            {q.type === "mcq" ? (
+                                                                <select
+                                                                    value={editedExamAnswer}
+                                                                    onChange={(e) => setEditedExamAnswer(e.target.value)}
+                                                                    className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                                >
+                                                                    <option value="A">A</option>
+                                                                    <option value="B">B</option>
+                                                                    <option value="C">C</option>
+                                                                    <option value="D">D</option>
+                                                                </select>
                                                             ) : (
-                                                                <div className={`mt-3 text-sm font-medium ${
-                                                                    p.correct ? "text-[#4ade80]" : "text-[#f87171]"
-                                                                }`}>
-                                                                    Marked as: {p.correct ? "Correct" : "Incorrect"}
-                                                                </div>
+                                                                <textarea
+                                                                    value={editedExamAnswer}
+                                                                    onChange={(e) => setEditedExamAnswer(e.target.value)}
+                                                                    className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                                />
                                                             )}
                                                         </div>
-                                                    ) : null}
-                                                </div>
-                                            ) : null}
-                                                </>
-                                            )}
+                                                        {q.type === "mcq" && editedExamChoices.length > 0 && (
+                                                            <div>
+                                                                <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Choices</label>
+                                                                <div className="space-y-2">
+                                                                    {editedExamChoices.map((choice, i) => (
+                                                                        <input
+                                                                            key={i}
+                                                                            type="text"
+                                                                            value={choice}
+                                                                            onChange={(e) => {
+                                                                                const updated = [...editedExamChoices];
+                                                                                updated[i] = e.target.value;
+                                                                                setEditedExamChoices(updated);
+                                                                            }}
+                                                                            className="w-full rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                                        />
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                        <div>
+                                                            <label className="block text-sm font-medium text-[#A3A3A3] mb-2">Explanation</label>
+                                                            <textarea
+                                                                value={editedExamExplanation}
+                                                                onChange={(e) => setEditedExamExplanation(e.target.value)}
+                                                                className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all"
+                                                                placeholder="Explain the correct answer..."
+                                                            />
+                                                        </div>
+                                                        <div className="flex gap-3">
+                                                            <button
+                                                                onClick={async () => {
+                                                                    if (!exam) return;
+                                                                    setSaving(true);
+                                                                    setError(null);
+                                                                    try {
+                                                                        const updatedQuestions = [...exam.questions];
+                                                                        updatedQuestions[qIdx] = {
+                                                                            ...updatedQuestions[qIdx],
+                                                                            question: editedExamQuestion,
+                                                                            answer: editedExamAnswer,
+                                                                            choices: editedExamChoices.length > 0 ? editedExamChoices : updatedQuestions[qIdx].choices,
+                                                                            explanation: editedExamExplanation
+                                                                        };
+                                                                        const updatedExam = { ...exam, questions: updatedQuestions };
+                                                                        const res = await fetch(`/api/decks/${deckId}/content`, {
+                                                                            method: "PATCH",
+                                                                            headers: { "Content-Type": "application/json" },
+                                                                            body: JSON.stringify({ type: "exam", content: updatedExam }),
+                                                                        });
+                                                                        if (!res.ok) {
+                                                                            const data = await res.json();
+                                                                            throw new Error(data.error || "Failed to save");
+                                                                        }
+                                                                        setExam(updatedExam);
+                                                                        setEditingExamIdx(null);
+                                                                    } catch (e: unknown) {
+                                                                        const message = e instanceof Error ? e.message : "Failed to save question";
+                                                                        setError(message);
+                                                                    } finally {
+                                                                        setSaving(false);
+                                                                    }
+                                                                }}
+                                                                disabled={saving}
+                                                                className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                                            >
+                                                                {saving ? "Saving..." : "Save"}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => setEditingExamIdx(null)}
+                                                                disabled={saving}
+                                                                className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50"
+                                                            >
+                                                                Cancel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <div className="mt-3 text-base font-semibold text-white">
+                                                            {q.id}: {q.question}
+                                                        </div>
 
-                                            {/* Navigation */}
-                                            <div className="mt-5 flex gap-3">
-                                                <button
-                                                    onClick={() => {
-                                                        setQIdx((i) => Math.max(i - 1, 0));
-                                                        setShowAnswer(false);
-                                                        setEditingExamIdx(null);
-                                                    }}
-                                                    disabled={qIdx === 0 || editingExamIdx !== null}
-                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
-                                                >
-                                                    Prev
-                                                </button>
+                                                        {q.type === "mcq" && Array.isArray(q.choices) && q.choices.length ? (
+                                                            <div className="mt-4 space-y-2 text-sm">
+                                                                {q.choices.map((choice, i) => {
+                                                                    const letter = choice.trim().slice(0, 1).toUpperCase();
+                                                                    const selected = p.selected === letter;
+                                                                    const answered = !!p.graded;
+                                                                    const isCorrectChoice = letter === correctLetter;
 
-                                                {editingExamIdx === null && (
-                                                    <button
-                                                        onClick={() => {
-                                                            setEditedExamQuestion(q.question);
-                                                            setEditedExamAnswer(q.answer);
-                                                            setEditedExamChoices(q.choices || []);
-                                                            setEditedExamExplanation(q.explanation || "");
-                                                            setEditingExamIdx(qIdx);
-                                                        }}
-                                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
-                                                    >
-                                                        Edit
-                                                    </button>
+                                                                    return (
+                                                                        <button
+                                                                            key={i}
+                                                                            type="button"
+                                                                            disabled={loading !== null || answered}
+                                                                            onClick={() => {
+                                                                                const correct = letter === correctLetter;
+                                                                                setProgress((prev) => ({
+                                                                                    ...prev,
+                                                                                    [q.id]: { selected: letter, graded: true, correct },
+                                                                                }));
+                                                                                setShowAnswer(true);
+                                                                            }}
+                                                                            className={`w-full rounded-lg px-4 py-3 text-left transition-all duration-200 disabled:cursor-not-allowed ${
+                                                                                answered
+                                                                                    ? isCorrectChoice
+                                                                                        ? "bg-[#052e16] border-2 border-[#166534] text-[#4ade80]"
+                                                                                        : selected
+                                                                                        ? "bg-[#450a0a] border-2 border-[#991b1b] text-[#f87171]"
+                                                                                        : "border-2 border-[#404040] opacity-60 text-[#737373]"
+                                                                                    : "border-2 border-[#404040] hover:border-[#525252] hover:bg-[#1A1A1A] text-[#D4D4D4]"
+                                                                            }`}
+                                                                            aria-pressed={selected}
+                                                                        >
+                                                                            <div className="flex items-start justify-between gap-3">
+                                                                                <span className="font-medium">{choice}</span>
+                                                                                {answered ? (
+                                                                                    isCorrectChoice ? (
+                                                                                        <span className="text-xs font-semibold text-[#4ade80]">Correct</span>
+                                                                                    ) : selected ? (
+                                                                                        <span className="text-xs font-semibold text-[#f87171]">Incorrect</span>
+                                                                                    ) : null
+                                                                                ) : null}
+                                                                            </div>
+                                                                        </button>
+                                                                    );
+                                                                })}
+
+                                                                {p.graded && q.explanation && (
+                                                                    <div className="mt-4 rounded-lg border-2 border-[#404040] bg-[#121212] p-4 text-sm text-[#D4D4D4]">
+                                                                        <div className="font-semibold text-white">Explanation:</div>
+                                                                        <div className="mt-1">{q.explanation}</div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ) : (
+                                                            <div className="mt-4">
+                                                                <textarea
+                                                                    value={p.shortText ?? ""}
+                                                                    onChange={(e) =>
+                                                                        setProgress((prev) => ({
+                                                                            ...prev,
+                                                                            [q.id]: { ...prev[q.id], shortText: e.target.value },
+                                                                        }))
+                                                                    }
+                                                                    placeholder="Type your answer..."
+                                                                    disabled={p.graded}
+                                                                    className="w-full h-24 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-3 text-sm focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373] disabled:opacity-60"
+                                                                />
+
+                                                                {!p.graded && !showAnswer && (
+                                                                    <button
+                                                                        onClick={() => setShowAnswer(true)}
+                                                                        className="mt-3 rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                                    >
+                                                                        Show Answer
+                                                                    </button>
+                                                                )}
+
+                                                                {showAnswer && (
+                                                                    <div className="mt-4 rounded-lg border-2 border-[#404040] bg-[#121212] p-4 text-sm">
+                                                                        <div className="font-semibold text-white">Correct answer:</div>
+                                                                        <div className="mt-1 text-[#D4D4D4]">{q.answer}</div>
+
+                                                                        {q.explanation && (
+                                                                            <>
+                                                                                <div className="mt-3 font-semibold text-white">Explanation:</div>
+                                                                                <div className="mt-1 text-[#D4D4D4]">{q.explanation}</div>
+                                                                            </>
+                                                                        )}
+
+                                                                        {!p.graded && (
+                                                                            <div className="mt-4 flex gap-3">
+                                                                                <button
+                                                                                    onClick={() =>
+                                                                                        setProgress((prev) => ({
+                                                                                            ...prev,
+                                                                                            [q.id]: { ...prev[q.id], graded: true, correct: true },
+                                                                                        }))
+                                                                                    }
+                                                                                    className="rounded-lg border-2 border-[#166534] bg-[#052e16] px-5 py-2 text-sm text-[#4ade80] hover:bg-[#064e23] transition-all"
+                                                                                >
+                                                                                    I was correct
+                                                                                </button>
+                                                                                <button
+                                                                                    onClick={() =>
+                                                                                        setProgress((prev) => ({
+                                                                                            ...prev,
+                                                                                            [q.id]: { ...prev[q.id], graded: true, correct: false },
+                                                                                        }))
+                                                                                    }
+                                                                                    className="rounded-lg border-2 border-[#991b1b] bg-[#450a0a] px-5 py-2 text-sm text-[#f87171] hover:bg-[#5c1111] transition-all"
+                                                                                >
+                                                                                    I was incorrect
+                                                                                </button>
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+
+                                                        <div className="mt-5 flex gap-3">
+                                                            <button
+                                                                onClick={() => {
+                                                                    setQIdx((i) => Math.max(i - 1, 0));
+                                                                    setShowAnswer(false);
+                                                                }}
+                                                                disabled={qIdx === 0}
+                                                                className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                            >
+                                                                Prev
+                                                            </button>
+
+                                                            {editingExamIdx === null && (
+                                                                <button
+                                                                    onClick={() => {
+                                                                        setEditedExamQuestion(q.question);
+                                                                        setEditedExamAnswer(q.answer);
+                                                                        setEditedExamChoices(q.choices || []);
+                                                                        setEditedExamExplanation(q.explanation || "");
+                                                                        setEditingExamIdx(qIdx);
+                                                                    }}
+                                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                            )}
+
+                                                            <button
+                                                                onClick={() => {
+                                                                    const last = qIdx >= exam.questions.length - 1;
+                                                                    if (last) {
+                                                                        setFinished(true);
+                                                                    } else {
+                                                                        setQIdx((i) => i + 1);
+                                                                        setShowAnswer(false);
+                                                                    }
+                                                                }}
+                                                                disabled={!p.graded}
+                                                                className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
+                                                            >
+                                                                {qIdx === exam.questions.length - 1 ? "Finish" : "Next"}
+                                                            </button>
+                                                        </div>
+                                                    </>
                                                 )}
-
-                                                <button
-                                                    onClick={goNextQuestion}
-                                                    disabled={!canAdvanceCurrent() || editingExamIdx !== null}
-                                                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black"
-                                                    title={!canAdvanceCurrent() ? "Answer/grade this question first" : ""}
-                                                >
-                                                    {qIdx === exam.questions.length - 1 ? "Finish" : "Next"}
-                                                </button>
-                                            </div>
-                                        </>
-                                    );
-                                })()}
-                            </div>
-                        )}
-                    </div>
-                </AnimatedPanel>
+                                            </>
+                                        );
+                                    })()}
+                                </div>
+                            )}
+                        </div>
+                    </AnimatedPanel>
                 ) : null
             )}
 
