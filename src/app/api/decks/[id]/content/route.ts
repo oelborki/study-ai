@@ -62,9 +62,23 @@ export async function PATCH(
   const outPath = path.join(dataDir, `output_${deckId}_${type}.json`);
 
   try {
-    // Read existing file
-    const existing = await fs.readFile(outPath, "utf8");
-    const data = JSON.parse(existing);
+    // Ensure data directory exists
+    await fs.mkdir(dataDir, { recursive: true });
+
+    // Try to read existing file, create new structure if doesn't exist
+    let data: Record<string, unknown>;
+    try {
+      const existing = await fs.readFile(outPath, "utf8");
+      data = JSON.parse(existing);
+    } catch {
+      // File doesn't exist - create initial structure (for manual decks)
+      data = {
+        deckId,
+        type,
+        createdAt: new Date().toISOString(),
+        model: "manual",
+      };
+    }
 
     // Update the content
     if (type === "summary") {
@@ -84,7 +98,7 @@ export async function PATCH(
   } catch (error) {
     console.error("Failed to save content:", error);
     return NextResponse.json(
-      { error: "Failed to save content. Generate content first." },
+      { error: "Failed to save content." },
       { status: 500 }
     );
   }
