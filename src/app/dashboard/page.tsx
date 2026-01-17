@@ -2,8 +2,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { db, schema } from "@/lib/db";
 import { eq, or, inArray } from "drizzle-orm";
-import Link from "next/link";
 import DeckCard from "@/components/dashboard/DeckCard";
+import DashboardActions from "@/components/dashboard/DashboardActions";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -46,12 +46,7 @@ export default async function DashboardPage() {
               {decks.length} {decks.length === 1 ? "deck" : "decks"} total
             </p>
           </div>
-          <Link
-            href="/upload"
-            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-5 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md"
-          >
-            Upload New Deck
-          </Link>
+          <DashboardActions />
         </div>
 
         {decks.length === 0 ? (
@@ -73,14 +68,9 @@ export default async function DashboardPage() {
             </div>
             <h2 className="text-xl font-semibold text-white mb-2">No decks yet</h2>
             <p className="text-[#A3A3A3] mb-6">
-              Upload your first PowerPoint or PDF to get started
+              Create a deck manually or upload a PowerPoint/PDF to get started
             </p>
-            <Link
-              href="/upload"
-              className="inline-block rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-3 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all"
-            >
-              Upload Your First Deck
-            </Link>
+            <DashboardActions />
           </div>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
