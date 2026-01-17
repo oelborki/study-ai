@@ -64,7 +64,11 @@ export default function DeckCard({ deck }: DeckCardProps) {
 
         <div className="flex items-start justify-between mb-4">
           <div className="w-10 h-10 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
-            {deck.fileType === "pdf" ? (
+            {deck.fileType === "manual" ? (
+              <svg className="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+              </svg>
+            ) : deck.fileType === "pdf" ? (
               <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zM8.5 15.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z" />
               </svg>
@@ -75,7 +79,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
             )}
           </div>
           <span className="text-xs text-[#737373] uppercase tracking-wider">
-            {deck.fileType || "pptx"}
+            {deck.fileType === "manual" ? "manual" : deck.fileType || "pptx"}
           </span>
         </div>
 
