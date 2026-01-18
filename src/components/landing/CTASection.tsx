@@ -15,7 +15,7 @@ export function CTASection() {
 
       <div className="flex flex-col items-center gap-4">
         <GlowButton href="/register" variant="primary">
-          Get Started Free
+          Get Started
         </GlowButton>
         <p className="text-sm text-[#737373]">
           Already have an account?{" "}
