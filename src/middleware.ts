@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedRoutes = ["/dashboard", "/teams", "/deck", "/upload"];
-const authRoutes = ["/login", "/register"];
+const authRoutes = ["/login", "/register", "/"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -18,7 +18,9 @@ export function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+  const isAuthRoute = authRoutes.some((route) =>
+    route === "/" ? pathname === "/" : pathname.startsWith(route)
+  );
 
   // Redirect authenticated users away from auth pages
   if (isAuthRoute && isAuthenticated) {
