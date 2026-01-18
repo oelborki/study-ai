@@ -10,7 +10,7 @@ export default async function Header() {
       <div className="mx-auto max-w-7xl px-6 py-4">
         <nav className="flex items-center justify-between">
           <Link
-            href="/"
+            href={session?.user ? "/dashboard" : "/"}
             className="text-2xl font-bold tracking-tight text-white hover:text-[#A855F7] transition-colors duration-200"
           >
             Study-AI
