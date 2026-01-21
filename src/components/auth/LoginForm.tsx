@@ -98,7 +98,7 @@ export default function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#6B21A8] focus:outline-none transition-colors"
+            className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#0891B2] focus:outline-none transition-colors"
             placeholder="you@example.com"
           />
         </div>
@@ -113,7 +113,7 @@ export default function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#6B21A8] focus:outline-none transition-colors"
+            className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#0891B2] focus:outline-none transition-colors"
             placeholder="Enter your password"
           />
         </div>
@@ -121,7 +121,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-4 py-3 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all disabled:opacity-50"
+          className="w-full rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-4 py-3 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all disabled:opacity-50"
         >
           {loading ? "Signing in..." : "Sign in"}
         </button>
@@ -129,7 +129,7 @@ export default function LoginForm() {
 
       <p className="text-center text-sm text-[#737373]">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="text-[#A855F7] hover:text-[#C084FC] transition-colors">
+        <Link href="/register" className="text-[#06B6D4] hover:text-[#22D3EE] transition-colors">
           Sign up
         </Link>
       </p>

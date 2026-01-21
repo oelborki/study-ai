@@ -50,7 +50,7 @@ export default function CreateTeamButton() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-5 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md"
+        className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-5 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md"
       >
         Create Team
       </button>
@@ -99,7 +99,7 @@ export default function CreateTeamButton() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#6B21A8] focus:outline-none transition-colors"
+                  className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#0891B2] focus:outline-none transition-colors"
                   placeholder="e.g., Study Group"
                   autoFocus
                 />
@@ -116,7 +116,7 @@ export default function CreateTeamButton() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all disabled:opacity-50"
+                  className="flex-1 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all disabled:opacity-50"
                 >
                   {loading ? "Creating..." : "Create Team"}
                 </button>

@@ -47,11 +47,11 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         code: ({ node, className, children, ...props }) => {
           const inline = !className;
           return inline ? (
-            <code className="px-1.5 py-0.5 rounded bg-[#1A1A1A] text-sm font-mono text-[#C084FC]" {...props}>
+            <code className="px-1.5 py-0.5 rounded bg-[#1A1A1A] text-sm font-mono text-[#22D3EE]" {...props}>
               {children}
             </code>
           ) : (
-            <code className="block px-4 py-3 rounded-lg bg-[#1A1A1A] text-sm font-mono text-[#C084FC] overflow-x-auto mb-4" {...props}>
+            <code className="block px-4 py-3 rounded-lg bg-[#1A1A1A] text-sm font-mono text-[#22D3EE] overflow-x-auto mb-4" {...props}>
               {children}
             </code>
           );
@@ -59,7 +59,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
 
         // Blockquotes
         blockquote: ({ node, ...props }) => (
-          <blockquote className="border-l-4 border-[#6B21A8] pl-4 italic text-[#D4D4D4] my-4" {...props} />
+          <blockquote className="border-l-4 border-[#0891B2] pl-4 italic text-[#D4D4D4] my-4" {...props} />
         ),
         }}
       >

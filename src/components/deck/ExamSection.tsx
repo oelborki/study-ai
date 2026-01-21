@@ -132,7 +132,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                         <textarea
                                             value={editedExamQuestion}
                                             onChange={(e) => setEditedExamQuestion(e.target.value)}
-                                            className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
+                                            className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#06B6D4] focus:outline-none transition-all"
                                         />
                                     </div>
                                     {/* Choices for MCQ */}
@@ -150,7 +150,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                                                 updated[choiceIdx] = e.target.value;
                                                                 setEditedExamChoices(updated);
                                                             }}
-                                                            className="flex-1 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
+                                                            className="flex-1 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#06B6D4] focus:outline-none transition-all"
                                                             placeholder={`Choice ${String.fromCharCode(65 + choiceIdx)}`}
                                                         />
                                                         {editedExamChoices.length > 2 && (
@@ -168,7 +168,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                                     <button
                                                         type="button"
                                                         onClick={handleAddChoice}
-                                                        className="text-sm text-[#A855F7] hover:text-[#C084FC] transition-colors"
+                                                        className="text-sm text-[#06B6D4] hover:text-[#22D3EE] transition-colors"
                                                     >
                                                         + Add Choice
                                                     </button>
@@ -182,7 +182,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                             <select
                                                 value={editedExamAnswer}
                                                 onChange={(e) => setEditedExamAnswer(e.target.value)}
-                                                className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
+                                                className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#06B6D4] focus:outline-none transition-all"
                                             >
                                                 {editedExamChoices.map((_, choiceIdx) => {
                                                     const letter = String.fromCharCode(65 + choiceIdx);
@@ -193,7 +193,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                             <textarea
                                                 value={editedExamAnswer}
                                                 onChange={(e) => setEditedExamAnswer(e.target.value)}
-                                                className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
+                                                className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#06B6D4] focus:outline-none transition-all"
                                             />
                                         )}
                                     </div>
@@ -202,7 +202,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                         <textarea
                                             value={editedExamExplanation}
                                             onChange={(e) => setEditedExamExplanation(e.target.value)}
-                                            className="w-full h-16 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
+                                            className="w-full h-16 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#06B6D4] focus:outline-none transition-all"
                                             placeholder="Explain the correct answer..."
                                         />
                                     </div>
@@ -210,7 +210,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                         <button
                                             onClick={() => handleSaveQuestion(i)}
                                             disabled={saving}
-                                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
+                                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
                                         >
                                             {saving ? "Saving..." : "Save"}
                                         </button>
@@ -258,13 +258,13 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                 <div className="flex gap-3">
                     <button
                         onClick={handleAddMCQ}
-                        className="flex-1 rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#A855F7] hover:text-white transition-all"
+                        className="flex-1 rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#06B6D4] hover:text-white transition-all"
                     >
                         + Multiple Choice
                     </button>
                     <button
                         onClick={handleAddShortAnswer}
-                        className="flex-1 rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#A855F7] hover:text-white transition-all"
+                        className="flex-1 rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#06B6D4] hover:text-white transition-all"
                     >
                         + Short Answer
                     </button>

@@ -89,15 +89,15 @@ export default function JoinTeamPage({
 
   if (loading) {
     return (
-      <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#1a0033] via-[#000000] to-[#000000]">
-        <div className="w-8 h-8 border-2 border-[#6B21A8] border-t-transparent rounded-full animate-spin"></div>
+      <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
+        <div className="w-8 h-8 border-2 border-[#0891B2] border-t-transparent rounded-full animate-spin"></div>
       </main>
     );
   }
 
   if (error && !team) {
     return (
-      <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#1a0033] via-[#000000] to-[#000000] px-6">
+      <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000] px-6">
         <div className="w-full max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
             <svg
@@ -118,7 +118,7 @@ export default function JoinTeamPage({
           <p className="text-[#A3A3A3] mb-6">{error}</p>
           <Link
             href="/teams"
-            className="inline-block rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-3 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all"
+            className="inline-block rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-3 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all"
           >
             Go to Teams
           </Link>
@@ -128,7 +128,7 @@ export default function JoinTeamPage({
   }
 
   return (
-    <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#1a0033] via-[#000000] to-[#000000] px-6">
+    <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000] px-6">
       <div className="w-full max-w-md">
         <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 text-center">
           {joined ? (
@@ -155,9 +155,9 @@ export default function JoinTeamPage({
             </>
           ) : (
             <>
-              <div className="w-16 h-16 rounded-full bg-[#6B21A8]/20 flex items-center justify-center mx-auto mb-4">
+              <div className="w-16 h-16 rounded-full bg-[#0891B2]/20 flex items-center justify-center mx-auto mb-4">
                 <svg
-                  className="w-8 h-8 text-[#A855F7]"
+                  className="w-8 h-8 text-[#06B6D4]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -188,12 +188,12 @@ export default function JoinTeamPage({
               )}
 
               {status === "loading" ? (
-                <div className="w-8 h-8 border-2 border-[#6B21A8] border-t-transparent rounded-full animate-spin mx-auto"></div>
+                <div className="w-8 h-8 border-2 border-[#0891B2] border-t-transparent rounded-full animate-spin mx-auto"></div>
               ) : (
                 <button
                   onClick={handleJoin}
                   disabled={joining}
-                  className="w-full rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-3 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all disabled:opacity-50"
+                  className="w-full rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-3 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all disabled:opacity-50"
                 >
                   {status !== "authenticated"
                     ? "Sign in to Join"

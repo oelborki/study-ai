@@ -35,7 +35,7 @@ export default async function TeamsPage() {
   const validTeams = teams.filter(Boolean);
 
   return (
-    <main className="min-h-[calc(100vh-73px)] bg-gradient-to-b from-[#1a0033] via-[#000000] to-[#000000]">
+    <main className="min-h-[calc(100vh-73px)] bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -78,12 +78,12 @@ export default async function TeamsPage() {
               <Link
                 key={team!.id}
                 href={`/teams/${team!.id}`}
-                className="group rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-6 hover:border-[#6B21A8] transition-all duration-200"
+                className="group rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-6 hover:border-[#0891B2] transition-all duration-200"
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className="w-10 h-10 rounded-lg bg-[#6B21A8]/20 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg bg-[#0891B2]/20 flex items-center justify-center">
                     <svg
-                      className="w-5 h-5 text-[#A855F7]"
+                      className="w-5 h-5 text-[#06B6D4]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -99,7 +99,7 @@ export default async function TeamsPage() {
                   <span
                     className={`text-xs px-2 py-0.5 rounded ${
                       team!.role === "owner"
-                        ? "bg-[#6B21A8]/20 text-[#A855F7]"
+                        ? "bg-[#0891B2]/20 text-[#06B6D4]"
                         : "bg-[#2D2D2D] text-[#A3A3A3]"
                     }`}
                   >
@@ -107,7 +107,7 @@ export default async function TeamsPage() {
                   </span>
                 </div>
 
-                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#A855F7] transition-colors">
+                <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-[#06B6D4] transition-colors">
                   {team!.name}
                 </h3>
 

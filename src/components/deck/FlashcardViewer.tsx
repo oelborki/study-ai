@@ -35,9 +35,9 @@ export default function FlashcardViewer({ flashcards }: FlashcardViewerProps) {
                                 <div className="text-xs text-[#737373] text-center mt-2">Click to flip</div>
                             </div>
                             <div className="flashcard-back">
-                                <div className="text-sm font-semibold text-[#D4D4D4] mb-3 text-center">Answer:</div>
+                                <div className="text-sm font-semibold text-[#0E7490] mb-3 text-center">Answer:</div>
                                 <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">{current.a}</div>
-                                <div className="text-xs text-[#C084FC] text-center mt-2">Click to flip back</div>
+                                <div className="text-xs text-[#0E7490] text-center mt-2">Click to flip back</div>
                             </div>
                         </div>
                     </div>

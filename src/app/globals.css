@@ -1,35 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #000000;
-  --foreground: #ffffff;
+  --background: #0A0A0F;
+  --foreground: #F8FAFC;
+
+  /* Mesh gradient for dramatic backgrounds */
+  --gradient-mesh:
+    radial-gradient(at 27% 37%, rgba(6,182,212,0.08) 0%, transparent 50%),
+    radial-gradient(at 97% 21%, rgba(139,92,246,0.06) 0%, transparent 50%),
+    radial-gradient(at 52% 99%, rgba(6,182,212,0.05) 0%, transparent 50%),
+    radial-gradient(at 10% 29%, rgba(139,92,246,0.04) 0%, transparent 50%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  /* Purple System */
-  --color-purple-primary: #6B21A8;
-  --color-purple-hover: #581C87;
-  --color-purple-light: #A855F7;
-  --color-purple-lighter: #C084FC;
-  --color-purple-dark: #4C1D95;
+  /* Cyan Accent */
+  --color-accent: #06B6D4;
+  --color-accent-hover: #0891B2;
+  --color-accent-light: #22D3EE;
+  --color-accent-glow: rgba(6, 182, 212, 0.4);
 
-  /* Dark Mode Backgrounds */
-  --color-bg-primary: #000000;
-  --color-bg-secondary: #0A0A0A;
-  --color-bg-elevated: #121212;
-  --color-bg-hover: #1A1A1A;
+  /* Dark Backgrounds */
+  --color-bg-base: #0A0A0F;
+  --color-bg-elevated: rgba(255, 255, 255, 0.05);
+  --color-bg-glass: rgba(255, 255, 255, 0.08);
+  --color-bg-hover: rgba(255, 255, 255, 0.1);
 
-  /* Borders & Text */
-  --color-border-subtle: #262626;
-  --color-border-default: #404040;
-  --color-border-strong: #525252;
-  --color-text-primary: #FFFFFF;
-  --color-text-secondary: #D4D4D4;
-  --color-text-tertiary: #A3A3A3;
-  --color-text-disabled: #737373;
+  /* Text */
+  --color-text-primary: #F8FAFC;
+  --color-text-secondary: #CBD5E1;
+  --color-text-muted: #94A3B8;
+  --color-text-disabled: #64748B;
+
+  /* Borders */
+  --color-border-subtle: rgba(255, 255, 255, 0.06);
+  --color-border-default: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.15);
 
   /* Semantic Colors (Exam Feedback) */
   --color-success-bg: #052e16;
@@ -39,21 +47,387 @@
   --color-error-border: #991b1b;
   --color-error-text: #f87171;
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Typography */
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
 }
 
+/* ========================================
+   Claymorphism Utilities
+   ======================================== */
+
+/* Base clay effect - for cards */
+.clay {
+  background: linear-gradient(145deg, #12121a, #0e0e14);
+  border-radius: 20px;
+  box-shadow:
+    8px 8px 16px rgba(0, 0, 0, 0.4),
+    -4px -4px 12px rgba(255, 255, 255, 0.03),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.05);
+}
+
+/* Subtle clay - for badges, pills, icon containers */
+.clay-subtle {
+  background: linear-gradient(145deg, #101018, #0c0c12);
+  border-radius: 16px;
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.3),
+    -2px -2px 6px rgba(255, 255, 255, 0.02),
+    inset 1px 1px 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Strong clay - for CTA, featured elements */
+.clay-strong {
+  background: linear-gradient(145deg, #141420, #0f0f18);
+  border-radius: 24px;
+  box-shadow:
+    12px 12px 24px rgba(0, 0, 0, 0.5),
+    -6px -6px 16px rgba(255, 255, 255, 0.04),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.06);
+}
+
+/* Modern clay - refined softer shadows for bento cards */
+.clay-modern {
+  background: linear-gradient(145deg, #14141f, #0f0f18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.3),
+    0 1px 2px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clay-modern:hover {
+  border-color: rgba(6, 182, 212, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(6, 182, 212, 0.08);
+  transform: translateY(-4px);
+}
+
+/* Hero clay card - with gradient border effect */
+.clay-hero {
+  position: relative;
+  background: linear-gradient(145deg, #141420, #0f0f18);
+  border-radius: 24px;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 4px rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clay-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(6,182,212,0.2), transparent 50%, rgba(139,92,246,0.1));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.clay-hero:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.5),
+    0 0 80px rgba(6, 182, 212, 0.1);
+}
+
+/* ========================================
+   Bento Card Styles
+   ======================================== */
+
+.bento-card {
+  position: relative;
+  background: linear-gradient(145deg, #12121a, #0c0c14);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(6, 182, 212, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 60px rgba(6, 182, 212, 0.1);
+}
+
+.bento-card:hover .bento-icon {
+  color: #22D3EE;
+  transform: scale(1.1);
+}
+
+.bento-icon {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Bento card with subtle gradient shine on hover */
+.bento-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.03) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.bento-card:hover::after {
+  opacity: 1;
+}
+
+/* ========================================
+   Animation Keyframes
+   ======================================== */
+
+/* Hero fade-up on load */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero {
+  opacity: 0;
+  animation: heroFadeUp 0.8s ease-out forwards;
+}
+
+.animate-hero-delay {
+  opacity: 0;
+  animation: heroFadeUp 0.8s ease-out 0.15s forwards;
+}
+
+.animate-hero-delay-2 {
+  opacity: 0;
+  animation: heroFadeUp 0.8s ease-out 0.3s forwards;
+}
+
+/* Floating orbs animation */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(10px, -15px) scale(1.02);
+  }
+  50% {
+    transform: translate(-5px, -25px) scale(0.98);
+  }
+  75% {
+    transform: translate(-15px, -10px) scale(1.01);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-20px, -30px) scale(1.03);
+  }
+  66% {
+    transform: translate(15px, -15px) scale(0.97);
+  }
+}
+
+@keyframes float-reverse {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(-10px, 15px) scale(0.98);
+  }
+  50% {
+    transform: translate(15px, 20px) scale(1.02);
+  }
+  75% {
+    transform: translate(5px, -5px) scale(0.99);
+  }
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float-slow 12s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: float-reverse 10s ease-in-out infinite;
+}
+
+/* Scroll reveal animation */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+/* Glow pulse for accent elements */
+@keyframes glowPulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.3),
+                0 0 40px rgba(6, 182, 212, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.4),
+                0 0 60px rgba(6, 182, 212, 0.2);
+  }
+}
+
+.accent-glow {
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.3),
+              0 0 60px rgba(6, 182, 212, 0.15);
+}
+
+.accent-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Demo animation phases - smoother cubic-bezier easing */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Card shine effect for results */
+@keyframes cardShine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Staggered fade up for result cards */
+@keyframes staggerFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-stagger-fade-up {
+  animation: staggerFadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-card-shine {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(6, 182, 212, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: cardShine 2s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Progress bar fill */
+@keyframes progressFill {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-progress {
+  animation: progressFill 1.5s ease-out forwards;
+}
+
+/* Panel entry animation (for modals, dropdowns) */
 @keyframes panelEnter {
   from {
     opacity: 0;
@@ -67,46 +441,6 @@ body {
 
 .animate-panel {
   animation: panelEnter 180ms ease-out;
-}
-
-@keyframes buttonGlow {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(107, 33, 168, 0.3),
-                0 0 20px rgba(107, 33, 168, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(168, 85, 247, 0.5),
-                0 0 40px rgba(168, 85, 247, 0.3);
-  }
-}
-
-@keyframes cardEnter {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.animate-card {
-  animation: cardEnter 350ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card-step-1 { animation-delay: 0ms; }
-.card-step-2 { animation-delay: 100ms; }
-.card-step-3 { animation-delay: 200ms; }
-
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.gradient-animate {
-  background-size: 200% 200%;
-  animation: gradientShift 8s ease-in-out infinite;
 }
 
 /* Loading Spinner Animation */
@@ -172,24 +506,135 @@ body {
 }
 
 .flashcard-front {
-  background: linear-gradient(135deg, #121212 0%, #0A0A0A 100%);
-  border: 2px solid #404040;
-  color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #F8FAFC;
 }
 
 .flashcard-back {
-  background: linear-gradient(135deg, #4C1D95 0%, #6B21A8 100%);
-  border: 2px solid #A855F7;
+  background: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
+  border: 2px solid #22D3EE;
   transform: rotateY(180deg);
-  color: #ffffff;
+  color: #0A0A0F;
 }
 
-/* Gradient background for flashcard area */
-.flashcard-background {
-  background: linear-gradient(135deg, #1a0033 0%, #000000 100%);
+/* ========================================
+   Button Styles
+   ======================================== */
+
+.btn-primary {
+  background: #06B6D4;
+  color: #0A0A0F;
+  transition: all 0.2s ease;
 }
 
-/* Responsive flashcard sizing */
+.btn-primary:hover {
+  background: #0891B2;
+  transform: scale(1.02);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+}
+
+/* Clay button - primary action */
+.btn-clay {
+  background: linear-gradient(145deg, #08c8e6, #05a3bd);
+  color: #0A0A0F;
+  border-radius: 12px;
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.3),
+    -2px -2px 6px rgba(6, 182, 212, 0.2),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-clay:hover {
+  transform: scale(1.02);
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.4),
+    -3px -3px 8px rgba(6, 182, 212, 0.3),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.25);
+}
+
+/* Clay button - secondary/dark */
+.btn-clay-dark {
+  background: linear-gradient(145deg, #1a1a24, #12121a);
+  color: #F8FAFC;
+  border-radius: 12px;
+  box-shadow:
+    4px 4px 10px rgba(0, 0, 0, 0.3),
+    -2px -2px 6px rgba(255, 255, 255, 0.02),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.btn-clay-dark:hover {
+  transform: scale(1.02);
+  box-shadow:
+    6px 6px 14px rgba(0, 0, 0, 0.4),
+    -3px -3px 8px rgba(255, 255, 255, 0.03),
+    inset 1px 1px 2px rgba(255, 255, 255, 0.08);
+}
+
+/* Modern primary button - Linear/Vercel style */
+.btn-primary-modern {
+  position: relative;
+  background: #06B6D4;
+  color: #0A0A0F;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary-modern:hover {
+  background: #0891B2;
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 12px rgba(6, 182, 212, 0.3),
+    0 0 20px rgba(6, 182, 212, 0.15);
+}
+
+.btn-primary-modern:active {
+  transform: translateY(0);
+}
+
+/* Modern secondary button */
+.btn-secondary-modern {
+  position: relative;
+  background: rgba(255, 255, 255, 0.05);
+  color: #F8FAFC;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  font-weight: 500;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-secondary-modern:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* ========================================
+   Card Hover Effects
+   ======================================== */
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    12px 12px 24px rgba(0, 0, 0, 0.5),
+    -6px -6px 16px rgba(255, 255, 255, 0.04),
+    inset 2px 2px 4px rgba(255, 255, 255, 0.08),
+    0 0 20px rgba(6, 182, 212, 0.1);
+}
+
+/* ========================================
+   Responsive Adjustments
+   ======================================== */
+
 @media (max-width: 640px) {
   .flashcard {
     max-width: 100%;
@@ -199,6 +644,16 @@ body {
   .flashcard-front,
   .flashcard-back {
     padding: 16px;
+  }
+
+  /* Reduce shadow intensity on mobile for performance */
+  .clay,
+  .clay-subtle,
+  .clay-strong {
+    box-shadow:
+      4px 4px 8px rgba(0, 0, 0, 0.3),
+      -2px -2px 4px rgba(255, 255, 255, 0.02),
+      inset 1px 1px 1px rgba(255, 255, 255, 0.04);
   }
 }
 
@@ -210,268 +665,42 @@ body {
 }
 
 /* ========================================
-   Landing Page Animations
+   Reduced Motion Support
    ======================================== */
 
-/* Glow animation for primary CTA buttons */
-@keyframes glowPulse {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4),
-                0 0 30px rgba(107, 33, 168, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 25px rgba(168, 85, 247, 0.6),
-                0 0 50px rgba(107, 33, 168, 0.3);
-  }
-}
-
-.animate-glow {
-  animation: glowPulse 2s ease-in-out infinite;
-}
-
-/* Staggered fade-in for hero elements */
-@keyframes heroFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-hero-1 {
-  opacity: 0;
-  animation: heroFadeIn 0.6s ease-out forwards;
-  animation-delay: 0ms;
-}
-
-.animate-hero-2 {
-  opacity: 0;
-  animation: heroFadeIn 0.6s ease-out forwards;
-  animation-delay: 150ms;
-}
-
-.animate-hero-3 {
-  opacity: 0;
-  animation: heroFadeIn 0.6s ease-out forwards;
-  animation-delay: 300ms;
-}
-
-/* Staggered card entry for feature grid */
-@keyframes cardStagger {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.animate-card-stagger {
-  opacity: 0;
-  animation: cardStagger 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* Document drop animation */
-@keyframes documentDrop {
-  0% {
-    opacity: 0;
-    transform: translateY(-40px) rotate(-5deg);
-  }
-  60% {
-    opacity: 1;
-    transform: translateY(5px) rotate(2deg);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) rotate(0deg);
-  }
-}
-
-.animate-document-drop {
-  animation: documentDrop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-/* Progress bar fill */
-@keyframes progressFill {
-  from {
-    width: 0%;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-.animate-progress-fill {
-  animation: progressFill 1.5s ease-out forwards;
-}
-
-/* Typewriter cursor blink */
-@keyframes cursorBlink {
-  0%, 50% {
-    opacity: 1;
-  }
-  51%, 100% {
-    opacity: 0;
-  }
-}
-
-.animate-cursor {
-  animation: cursorBlink 1s step-end infinite;
-}
-
-/* MCQ option appear with stagger */
-@keyframes optionAppear {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-option {
-  opacity: 0;
-  animation: optionAppear 0.3s ease-out forwards;
-}
-
-/* Correct answer highlight */
-@keyframes correctSelect {
-  0% {
-    background-color: transparent;
-    border-color: #404040;
-  }
-  50% {
-    background-color: rgba(74, 222, 128, 0.2);
-    border-color: #4ade80;
-    transform: scale(1.02);
-  }
-  100% {
-    background-color: rgba(74, 222, 128, 0.1);
-    border-color: #4ade80;
-    transform: scale(1);
-  }
-}
-
-.animate-correct {
-  animation: correctSelect 0.5s ease-out forwards;
-}
-
-/* Avatar pop-in */
-@keyframes avatarPop {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  70% {
-    transform: scale(1.2);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.animate-avatar {
-  opacity: 0;
-  animation: avatarPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
-
-/* Slide in from right */
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.animate-slide-right {
-  opacity: 0;
-  animation: slideInRight 0.5s ease-out forwards;
-}
-
-/* Fade transitions */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1; }
-  to { opacity: 0; }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-.animate-fade-out {
-  animation: fadeOut 0.3s ease-out forwards;
-}
-
-/* Auto-flip for demo flashcard */
-@keyframes demoFlip {
-  0%, 45% {
-    transform: rotateY(0deg);
-  }
-  50%, 95% {
-    transform: rotateY(180deg);
-  }
-  100% {
-    transform: rotateY(0deg);
-  }
-}
-
-.flashcard-demo {
-  animation: demoFlip 4s ease-in-out infinite;
-}
-
-/* Mode button highlight */
-@keyframes modeHighlight {
-  0%, 100% {
-    border-color: #404040;
-    background-color: transparent;
-  }
-  50% {
-    border-color: #A855F7;
-    background-color: rgba(168, 85, 247, 0.1);
-  }
-}
-
-/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  .animate-glow,
-  .animate-hero-1,
-  .animate-hero-2,
-  .animate-hero-3,
-  .animate-card-stagger,
-  .animate-document-drop,
-  .animate-progress-fill,
-  .animate-cursor,
-  .animate-option,
-  .animate-correct,
-  .animate-avatar,
-  .animate-slide-right,
-  .animate-fade-in,
-  .animate-fade-out,
-  .flashcard-demo,
-  .animate-spin-smooth {
+  .animate-hero,
+  .animate-hero-delay,
+  .animate-hero-delay-2,
+  .animate-spin-smooth,
+  .animate-float,
+  .animate-float-slow,
+  .animate-float-reverse,
+  .animate-fade-up,
+  .animate-slide-in-left,
+  .animate-slide-in-right,
+  .animate-scale-in,
+  .animate-pulse-slow,
+  .animate-progress,
+  .animate-stagger-fade-up,
+  .animate-card-shine,
+  .accent-glow-pulse {
     animation: none;
     opacity: 1;
     transform: none;
   }
 
-  .flashcard {
+  .flashcard,
+  .btn-primary,
+  .btn-clay,
+  .btn-clay-dark,
+  .btn-primary-modern,
+  .btn-secondary-modern,
+  .card-hover,
+  .clay-modern,
+  .clay-hero,
+  .bento-card,
+  .bento-icon {
     transition: none;
   }
 }

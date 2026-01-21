@@ -84,7 +84,7 @@ export default function FlashcardsSection({ flashcards, setFlashcards, deckId, o
                                         <textarea
                                             value={editedQuestion}
                                             onChange={(e) => setEditedQuestion(e.target.value)}
-                                            className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
+                                            className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#06B6D4] focus:outline-none transition-all"
                                         />
                                     </div>
                                     <div>
@@ -92,14 +92,14 @@ export default function FlashcardsSection({ flashcards, setFlashcards, deckId, o
                                         <textarea
                                             value={editedAnswer}
                                             onChange={(e) => setEditedAnswer(e.target.value)}
-                                            className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#A855F7] focus:outline-none transition-all"
+                                            className="w-full h-20 rounded-lg border-2 border-[#404040] bg-[#121212] text-white p-2 text-sm focus:border-[#06B6D4] focus:outline-none transition-all"
                                         />
                                     </div>
                                     <div className="flex gap-2">
                                         <button
                                             onClick={() => handleSaveCard(i)}
                                             disabled={saving}
-                                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
+                                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
                                         >
                                             {saving ? "Saving..." : "Save"}
                                         </button>
@@ -139,7 +139,7 @@ export default function FlashcardsSection({ flashcards, setFlashcards, deckId, o
             {editingCardIdx === null && (
                 <button
                     onClick={handleAddCard}
-                    className="w-full rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#A855F7] hover:text-white transition-all"
+                    className="w-full rounded-lg border-2 border-dashed border-[#404040] px-4 py-4 text-sm font-medium text-[#A3A3A3] hover:border-[#06B6D4] hover:text-white transition-all"
                 >
                     + Add Flashcard
                 </button>

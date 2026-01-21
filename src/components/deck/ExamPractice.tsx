@@ -59,7 +59,7 @@ export default function ExamPractice({ exam, onFinish }: ExamPracticeProps) {
                     <div className="mt-4 flex gap-3">
                         <button
                             onClick={handleRetake}
-                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white"
+                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white"
                         >
                             Retake
                         </button>
@@ -136,7 +136,7 @@ export default function ExamPractice({ exam, onFinish }: ExamPracticeProps) {
                             {!p.graded && (
                                 <button
                                     onClick={() => setShowAnswer(true)}
-                                    className="mt-3 rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white"
+                                    className="mt-3 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white"
                                 >
                                     Show Answer
                                 </button>
