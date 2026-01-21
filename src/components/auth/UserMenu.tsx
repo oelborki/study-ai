@@ -32,7 +32,7 @@ export default function UserMenu({ user }: { user: User }) {
             className="w-6 h-6 rounded-full"
           />
         ) : (
-          <div className="w-6 h-6 rounded-full bg-[#6B21A8] flex items-center justify-center text-xs text-white font-semibold">
+          <div className="w-6 h-6 rounded-full bg-[#0891B2] flex items-center justify-center text-xs text-white font-semibold">
             {(user.name || user.email || "U")[0].toUpperCase()}
           </div>
         )}
@@ -50,7 +50,7 @@ export default function UserMenu({ user }: { user: User }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-56 clay py-1 z-50">
+        <div className="absolute right-0 mt-2 w-56 clay py-1 z-50 border border-white/10">
           <div className="px-4 py-3 border-b border-white/[0.06]">
             <p className="text-sm font-medium text-white truncate">{user.name}</p>
             <p className="text-xs text-[#737373] truncate">{user.email}</p>
