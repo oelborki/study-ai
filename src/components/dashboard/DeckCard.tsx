@@ -54,7 +54,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
         {/* Delete button - shows on hover */}
         <button
           onClick={handleDeleteClick}
-          className="absolute top-3 right-3 p-2 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100 bg-[#1A1A1A] border border-[#404040] text-[#737373] hover:text-red-400 hover:border-red-500/30"
+          className="absolute bottom-3 right-3 p-2 rounded-lg transition-all duration-200 opacity-0 group-hover:opacity-100 bg-[#1A1A1A] border border-[#404040] text-[#737373] hover:text-red-400 hover:border-red-500/30"
           title="Delete deck"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
