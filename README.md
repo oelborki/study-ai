@@ -29,6 +29,7 @@ AI-powered study platform that generates flashcards, summaries, and practice exa
 
 ```bash
 npm install
+pip install -r requirements.txt
 ```
 
 ### Environment Variables
@@ -38,6 +39,8 @@ Create a `.env.local` file in the root directory:
 | Variable | Description |
 |----------|-------------|
 | `AUTH_SECRET` | NextAuth secret key |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID (optional, for Google sign-in) |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret (optional, for Google sign-in) |
 | `OPENAI_API_KEY` | OpenAI API key |
 
 ### Database Setup
