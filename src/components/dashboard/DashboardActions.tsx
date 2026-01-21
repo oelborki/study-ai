@@ -59,7 +59,7 @@ export default function DashboardActions() {
         </button>
         <Link
           href="/upload"
-          className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-5 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md"
+          className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-5 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md"
         >
           Upload New Deck
         </Link>
@@ -75,9 +75,9 @@ export default function DashboardActions() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center">
+              <div className="w-10 h-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-purple-400"
+                  className="w-5 h-5 text-cyan-400"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -98,7 +98,7 @@ export default function DashboardActions() {
               onKeyDown={handleKeyDown}
               placeholder="Enter deck title..."
               autoFocus
-              className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder:text-[#737373] focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-[#0A0A0A] transition-all"
+              className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder:text-[#737373] focus:border-[#06B6D4] focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-[#0A0A0A] transition-all"
             />
 
             {error && (
@@ -116,7 +116,7 @@ export default function DashboardActions() {
               <button
                 onClick={handleCreate}
                 disabled={creating || !title.trim()}
-                className="flex-1 rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-4 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all disabled:opacity-50"
+                className="flex-1 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-4 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all disabled:opacity-50"
               >
                 {creating ? "Creating..." : "Create"}
               </button>
