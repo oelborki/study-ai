@@ -7,7 +7,7 @@ const features = [
   {
     title: "AI-Powered Learning",
     description:
-      "Upload any document and get instant summaries, flashcards, and practice exams. Let AI do the heavy lifting.",
+      "Upload any PowerPoint or PDF and instantly generate comprehensive summaries, interactive flashcards, and practice exams tailored to your content. Stop spending hours creating study materials and let AI do the heavy lifting so you can focus on actually learning.",
     icon: (
       <svg
         className="w-8 h-8 text-[#06B6D4]"

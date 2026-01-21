@@ -6,7 +6,7 @@ export default async function Header() {
   const session = await auth();
 
   return (
-    <header className="sticky top-0 z-50 clay-subtle">
+    <header className="sticky top-0 z-50 clay-subtle border-b border-white/10">
       <div className="mx-auto max-w-7xl px-6 py-4">
         <nav className="flex items-center justify-between">
           <Link

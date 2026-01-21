@@ -98,8 +98,8 @@ body {
 
 /* Modern clay - refined softer shadows for bento cards */
 .clay-modern {
-  background: linear-gradient(145deg, rgba(20, 20, 32, 0.8), rgba(15, 15, 24, 0.9));
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(145deg, #14141f, #0f0f18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.3),
@@ -119,7 +119,7 @@ body {
 /* Hero clay card - with gradient border effect */
 .clay-hero {
   position: relative;
-  background: linear-gradient(145deg, rgba(20, 20, 32, 0.9), rgba(15, 15, 24, 0.95));
+  background: linear-gradient(145deg, #141420, #0f0f18);
   border-radius: 24px;
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.4),
@@ -155,8 +155,8 @@ body {
 
 .bento-card {
   position: relative;
-  background: linear-gradient(145deg, rgba(18, 18, 26, 0.9), rgba(12, 12, 18, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: linear-gradient(145deg, #12121a, #0c0c14);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   overflow: hidden;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -512,10 +512,10 @@ body {
 }
 
 .flashcard-back {
-  background: linear-gradient(135deg, #0E7490 0%, #0891B2 100%);
-  border: 2px solid #06B6D4;
+  background: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
+  border: 2px solid #22D3EE;
   transform: rotateY(180deg);
-  color: #F8FAFC;
+  color: #0A0A0F;
 }
 
 /* ========================================
