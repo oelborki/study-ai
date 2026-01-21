@@ -12,31 +12,34 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative mx-auto mt-20 md:mt-28 lg:mt-36 max-w-5xl">
+    <section className="relative mx-auto mt-24 md:mt-32 lg:mt-40 max-w-5xl">
       <div className="relative z-10">
-        <h1 className="font-[family-name:var(--font-serif)] text-5xl md:text-6xl lg:text-7xl leading-[1.1] tracking-tight text-[#F8FAFC] animate-hero">
+        <h1
+          className="font-[family-name:var(--font-serif)] text-5xl md:text-6xl lg:text-7xl leading-[1.08] text-[#F8FAFC] animate-hero"
+          style={{ letterSpacing: "-0.03em" }}
+        >
           Turn lectures into
           <br />
           <span className="text-[#06B6D4]">study sessions</span>
         </h1>
 
-        <p className="mt-6 md:mt-8 text-lg md:text-xl max-w-xl leading-relaxed animate-hero-delay">
+        <p className="mt-8 md:mt-10 text-lg md:text-xl max-w-xl leading-relaxed animate-hero-delay">
           <span className="inline-block clay-subtle rounded-full px-5 py-2.5 text-[#94A3B8]">
             Upload your documents and let AI create summaries, flashcards, and practice exams. Study smarter, not harder.
           </span>
         </p>
 
-        <div className="mt-10 md:mt-12 flex flex-col sm:flex-row gap-4 animate-hero-delay-2">
+        <div className="mt-12 md:mt-14 flex flex-col sm:flex-row gap-4 animate-hero-delay-2">
           <Link
             href="/register"
-            className="btn-clay inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold"
+            className="btn-primary-modern inline-flex items-center justify-center px-8 py-3.5 text-base"
           >
             Get Started
           </Link>
           <a
             href="#demo"
             onClick={scrollToDemo}
-            className="btn-clay-dark inline-flex items-center justify-center px-8 py-3.5 text-base font-medium"
+            className="btn-secondary-modern inline-flex items-center justify-center px-8 py-3.5 text-base"
           >
             See it in action
             <svg

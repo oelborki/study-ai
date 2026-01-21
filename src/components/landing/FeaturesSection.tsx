@@ -1,6 +1,7 @@
 "use client";
 
 import { ScrollReveal } from "./ui/ScrollReveal";
+import { BentoCard } from "./ui/BentoCard";
 
 const features = [
   {
@@ -22,6 +23,7 @@ const features = [
         />
       </svg>
     ),
+    variant: "hero" as const,
   },
   {
     title: "Study Your Way",
@@ -29,7 +31,7 @@ const features = [
       "Create materials manually or let AI assist. Customize everything to match exactly how you learn best.",
     icon: (
       <svg
-        className="w-8 h-8 text-[#06B6D4]"
+        className="w-6 h-6 text-[#06B6D4]"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -42,6 +44,7 @@ const features = [
         />
       </svg>
     ),
+    variant: "default" as const,
   },
   {
     title: "Everything in One Place",
@@ -49,7 +52,7 @@ const features = [
       "Notes, flashcards, and practice exams unified in a single platform. No more switching between apps.",
     icon: (
       <svg
-        className="w-8 h-8 text-[#06B6D4]"
+        className="w-6 h-6 text-[#06B6D4]"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -62,6 +65,7 @@ const features = [
         />
       </svg>
     ),
+    variant: "default" as const,
   },
   {
     title: "Track Your Progress",
@@ -69,7 +73,7 @@ const features = [
       "See how you're improving over time with detailed analytics. Know exactly what to focus on next.",
     icon: (
       <svg
-        className="w-8 h-8 text-[#06B6D4]"
+        className="w-6 h-6 text-[#06B6D4]"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -82,6 +86,28 @@ const features = [
         />
       </svg>
     ),
+    variant: "default" as const,
+  },
+  {
+    title: "Smart Review",
+    description:
+      "Spaced repetition algorithms ensure you review at the optimal time for maximum retention.",
+    icon: (
+      <svg
+        className="w-6 h-6 text-[#06B6D4]"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
+    variant: "wide" as const,
   },
 ];
 
@@ -102,22 +128,55 @@ export function FeaturesSection() {
         </div>
       </ScrollReveal>
 
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-        {features.map((feature, index) => (
-          <ScrollReveal key={feature.title} delay={index * 100}>
-            <div className="clay rounded-xl p-6 card-hover h-full">
-              <div className="w-12 h-12 rounded-lg clay-subtle flex items-center justify-center mb-4">
-                {feature.icon}
-              </div>
-              <h3 className="text-lg font-semibold text-[#F8FAFC] mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-sm text-[#94A3B8] leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
-          </ScrollReveal>
-        ))}
+      {/* Asymmetric Bento Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+        {/* Row 1: Hero (spans 2 cols, 2 rows) + Study Your Way + Everything in One Place */}
+        <ScrollReveal delay={0} className="md:col-span-2 md:row-span-2">
+          <BentoCard
+            title={features[0].title}
+            description={features[0].description}
+            icon={features[0].icon}
+            variant="hero"
+            className="min-h-[200px] md:min-h-full"
+          />
+        </ScrollReveal>
+
+        <ScrollReveal delay={100}>
+          <BentoCard
+            title={features[1].title}
+            description={features[1].description}
+            icon={features[1].icon}
+            variant="default"
+          />
+        </ScrollReveal>
+
+        <ScrollReveal delay={150}>
+          <BentoCard
+            title={features[2].title}
+            description={features[2].description}
+            icon={features[2].icon}
+            variant="default"
+          />
+        </ScrollReveal>
+
+        {/* Row 2: Track Progress + Smart Review (wide) */}
+        <ScrollReveal delay={200}>
+          <BentoCard
+            title={features[3].title}
+            description={features[3].description}
+            icon={features[3].icon}
+            variant="default"
+          />
+        </ScrollReveal>
+
+        <ScrollReveal delay={250} className="md:col-span-2">
+          <BentoCard
+            title={features[4].title}
+            description={features[4].description}
+            icon={features[4].icon}
+            variant="wide"
+          />
+        </ScrollReveal>
       </div>
     </section>
   );

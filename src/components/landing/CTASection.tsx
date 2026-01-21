@@ -7,8 +7,8 @@ export function CTASection() {
   return (
     <section className="mx-auto mt-32 md:mt-40 max-w-3xl">
       <ScrollReveal>
-        {/* Clay card */}
-        <div className="clay-strong p-8 md:p-12 text-center">
+        {/* Modern clay card */}
+        <div className="clay-hero p-8 md:p-12 text-center">
           <h2 className="font-[family-name:var(--font-serif)] text-3xl md:text-4xl text-[#F8FAFC] mb-4">
             Ready to study <span className="text-[#06B6D4]">smarter</span>?
           </h2>
@@ -19,7 +19,7 @@ export function CTASection() {
           <div className="flex flex-col items-center gap-4">
             <Link
               href="/register"
-              className="btn-clay inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold accent-glow"
+              className="btn-primary-modern inline-flex items-center justify-center px-8 py-3.5 text-base"
             >
               Get Started
             </Link>
