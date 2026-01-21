@@ -93,7 +93,7 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
 
         {checking ? (
           <div className="py-8 text-center">
-            <div className="w-8 h-8 border-2 border-[#6B21A8] border-t-transparent rounded-full animate-spin mx-auto"></div>
+            <div className="w-8 h-8 border-2 border-[#0891B2] border-t-transparent rounded-full animate-spin mx-auto"></div>
             <p className="text-[#737373] mt-4">Checking share status...</p>
           </div>
         ) : !shareCode ? (
@@ -111,7 +111,7 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
             <button
               onClick={createShareLink}
               disabled={loading}
-              className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all disabled:opacity-50"
+              className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all disabled:opacity-50"
             >
               {loading ? "Creating..." : "Create Share Link"}
             </button>

@@ -37,7 +37,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-[calc(100vh-73px)] bg-gradient-to-b from-[#1a0033] via-[#000000] to-[#000000]">
+    <main className="min-h-[calc(100vh-73px)] bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>
