@@ -66,7 +66,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
   const isOwner = membership.role === "owner";
 
   return (
-    <main className="min-h-[calc(100vh-73px)] bg-gradient-to-b from-[#1a0033] via-[#000000] to-[#000000]">
+    <main className="min-h-[calc(100vh-73px)] bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
       <div className="mx-auto max-w-7xl px-6 py-12">
         {/* Header */}
         <div className="mb-8">
@@ -117,9 +117,9 @@ export default async function TeamDetailPage({ params }: PageProps) {
                     <Link
                       key={deck.id}
                       href={`/deck/${deck.id}`}
-                      className="group rounded-xl border border-[#404040] bg-[#121212] p-4 hover:border-[#6B21A8] transition-all"
+                      className="group rounded-xl border border-[#404040] bg-[#121212] p-4 hover:border-[#0891B2] transition-all"
                     >
-                      <h3 className="font-medium text-white group-hover:text-[#A855F7] transition-colors mb-1 truncate">
+                      <h3 className="font-medium text-white group-hover:text-[#06B6D4] transition-colors mb-1 truncate">
                         {deck.title}
                       </h3>
                       <p className="text-sm text-[#737373]">
@@ -155,7 +155,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                         className="w-8 h-8 rounded-full"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-[#6B21A8] flex items-center justify-center text-xs text-white font-semibold">
+                      <div className="w-8 h-8 rounded-full bg-[#0891B2] flex items-center justify-center text-xs text-white font-semibold">
                         {member.name[0].toUpperCase()}
                       </div>
                     )}
@@ -170,7 +170,7 @@ export default async function TeamDetailPage({ params }: PageProps) {
                     <span
                       className={`text-xs px-2 py-0.5 rounded ${
                         member.role === "owner"
-                          ? "bg-[#6B21A8]/20 text-[#A855F7]"
+                          ? "bg-[#0891B2]/20 text-[#06B6D4]"
                           : "bg-[#2D2D2D] text-[#A3A3A3]"
                       }`}
                     >
