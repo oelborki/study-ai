@@ -60,13 +60,13 @@ export default function SummarySection({ summary, setSummary, deckId, onError }:
                         value={editedSummary}
                         onChange={(e) => setEditedSummary(e.target.value)}
                         placeholder="Write your summary notes here... (Markdown supported)"
-                        className="w-full h-64 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-4 text-sm font-mono focus:border-[#A855F7] focus:outline-none focus:ring-2 focus:ring-[#A855F7] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373]"
+                        className="w-full h-64 rounded-lg border-2 border-[#404040] bg-[#0A0A0A] text-white p-4 text-sm font-mono focus:border-[#06B6D4] focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black transition-all placeholder:text-[#737373]"
                     />
                     <div className="mt-4 flex gap-3">
                         <button
                             onClick={handleSave}
                             disabled={saving || !editedSummary.trim()}
-                            className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
                         >
                             {saving ? "Saving..." : "Save Summary"}
                         </button>

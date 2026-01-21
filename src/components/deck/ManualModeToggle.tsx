@@ -14,7 +14,7 @@ export default function ManualModeToggle({ mode, setMode, onSaveAll, saving }: M
                 <button
                     onClick={() => setMode("edit")}
                     className={mode === "edit"
-                        ? "rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-5 py-2.5 text-sm font-medium text-white ring-2 ring-[#A855F7] ring-offset-2 ring-offset-black"
+                        ? "rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-5 py-2.5 text-sm font-medium text-white ring-2 ring-[#06B6D4] ring-offset-2 ring-offset-black"
                         : "rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all"
                     }
                 >
@@ -23,7 +23,7 @@ export default function ManualModeToggle({ mode, setMode, onSaveAll, saving }: M
                 <button
                     onClick={() => setMode("study")}
                     className={mode === "study"
-                        ? "rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-5 py-2.5 text-sm font-medium text-white ring-2 ring-[#A855F7] ring-offset-2 ring-offset-black"
+                        ? "rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-5 py-2.5 text-sm font-medium text-white ring-2 ring-[#06B6D4] ring-offset-2 ring-offset-black"
                         : "rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all"
                     }
                 >
@@ -34,7 +34,7 @@ export default function ManualModeToggle({ mode, setMode, onSaveAll, saving }: M
                 <button
                     onClick={onSaveAll}
                     disabled={saving}
-                    className="rounded-lg bg-gradient-to-br from-[#6B21A8] to-[#A855F7] px-6 py-2.5 text-sm font-medium text-white hover:from-[#581C87] hover:to-[#9333EA] transition-all disabled:opacity-50"
+                    className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all disabled:opacity-50"
                 >
                     {saving ? "Saving..." : "Save All"}
                 </button>
