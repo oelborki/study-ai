@@ -12,6 +12,17 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const errorParam = searchParams.get("error");
+
+  // Map NextAuth error codes to user-friendly messages
+  const oauthErrorMessages: Record<string, string> = {
+    OAuthAccountNotLinked: "This email is already registered. Try signing in with your password instead.",
+    OAuthCallback: "There was a problem with Google sign-in. Please try again.",
+    OAuthSignin: "Could not start Google sign-in. Please try again.",
+    AccessDenied: "Access was denied. Please try again.",
+    default: "Authentication failed. Please try again.",
+  };
+  const oauthError = errorParam ? (oauthErrorMessages[errorParam] || oauthErrorMessages.default) : null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +55,12 @@ export default function LoginForm() {
 
   return (
     <div className="space-y-6">
+      {oauthError && (
+        <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400">
+          {oauthError}
+        </div>
+      )}
+
       <button
         onClick={handleGoogleSignIn}
         disabled={loading}
