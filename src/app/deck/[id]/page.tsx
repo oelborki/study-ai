@@ -22,15 +22,34 @@ export default async function DeckPage(
 
     // Check authorization
     const session = await auth();
+
+    // Not logged in - show 403
+    if (!session?.user?.id) {
+        return (
+            <main className="min-h-[calc(100vh-73px)] flex items-center justify-center px-6 py-12 bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
+                <div className="text-center">
+                    <h1 className="text-6xl font-bold text-white">403</h1>
+                    <p className="mt-4 text-xl text-[#A3A3A3]">You need to be logged in to view this deck.</p>
+                    <a
+                        href="/login"
+                        className="mt-6 inline-block rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-3 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all"
+                    >
+                        Sign in
+                    </a>
+                </div>
+            </main>
+        );
+    }
+
     let hasAccess = false;
 
     // Check 1: User owns the deck
-    if (session?.user?.id && deck.userId === session.user.id) {
+    if (deck.userId === session.user.id) {
         hasAccess = true;
     }
 
     // Check 2: User is a team member
-    if (!hasAccess && session?.user?.id && deck.teamId) {
+    if (!hasAccess && deck.teamId) {
         const membership = await db.query.teamMembers.findFirst({
             where: and(
                 eq(schema.teamMembers.teamId, deck.teamId),
@@ -40,19 +59,21 @@ export default async function DeckPage(
         if (membership) hasAccess = true;
     }
 
-    // Check 3: Deck has an active share link
     if (!hasAccess) {
-        const activeShare = await db.query.deckShares.findFirst({
-            where: and(
-                eq(schema.deckShares.deckId, id),
-                eq(schema.deckShares.isActive, true)
-            ),
-        });
-        if (activeShare) hasAccess = true;
-    }
-
-    if (!hasAccess) {
-        notFound();
+        return (
+            <main className="min-h-[calc(100vh-73px)] flex items-center justify-center px-6 py-12 bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
+                <div className="text-center">
+                    <h1 className="text-6xl font-bold text-white">403</h1>
+                    <p className="mt-4 text-xl text-[#A3A3A3]">You don&apos;t have access to this deck.</p>
+                    <a
+                        href="/dashboard"
+                        className="mt-6 inline-block rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-3 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all"
+                    >
+                        Go to Dashboard
+                    </a>
+                </div>
+            </main>
+        );
     }
 
     const isManual = deck.fileType === "manual";

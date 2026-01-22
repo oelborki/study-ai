@@ -45,17 +45,6 @@ export async function GET(
     if (membership) hasAccess = true;
   }
 
-  // Check 3: Deck has an active share link (allows public access)
-  if (!hasAccess) {
-    const activeShare = await db.query.deckShares.findFirst({
-      where: and(
-        eq(schema.deckShares.deckId, id),
-        eq(schema.deckShares.isActive, true)
-      ),
-    });
-    if (activeShare) hasAccess = true;
-  }
-
   if (!hasAccess) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
