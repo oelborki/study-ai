@@ -1,8 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
 import { notFound } from "next/navigation";
+import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import GenerateButtons from "./GenerateButtons";
 
 export default async function DeckPage(
@@ -16,6 +17,41 @@ export default async function DeckPage(
     });
 
     if (!deck) {
+        notFound();
+    }
+
+    // Check authorization
+    const session = await auth();
+    let hasAccess = false;
+
+    // Check 1: User owns the deck
+    if (session?.user?.id && deck.userId === session.user.id) {
+        hasAccess = true;
+    }
+
+    // Check 2: User is a team member
+    if (!hasAccess && session?.user?.id && deck.teamId) {
+        const membership = await db.query.teamMembers.findFirst({
+            where: and(
+                eq(schema.teamMembers.teamId, deck.teamId),
+                eq(schema.teamMembers.userId, session.user.id)
+            ),
+        });
+        if (membership) hasAccess = true;
+    }
+
+    // Check 3: Deck has an active share link
+    if (!hasAccess) {
+        const activeShare = await db.query.deckShares.findFirst({
+            where: and(
+                eq(schema.deckShares.deckId, id),
+                eq(schema.deckShares.isActive, true)
+            ),
+        });
+        if (activeShare) hasAccess = true;
+    }
+
+    if (!hasAccess) {
         notFound();
     }
 
