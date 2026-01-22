@@ -1,33 +1,35 @@
 import {
-  sqliteTable,
+  pgTable,
   text,
   integer,
+  boolean,
+  timestamp,
   primaryKey,
   uniqueIndex,
-} from "drizzle-orm/sqlite-core";
+} from "drizzle-orm/pg-core";
 
 // ============================================
 // NextAuth Required Tables
 // ============================================
 
-export const users = sqliteTable("users", {
+export const users = pgTable("users", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").notNull().unique(),
-  emailVerified: integer("email_verified", { mode: "timestamp" }),
+  emailVerified: timestamp("email_verified", { mode: "date" }),
   image: text("image"),
   hashedPassword: text("hashed_password"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+  createdAt: timestamp("created_at", { mode: "date" }).$defaultFn(
     () => new Date()
   ),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
+  updatedAt: timestamp("updated_at", { mode: "date" }).$defaultFn(
     () => new Date()
   ),
 });
 
-export const accounts = sqliteTable(
+export const accounts = pgTable(
   "accounts",
   {
     id: text("id")
@@ -52,7 +54,7 @@ export const accounts = sqliteTable(
   ]
 );
 
-export const sessions = sqliteTable("sessions", {
+export const sessions = pgTable("sessions", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -60,15 +62,15 @@ export const sessions = sqliteTable("sessions", {
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  expires: integer("expires", { mode: "timestamp" }).notNull(),
+  expires: timestamp("expires", { mode: "date" }).notNull(),
 });
 
-export const verificationTokens = sqliteTable(
+export const verificationTokens = pgTable(
   "verification_tokens",
   {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
-    expires: integer("expires", { mode: "timestamp" }).notNull(),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (table) => [primaryKey({ columns: [table.identifier, table.token] })]
 );
@@ -77,7 +79,7 @@ export const verificationTokens = sqliteTable(
 // Application Tables
 // ============================================
 
-export const teams = sqliteTable("teams", {
+export const teams = pgTable("teams", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -86,15 +88,15 @@ export const teams = sqliteTable("teams", {
   ownerId: text("owner_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+  createdAt: timestamp("created_at", { mode: "date" }).$defaultFn(
     () => new Date()
   ),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
+  updatedAt: timestamp("updated_at", { mode: "date" }).$defaultFn(
     () => new Date()
   ),
 });
 
-export const teamMembers = sqliteTable(
+export const teamMembers = pgTable(
   "team_members",
   {
     id: text("id")
@@ -107,14 +109,14 @@ export const teamMembers = sqliteTable(
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     role: text("role").notNull().default("member"),
-    joinedAt: integer("joined_at", { mode: "timestamp" }).$defaultFn(
+    joinedAt: timestamp("joined_at", { mode: "date" }).$defaultFn(
       () => new Date()
     ),
   },
   (table) => [uniqueIndex("team_user_idx").on(table.teamId, table.userId)]
 );
 
-export const decks = sqliteTable("decks", {
+export const decks = pgTable("decks", {
   id: text("id").primaryKey(),
   userId: text("user_id")
     .notNull()
@@ -124,15 +126,15 @@ export const decks = sqliteTable("decks", {
   description: text("description"),
   originalFileName: text("original_file_name"),
   fileType: text("file_type"),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+  createdAt: timestamp("created_at", { mode: "date" }).$defaultFn(
     () => new Date()
   ),
-  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(
+  updatedAt: timestamp("updated_at", { mode: "date" }).$defaultFn(
     () => new Date()
   ),
 });
 
-export const deckShares = sqliteTable("deck_shares", {
+export const deckShares = pgTable("deck_shares", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -140,11 +142,11 @@ export const deckShares = sqliteTable("deck_shares", {
     .notNull()
     .references(() => decks.id, { onDelete: "cascade" }),
   shareCode: text("share_code").notNull().unique(),
-  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
-  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at", { mode: "date" }).$defaultFn(
     () => new Date()
   ),
-  expiresAt: integer("expires_at", { mode: "timestamp" }),
+  expiresAt: timestamp("expires_at", { mode: "date" }),
 });
 
 // ============================================
