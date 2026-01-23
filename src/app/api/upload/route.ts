@@ -99,5 +99,6 @@ export async function POST(req: Request) {
   });
 
   // Redirect to deck page
-  return NextResponse.redirect(new URL(`/deck/${id}`, req.url), 303);
+  const baseUrl = process.env.NEXTAUTH_URL || req.url;
+  return NextResponse.redirect(new URL(`/deck/${id}`, baseUrl), 303);
 }
