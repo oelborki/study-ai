@@ -2,30 +2,12 @@
 FROM node:20-alpine AS base
 RUN apk add --no-cache python3 py3-pip
 
-# Install dependencies
-FROM base AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
 # Build the application
 FROM base AS builder
 WORKDIR /app
 
-# Build-time environment variables needed for Next.js build
-ARG DATABASE_URL
-ARG NEXTAUTH_URL
-ARG NEXTAUTH_SECRET
-ARG OPENAI_API_KEY
-ARG GOOGLE_CLIENT_ID
-ARG GOOGLE_CLIENT_SECRET
-
-ENV DATABASE_URL=$DATABASE_URL
-ENV NEXTAUTH_URL=$NEXTAUTH_URL
-ENV NEXTAUTH_SECRET=$NEXTAUTH_SECRET
-ENV OPENAI_API_KEY=$OPENAI_API_KEY
-ENV GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
-ENV GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
+# Dummy values for build - real secrets provided at runtime via docker-compose
+ENV DATABASE_URL="postgresql://build:build@localhost/build"
 
 COPY package*.json ./
 RUN npm ci

@@ -3,6 +3,7 @@ node_modules
 .git
 *.md
 .env*
+!.env.example
 data/
 .claude/
 drizzle/
