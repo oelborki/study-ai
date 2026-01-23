@@ -1,0 +1,11 @@
+node_modules
+.next
+.git
+*.md
+.env*
+data/
+.claude/
+drizzle/
+known_issues.txt
+PRODUCTION_ROADMAP.txt
+phase3_details.txt
