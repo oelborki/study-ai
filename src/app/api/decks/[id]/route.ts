@@ -32,12 +32,23 @@ export async function DELETE(
     // Delete the deck from database (cascade will handle shares)
     await db.delete(schema.decks).where(eq(schema.decks.id, id));
 
-    // Delete the JSON file
-    const deckPath = path.join(process.cwd(), "data", `${id}.json`);
-    try {
-      await fs.unlink(deckPath);
-    } catch {
-      // File might not exist, that's okay
+    // Delete all associated files
+    const dataDir = path.join(process.cwd(), "data");
+    const filesToDelete = [
+      `${id}.json`,                    // Extracted content
+      `${id}.pdf`,                     // Original PDF upload
+      `${id}.pptx`,                    // Original PPTX upload
+      `output_${id}_summary.json`,     // Generated summary
+      `output_${id}_flashcards.json`,  // Generated flashcards
+      `output_${id}_exam.json`,        // Generated exam
+    ];
+
+    for (const file of filesToDelete) {
+      try {
+        await fs.unlink(path.join(dataDir, file));
+      } catch {
+        // File might not exist, that's okay
+      }
     }
 
     return NextResponse.json({ success: true });
