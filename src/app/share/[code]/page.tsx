@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
-import path from "path";
-import fs from "fs/promises";
+import { getStorage, getStorageKey } from "@/lib/storage";
 import GenerateButtons from "@/app/deck/[id]/GenerateButtons";
 import SaveDeckButton from "@/components/share/SaveDeckButton";
 
@@ -34,12 +33,13 @@ export default async function SharedDeckPage({ params }: PageProps) {
     notFound();
   }
 
-  // Load extracted slides
-  const deckPath = path.join(process.cwd(), "data", `${deck.id}.json`);
+  // Load extracted slides from storage
+  const storage = getStorage();
+  const extractedKey = getStorageKey(deck.id, "extracted");
   let slides: { index: number; title?: string; bullets?: string[] }[] = [];
 
   try {
-    const raw = await fs.readFile(deckPath, "utf8");
+    const raw = await storage.getString(extractedKey);
     const data = JSON.parse(raw);
     slides = data.slides || [];
   } catch {

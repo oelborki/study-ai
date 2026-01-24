@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
-import fs from "fs/promises";
-import path from "path";
+import { getStorage, getAllDeckKeys } from "@/lib/storage";
 
 export async function DELETE(
   request: Request,
@@ -32,24 +31,10 @@ export async function DELETE(
     // Delete the deck from database (cascade will handle shares)
     await db.delete(schema.decks).where(eq(schema.decks.id, id));
 
-    // Delete all associated files
-    const dataDir = path.join(process.cwd(), "data");
-    const filesToDelete = [
-      `${id}.json`,                    // Extracted content
-      `${id}.pdf`,                     // Original PDF upload
-      `${id}.pptx`,                    // Original PPTX upload
-      `output_${id}_summary.json`,     // Generated summary
-      `output_${id}_flashcards.json`,  // Generated flashcards
-      `output_${id}_exam.json`,        // Generated exam
-    ];
-
-    for (const file of filesToDelete) {
-      try {
-        await fs.unlink(path.join(dataDir, file));
-      } catch {
-        // File might not exist, that's okay
-      }
-    }
+    // Delete all associated files from storage
+    const storage = getStorage();
+    const keysToDelete = getAllDeckKeys(id, deck.fileType ?? undefined);
+    await storage.deleteMany(keysToDelete);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -2,9 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
-import path from "path";
-import fs from "fs/promises";
 import crypto from "crypto";
+import { getStorage, getStorageKey, getAllDeckKeys } from "@/lib/storage";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -43,12 +42,13 @@ export async function POST(request: Request) {
     // Generate new deck ID
     const newDeckId = crypto.randomUUID();
 
-    // Copy the slides JSON file
-    const originalPath = path.join(process.cwd(), "data", `${originalDeck.id}.json`);
-    const newPath = path.join(process.cwd(), "data", `${newDeckId}.json`);
+    // Copy the extracted JSON file (and any generated content)
+    const storage = getStorage();
+    const originalExtractedKey = getStorageKey(originalDeck.id, "extracted");
+    const newExtractedKey = getStorageKey(newDeckId, "extracted");
 
     try {
-      await fs.copyFile(originalPath, newPath);
+      await storage.copy(originalExtractedKey, newExtractedKey);
     } catch {
       return NextResponse.json({ error: "Failed to copy deck data" }, { status: 500 });
     }

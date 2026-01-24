@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs/promises";
 import OpenAI from "openai";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
+import { getStorage, getStorageKey } from "@/lib/storage";
 
 // Lazy initialization to avoid build-time errors
 let openai: OpenAI | null = null;
@@ -128,13 +127,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Access denied" }, { status: 403 });
   }
 
-  const dataDir = path.join(process.cwd(), "data");
-  const deckPath = path.join(dataDir, `${deckId}.json`);
-  const outPath = path.join(dataDir, `output_${deckId}_${type}.json`);
+  const storage = getStorage();
+  const extractedKey = getStorageKey(deckId, "extracted");
+  const outputKey = getStorageKey(deckId, type);
 
   // Cache: if already generated, return it
   try {
-    const cached = await fs.readFile(outPath, "utf8");
+    const cached = await storage.getString(outputKey);
     return NextResponse.json(JSON.parse(cached));
   } catch {
     // no cache, continue
@@ -143,7 +142,7 @@ export async function POST(req: Request) {
   // Load extracted deck
   let deckRaw: string;
   try {
-    deckRaw = await fs.readFile(deckPath, "utf8");
+    deckRaw = await storage.getString(extractedKey);
   } catch {
     return NextResponse.json({ error: "Deck not found" }, { status: 404 });
   }
@@ -315,6 +314,6 @@ Rules:
     };
   }
 
-  await fs.writeFile(outPath, JSON.stringify(result, null, 2), "utf8");
+  await storage.put(outputKey, JSON.stringify(result, null, 2));
   return NextResponse.json(result);
 }

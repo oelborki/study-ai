@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
-import path from "path";
-import fs from "fs/promises";
+import { getStorage, getStorageKey, ContentType } from "@/lib/storage";
 
 export async function GET(
   request: Request,
@@ -49,11 +48,12 @@ export async function GET(
     return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
   }
 
-  // Read and return content
-  const outPath = path.join(process.cwd(), "data", `output_${id}_${type}.json`);
+  // Read and return content from storage
+  const storage = getStorage();
+  const storageKey = getStorageKey(id, type as ContentType);
 
   try {
-    const content = await fs.readFile(outPath, "utf8");
+    const content = await storage.getString(storageKey);
     try {
       return NextResponse.json(JSON.parse(content));
     } catch {
