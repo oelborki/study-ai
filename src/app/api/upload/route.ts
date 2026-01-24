@@ -86,6 +86,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: extracted.error }, { status: 400 });
     }
 
+    // Create deck title from filename
+    const title = file.name.replace(/\.(pptx|pdf)$/i, "");
+
+    // Save deck to database first (prevents orphaned files if DB insert fails)
+    await db.insert(schema.decks).values({
+      id,
+      userId: session.user.id,
+      title,
+      originalFileName: file.name,
+      fileType: fileExt,
+    });
+
     // Upload original file and extracted JSON to storage
     const storage = getStorage();
     const originalKey = getStorageKey(id, "original", fileExt);
@@ -95,18 +107,6 @@ export async function POST(req: Request) {
       storage.put(originalKey, buf),
       storage.put(extractedKey, JSON.stringify(extracted, null, 2)),
     ]);
-
-    // Create deck title from filename
-    const title = file.name.replace(/\.(pptx|pdf)$/i, "");
-
-    // Save deck to database
-    await db.insert(schema.decks).values({
-      id,
-      userId: session.user.id,
-      title,
-      originalFileName: file.name,
-      fileType: fileExt,
-    });
 
     // Redirect to deck page
     const baseUrl = process.env.NEXTAUTH_URL || req.url;
