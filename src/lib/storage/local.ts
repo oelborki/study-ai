@@ -65,4 +65,10 @@ export class LocalStorageProvider implements StorageProvider {
   async deleteMany(keys: string[]): Promise<void> {
     await Promise.all(keys.map((key) => this.delete(key)));
   }
+
+  async getSignedUrl(key: string, expiresIn?: number): Promise<string> {
+    // Local storage doesn't support presigned URLs
+    // The download endpoint handles authentication and streaming directly
+    throw new Error("getSignedUrl not supported for local storage");
+  }
 }

@@ -37,6 +37,14 @@ export interface StorageProvider {
    * Delete multiple files (ignores files that don't exist)
    */
   deleteMany(keys: string[]): Promise<void>;
+
+  /**
+   * Generate a signed URL for temporary file access
+   * @param key - The storage key
+   * @param expiresIn - URL expiration in seconds (default 3600 = 1 hour)
+   * @returns A URL that grants temporary access to the file
+   */
+  getSignedUrl(key: string, expiresIn?: number): Promise<string>;
 }
 
 export type ContentType = 'original' | 'extracted' | 'summary' | 'flashcards' | 'exam';

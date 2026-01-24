@@ -44,6 +44,7 @@ function downloadText(filename: string, text: string) {
 export default function GenerateButtons({ deckId, isManual = false }: { deckId: string; isManual?: boolean }) {
     const [loading, setLoading] = useState<null | "summary" | "flashcards" | "exam">(null);
     const [saving, setSaving] = useState(false);
+    const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isShareOpen, setIsShareOpen] = useState(false);
 
@@ -195,6 +196,35 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
         if (!flashcards?.length) return;
         const csv = toCsv(flashcards);
         downloadText(`flashcards_${deckId}.csv`, csv);
+    }
+
+    async function downloadOriginal() {
+        setDownloading(true);
+        setError(null);
+        try {
+            const res = await fetch(`/api/decks/${deckId}/download`);
+            if (!res.ok) {
+                const data = await res.json().catch(() => ({}));
+                throw new Error(data.error || "Download failed");
+            }
+
+            const blob = await res.blob();
+            const disposition = res.headers.get("content-disposition");
+            const filenameMatch = disposition?.match(/filename="(.+)"/);
+            const filename = filenameMatch?.[1] || `deck_${deckId}`;
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        } catch (e: unknown) {
+            const message = e instanceof Error ? e.message : "Download failed";
+            setError(message);
+        } finally {
+            setDownloading(false);
+        }
     }
 
     function scoreSummary() {
@@ -434,6 +464,15 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                     title="Share this deck"
                 >
                     Share
+                </button>
+
+                <button
+                    onClick={downloadOriginal}
+                    disabled={downloading}
+                    className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Download original file"
+                >
+                    {downloading ? "Downloading..." : "Download"}
                 </button>
 
                 {flashcards?.length ? (
