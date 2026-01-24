@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
-import path from "path";
-import fs from "fs/promises";
+import { getStorage, getStorageKey } from "@/lib/storage";
 
 async function canEditDeck(deckId: string, userId: string): Promise<boolean> {
   const deck = await db.query.decks.findFirst({
@@ -58,17 +57,14 @@ export async function PATCH(
     return NextResponse.json({ error: "Missing content" }, { status: 400 });
   }
 
-  const dataDir = path.join(process.cwd(), "data");
-  const outPath = path.join(dataDir, `output_${deckId}_${type}.json`);
+  const storage = getStorage();
+  const storageKey = getStorageKey(deckId, type);
 
   try {
-    // Ensure data directory exists
-    await fs.mkdir(dataDir, { recursive: true });
-
     // Try to read existing file, create new structure if doesn't exist
     let data: Record<string, unknown>;
     try {
-      const existing = await fs.readFile(outPath, "utf8");
+      const existing = await storage.getString(storageKey);
       data = JSON.parse(existing);
     } catch {
       // File doesn't exist - create initial structure (for manual decks)
@@ -92,7 +88,7 @@ export async function PATCH(
     data.updatedAt = new Date().toISOString();
 
     // Write back
-    await fs.writeFile(outPath, JSON.stringify(data, null, 2), "utf8");
+    await storage.put(storageKey, JSON.stringify(data, null, 2));
 
     return NextResponse.json({ success: true });
   } catch (error) {

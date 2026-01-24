@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import path from "path";
-import { mkdir, writeFile } from "fs/promises";
+import os from "os";
+import { mkdir, writeFile, unlink } from "fs/promises";
 import { spawn } from "child_process";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
+import { getStorage, getStorageKey } from "@/lib/storage";
 
 function runExtractor(filePath: string, scriptName: string): Promise<unknown> {
   return new Promise((resolve, reject) => {
@@ -59,46 +61,62 @@ export async function POST(req: Request) {
     );
   }
 
-  // Save file to /data with appropriate extension
+  // Generate deck ID
   const id = randomUUID();
-  const dataDir = path.join(process.cwd(), "data");
-  await mkdir(dataDir, { recursive: true });
 
-  const filePath = path.join(dataDir, `${id}.${fileExt}`);
+  // Save file to temp directory (for Python extraction)
+  const tempDir = path.join(os.tmpdir(), "study-ai-upload");
+  await mkdir(tempDir, { recursive: true });
+  const tempFilePath = path.join(tempDir, `${id}.${fileExt}`);
   const buf = Buffer.from(await file.arrayBuffer());
-  await writeFile(filePath, buf);
+  await writeFile(tempFilePath, buf);
 
-  // Extract content using appropriate script
-  const scriptName = fileExt === "pdf" ? "extract_pdf.py" : "extract_pptx.py";
-  const extracted = await runExtractor(filePath, scriptName);
+  try {
+    // Extract content using appropriate script
+    const scriptName = fileExt === "pdf" ? "extract_pdf.py" : "extract_pptx.py";
+    const extracted = await runExtractor(tempFilePath, scriptName);
 
-  // Check for extraction errors
-  if (
-    extracted &&
-    typeof extracted === "object" &&
-    "error" in extracted &&
-    extracted.error
-  ) {
-    return NextResponse.json({ error: extracted.error }, { status: 400 });
+    // Check for extraction errors
+    if (
+      extracted &&
+      typeof extracted === "object" &&
+      "error" in extracted &&
+      extracted.error
+    ) {
+      return NextResponse.json({ error: extracted.error }, { status: 400 });
+    }
+
+    // Upload original file and extracted JSON to storage
+    const storage = getStorage();
+    const originalKey = getStorageKey(id, "original", fileExt);
+    const extractedKey = getStorageKey(id, "extracted");
+
+    await Promise.all([
+      storage.put(originalKey, buf),
+      storage.put(extractedKey, JSON.stringify(extracted, null, 2)),
+    ]);
+
+    // Create deck title from filename
+    const title = file.name.replace(/\.(pptx|pdf)$/i, "");
+
+    // Save deck to database
+    await db.insert(schema.decks).values({
+      id,
+      userId: session.user.id,
+      title,
+      originalFileName: file.name,
+      fileType: fileExt,
+    });
+
+    // Redirect to deck page
+    const baseUrl = process.env.NEXTAUTH_URL || req.url;
+    return NextResponse.redirect(new URL(`/deck/${id}`, baseUrl), 303);
+  } finally {
+    // Clean up temp file
+    try {
+      await unlink(tempFilePath);
+    } catch {
+      // Ignore cleanup errors
+    }
   }
-
-  // Save extracted JSON
-  const jsonPath = path.join(dataDir, `${id}.json`);
-  await writeFile(jsonPath, JSON.stringify(extracted, null, 2), "utf8");
-
-  // Create deck title from filename
-  const title = file.name.replace(/\.(pptx|pdf)$/i, "");
-
-  // Save deck to database
-  await db.insert(schema.decks).values({
-    id,
-    userId: session.user.id,
-    title,
-    originalFileName: file.name,
-    fileType: fileExt,
-  });
-
-  // Redirect to deck page
-  const baseUrl = process.env.NEXTAUTH_URL || req.url;
-  return NextResponse.redirect(new URL(`/deck/${id}`, baseUrl), 303);
 }

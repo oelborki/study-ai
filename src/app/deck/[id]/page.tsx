@@ -1,9 +1,8 @@
-import fs from "fs/promises";
-import path from "path";
 import { notFound } from "next/navigation";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
+import { getStorage, getStorageKey } from "@/lib/storage";
 import GenerateButtons from "./GenerateButtons";
 
 export default async function DeckPage(
@@ -78,12 +77,12 @@ export default async function DeckPage(
 
     const isManual = deck.fileType === "manual";
 
-    // For non-manual decks, require the JSON file (extracted content)
+    // For non-manual decks, check that extracted content exists in storage
     if (!isManual) {
-        const deckPath = path.join(process.cwd(), "data", `${id}.json`);
-        try {
-            await fs.readFile(deckPath, "utf8");
-        } catch {
+        const storage = getStorage();
+        const extractedKey = getStorageKey(id, "extracted");
+        const exists = await storage.exists(extractedKey);
+        if (!exists) {
             notFound();
         }
     }
