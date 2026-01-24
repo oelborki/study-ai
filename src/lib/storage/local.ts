@@ -65,4 +65,10 @@ export class LocalStorageProvider implements StorageProvider {
   async deleteMany(keys: string[]): Promise<void> {
     await Promise.all(keys.map((key) => this.delete(key)));
   }
+
+  async getSignedUrl(key: string, expiresIn?: number): Promise<string> {
+    // For local storage, return a path to the download API endpoint
+    // The endpoint will handle authentication and file streaming
+    return `/api/decks/download/${encodeURIComponent(key)}`;
+  }
 }

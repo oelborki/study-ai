@@ -7,6 +7,7 @@ import {
   HeadObjectCommand,
   CopyObjectCommand,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import type { StorageProvider } from "./types";
 
 /**
@@ -135,6 +136,14 @@ export class R2StorageProvider implements StorageProvider {
         // Ignore errors (files might not exist)
       }
     }
+  }
+
+  async getSignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
+    const command = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+    });
+    return getSignedUrl(this.client, command, { expiresIn });
   }
 
   private getContentType(key: string): string {
