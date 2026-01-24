@@ -65,26 +65,16 @@ export async function GET(
     );
   }
 
-  // For R2 storage, return signed URL
-  // For local storage, stream the file directly
-  const isR2 = process.env.STORAGE_PROVIDER?.toLowerCase() === "r2";
-
-  if (isR2) {
-    const signedUrl = await storage.getSignedUrl(key, 3600);
-    return NextResponse.json({
-      url: signedUrl,
-      filename: deck.originalFileName || `${id}.${deck.fileType}`,
-    });
-  }
-
-  // Local storage: stream the file
+  // Stream file through this authenticated endpoint for all storage providers
   const fileBuffer = await storage.get(key);
   const filename = deck.originalFileName || `${id}.${deck.fileType}`;
 
   const contentType =
     deck.fileType === "pdf"
       ? "application/pdf"
-      : "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+      : deck.fileType === "pptx"
+      ? "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+      : "application/octet-stream";
 
   return new NextResponse(new Uint8Array(fileBuffer), {
     headers: {

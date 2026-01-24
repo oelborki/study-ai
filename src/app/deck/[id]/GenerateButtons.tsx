@@ -204,31 +204,21 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
         try {
             const res = await fetch(`/api/decks/${deckId}/download`);
             if (!res.ok) {
-                const data = await res.json();
+                const data = await res.json().catch(() => ({}));
                 throw new Error(data.error || "Download failed");
             }
 
-            const contentType = res.headers.get("content-type");
+            const blob = await res.blob();
+            const disposition = res.headers.get("content-disposition");
+            const filenameMatch = disposition?.match(/filename="(.+)"/);
+            const filename = filenameMatch?.[1] || `deck_${deckId}`;
 
-            // If response is JSON, it contains a signed URL (R2)
-            if (contentType?.includes("application/json")) {
-                const data = await res.json();
-                // Open signed URL in new tab to trigger download
-                window.open(data.url, "_blank");
-            } else {
-                // Direct file response (local storage)
-                const blob = await res.blob();
-                const disposition = res.headers.get("content-disposition");
-                const filenameMatch = disposition?.match(/filename="(.+)"/);
-                const filename = filenameMatch?.[1] || `deck_${deckId}`;
-
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = filename;
-                a.click();
-                URL.revokeObjectURL(url);
-            }
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
         } catch (e: unknown) {
             const message = e instanceof Error ? e.message : "Download failed";
             setError(message);

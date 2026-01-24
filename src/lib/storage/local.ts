@@ -67,8 +67,8 @@ export class LocalStorageProvider implements StorageProvider {
   }
 
   async getSignedUrl(key: string, expiresIn?: number): Promise<string> {
-    // For local storage, return a path to the download API endpoint
-    // The endpoint will handle authentication and file streaming
-    return `/api/decks/download/${encodeURIComponent(key)}`;
+    // Local storage doesn't support presigned URLs
+    // The download endpoint handles authentication and streaming directly
+    throw new Error("getSignedUrl not supported for local storage");
   }
 }
