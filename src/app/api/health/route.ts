@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { sql } from "drizzle-orm";
 import OpenAI from "openai";
+import os from "os";
 
 // Lazy initialization for OpenAI client
 let openai: OpenAI | null = null;
@@ -88,7 +89,7 @@ async function checkOpenAI(): Promise<HealthCheck> {
 
 function getSystemMetrics() {
   const memUsage = process.memoryUsage();
-  const totalMem = require("os").totalmem();
+  const totalMem = os.totalmem();
   const usedMem = memUsage.heapUsed + memUsage.external;
 
   return {
