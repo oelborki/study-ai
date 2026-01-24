@@ -95,7 +95,7 @@ function getSystemMetrics() {
   return {
     memory_used_mb: Math.round(usedMem / 1024 / 1024),
     memory_total_mb: Math.round(totalMem / 1024 / 1024),
-    memory_percent: Math.round((usedMem / totalMem) * 100),
+    memory_percent: Math.round((memUsage.heapUsed / memUsage.heapTotal) * 100),
     uptime_seconds: Math.round(process.uptime()),
     node_version: process.version,
   };
