@@ -133,6 +133,11 @@ export default function LoginForm() {
             className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#0891B2] focus:outline-none transition-colors"
             placeholder="Enter your password"
           />
+          <div className="mt-2 text-right">
+            <Link href="/forgot-password" className="text-sm text-[#06B6D4] hover:text-[#22D3EE] transition-colors">
+              Forgot password?
+            </Link>
+          </div>
         </div>
 
         <button
