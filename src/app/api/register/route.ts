@@ -4,27 +4,31 @@ import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { sendWelcomeEmail } from "@/lib/email";
 import { logError } from "@/lib/logger";
+import { registerSchema, validationErrorResponse } from "@/lib/validation";
+import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  // Check rate limit
+  const rateLimitResult = await checkRateLimit("auth");
+  if (!rateLimitResult.success) {
+    return rateLimitExceededResponse(rateLimitResult);
+  }
+
   let email: string | undefined;
   try {
     const body = await req.json();
-    email = body.email;
-    const { password, name } = body;
 
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password required" },
-        { status: 400 }
+    // Validate request body
+    const validation = registerSchema.safeParse(body);
+    if (!validation.success) {
+      return validationErrorResponse(
+        validation.error.issues[0]?.message || "Validation failed",
+        validation.error.issues
       );
     }
 
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: "Password must be at least 8 characters" },
-        { status: 400 }
-      );
-    }
+    const { email: validatedEmail, password, name } = validation.data;
+    email = validatedEmail;
 
     const existingUser = await db.query.users.findFirst({
       where: eq(schema.users.email, email),

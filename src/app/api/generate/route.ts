@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import { getStorage, getStorageKey } from "@/lib/storage";
+import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rate-limit";
 
 // Lazy initialization to avoid build-time errors
 let openai: OpenAI | null = null;
@@ -101,6 +102,12 @@ async function canAccessDeck(
 }
 
 export async function POST(req: Request) {
+  // Check rate limit
+  const rateLimitResult = await checkRateLimit("generate");
+  if (!rateLimitResult.success) {
+    return rateLimitExceededResponse(rateLimitResult);
+  }
+
   if (!process.env.OPENAI_API_KEY) {
     return NextResponse.json(
       { error: "Missing OPENAI_API_KEY. Set it in .env.local" },

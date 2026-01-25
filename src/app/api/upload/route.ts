@@ -7,6 +7,8 @@ import { spawn } from "child_process";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { getStorage, getStorageKey } from "@/lib/storage";
+import { validateUploadedFile } from "@/lib/validation";
+import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rate-limit";
 
 function runExtractor(filePath: string, scriptName: string): Promise<unknown> {
   return new Promise((resolve, reject) => {
@@ -33,6 +35,12 @@ function runExtractor(filePath: string, scriptName: string): Promise<unknown> {
 }
 
 export async function POST(req: Request) {
+  // Check rate limit
+  const rateLimitResult = await checkRateLimit("upload");
+  if (!rateLimitResult.success) {
+    return rateLimitExceededResponse(rateLimitResult);
+  }
+
   // Check authentication
   const session = await auth();
   if (!session?.user?.id) {
@@ -44,6 +52,15 @@ export async function POST(req: Request) {
 
   if (!file || !(file instanceof File)) {
     return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
+  }
+
+  // Validate file (size, MIME type, magic bytes)
+  const validationResult = await validateUploadedFile(file);
+  if (!validationResult.valid) {
+    return NextResponse.json(
+      { error: validationResult.error },
+      { status: 400 }
+    );
   }
 
   // Detect file type
