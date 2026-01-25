@@ -14,7 +14,7 @@ export interface SecurityHeader {
  */
 const contentSecurityPolicy = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Required for Next.js
+  "script-src 'self' 'unsafe-inline'", // Required for Next.js
   "style-src 'self' 'unsafe-inline'", // Required for styled-jsx and inline styles
   "img-src 'self' data: blob: https:",
   "font-src 'self' data:",
