@@ -38,7 +38,7 @@ export async function GET() {
 
     return NextResponse.json({ decks });
   } catch (error) {
-    logError("Failed to fetch decks", error, { userId });
+    await logError("Failed to fetch decks", error, { userId });
     return NextResponse.json(
       { error: "Failed to fetch decks" },
       { status: 500 }

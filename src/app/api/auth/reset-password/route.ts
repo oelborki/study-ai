@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       message: "Password has been reset successfully.",
     });
   } catch (error) {
-    logError("Reset password error", error);
+    await logError("Reset password error", error);
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }

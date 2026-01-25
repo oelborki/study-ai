@@ -49,7 +49,7 @@ export async function POST(
 
     return NextResponse.json({ team, joined: true });
   } catch (error) {
-    logError("Failed to join team", error, { code });
+    await logError("Failed to join team", error, { code });
     return NextResponse.json(
       { error: "Failed to join team" },
       { status: 500 }
@@ -85,7 +85,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    logError("Failed to get team", error, { code });
+    await logError("Failed to get team", error, { code });
     return NextResponse.json(
       { error: "Failed to get team" },
       { status: 500 }

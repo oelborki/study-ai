@@ -93,7 +93,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    logError("Failed to save content", error, { deckId, type });
+    await logError("Failed to save content", error, { deckId, type });
     return NextResponse.json(
       { error: "Failed to save content." },
       { status: 500 }

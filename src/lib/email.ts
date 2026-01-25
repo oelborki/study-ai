@@ -34,13 +34,13 @@ If you didn't request this, you can ignore this email.`,
     });
 
     if (error) {
-      logError("Error sending password reset email", new Error(error.message), { email });
+      await logError("Error sending password reset email", new Error(error.message), { email });
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (error) {
-    logError("Failed to send password reset email", error, { email });
+    await logError("Failed to send password reset email", error, { email });
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -71,12 +71,12 @@ The QuickyNotes Team`,
     });
 
     if (error) {
-      logError("Error sending welcome email", new Error(error.message), { email, name });
+      await logError("Error sending welcome email", new Error(error.message), { email, name });
       return { success: false, error: error.message };
     }
     return { success: true };
   } catch (error) {
-    logError("Failed to send welcome email", error, { email, name });
+    await logError("Failed to send welcome email", error, { email, name });
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",

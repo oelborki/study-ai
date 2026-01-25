@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       const emailResult = await sendPasswordResetEmail(email, resetUrl);
 
       if (!emailResult.success) {
-        logError("Failed to send reset email", new Error(emailResult.error || "Unknown error"), { email });
+        await logError("Failed to send reset email", new Error(emailResult.error || "Unknown error"), { email });
       }
     }
 
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       message: "If an account with that email exists, we sent a password reset link.",
     });
   } catch (error) {
-    logError("Forgot password error", error, { email });
+    await logError("Forgot password error", error, { email });
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }

@@ -49,13 +49,13 @@ export async function POST(req: Request) {
       .returning();
 
     // Fire and forget - don't block registration
-    sendWelcomeEmail(email, name || email.split("@")[0]).catch((error) => {
-      logError("Failed to send welcome email", error, { email });
+    sendWelcomeEmail(email, name || email.split("@")[0]).catch(async (error) => {
+      await logError("Failed to send welcome email", error, { email });
     });
 
     return NextResponse.json({ success: true, userId: newUser.id });
   } catch (error) {
-    logError("Registration error", error, { email });
+    await logError("Registration error", error, { email });
     return NextResponse.json(
       { error: "Failed to register. Please try again." },
       { status: 500 }

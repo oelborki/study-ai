@@ -39,7 +39,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    logError("Failed to delete deck", error, { deckId: id });
+    await logError("Failed to delete deck", error, { deckId: id });
     return NextResponse.json({ error: "Failed to delete deck" }, { status: 500 });
   }
 }

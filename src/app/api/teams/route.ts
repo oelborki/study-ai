@@ -35,7 +35,7 @@ export async function GET() {
       teams: teams.filter(Boolean),
     });
   } catch (error) {
-    logError("Failed to fetch teams", error, { userId: session.user.id });
+    await logError("Failed to fetch teams", error, { userId: session.user.id });
     return NextResponse.json(
       { error: "Failed to fetch teams" },
       { status: 500 }
@@ -79,7 +79,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ team });
   } catch (error) {
-    logError("Failed to create team", error, { userId: session.user.id });
+    await logError("Failed to create team", error, { userId: session.user.id });
     return NextResponse.json(
       { error: "Failed to create team" },
       { status: 500 }

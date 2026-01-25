@@ -68,7 +68,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ deckId: newDeckId });
   } catch (error) {
-    logError("Failed to save shared deck", error, { shareCode });
+    await logError("Failed to save shared deck", error, { shareCode });
     return NextResponse.json({ error: "Failed to save deck" }, { status: 500 });
   }
 }
