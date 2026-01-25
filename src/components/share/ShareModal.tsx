@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import * as Sentry from "@sentry/nextjs";
 
 interface ShareModalProps {
   deckId: string;
@@ -49,6 +50,9 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
       }
     } catch (error) {
       console.error("Failed to create share link:", error);
+      Sentry.captureException(error, {
+        extra: { action: "createShareLink", deckId }
+      });
     } finally {
       setLoading(false);
     }
@@ -61,6 +65,9 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
       setShareCode(null);
     } catch (error) {
       console.error("Failed to remove share link:", error);
+      Sentry.captureException(error, {
+        extra: { action: "removeShareLink", deckId }
+      });
     } finally {
       setLoading(false);
     }
