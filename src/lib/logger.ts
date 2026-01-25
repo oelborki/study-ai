@@ -1,0 +1,194 @@
+import * as Sentry from "@sentry/nextjs";
+import type { Logger as PinoLogger } from "pino";
+
+// Determine if we're running on the server
+const isServer = typeof window === "undefined";
+
+// Redaction paths for sensitive fields
+const redactPaths = [
+  "password",
+  "token",
+  "secret",
+  "authorization",
+  "cookie",
+  "apiKey",
+  "api_key",
+  "accessToken",
+  "access_token",
+  "refreshToken",
+  "refresh_token",
+];
+
+// Server-side logger using pino
+let pinoLogger: PinoLogger | null = null;
+
+async function getServerLogger() {
+  if (pinoLogger) return pinoLogger;
+
+  if (isServer) {
+    const pino = (await import("pino")).default;
+    const isDev = process.env.NODE_ENV !== "production";
+
+    pinoLogger = pino({
+      level: process.env.LOG_LEVEL || "info",
+      redact: {
+        paths: redactPaths.flatMap((field) => [
+          field,
+          `*.${field}`,
+          `*.*.${field}`,
+        ]),
+        censor: "[REDACTED]",
+      },
+      ...(isDev
+        ? {
+            transport: {
+              target: "pino-pretty",
+              options: {
+                colorize: true,
+                translateTime: "SYS:standard",
+                ignore: "pid,hostname",
+              },
+            },
+          }
+        : {}),
+    });
+  }
+
+  return pinoLogger;
+}
+
+// Logger interface for both server and client
+interface LogContext {
+  [key: string]: unknown;
+}
+
+interface Logger {
+  info: (message: string, context?: LogContext) => void;
+  warn: (message: string, context?: LogContext) => void;
+  error: (message: string, context?: LogContext) => void;
+  debug: (message: string, context?: LogContext) => void;
+}
+
+/**
+ * Log an error with optional context. Sends to Sentry in production.
+ */
+export function logError(
+  message: string,
+  error: unknown,
+  context?: LogContext
+): void {
+  const errorObj = error instanceof Error ? error : new Error(String(error));
+  const safeContext = context ? redactSensitiveData(context) : {};
+
+  if (isServer) {
+    // Server-side: use pino
+    getServerLogger().then((logger) => {
+      logger?.error({ err: errorObj, ...safeContext }, message);
+    });
+  } else {
+    // Client-side: use console
+    console.error(message, errorObj, safeContext);
+  }
+
+  // Send to Sentry
+  Sentry.captureException(errorObj, {
+    extra: {
+      message,
+      ...safeContext,
+    },
+  });
+}
+
+/**
+ * Create a child logger with request context
+ */
+export function createLogger(context: LogContext): Logger {
+  const safeContext = redactSensitiveData(context);
+
+  if (isServer) {
+    return {
+      info: (message: string, additionalContext?: LogContext) => {
+        getServerLogger().then((logger) => {
+          logger?.info(
+            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
+            message
+          );
+        });
+      },
+      warn: (message: string, additionalContext?: LogContext) => {
+        getServerLogger().then((logger) => {
+          logger?.warn(
+            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
+            message
+          );
+        });
+      },
+      error: (message: string, additionalContext?: LogContext) => {
+        getServerLogger().then((logger) => {
+          logger?.error(
+            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
+            message
+          );
+        });
+      },
+      debug: (message: string, additionalContext?: LogContext) => {
+        getServerLogger().then((logger) => {
+          logger?.debug(
+            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
+            message
+          );
+        });
+      },
+    };
+  }
+
+  // Client-side fallback
+  return {
+    info: (message: string, additionalContext?: LogContext) => {
+      console.info(message, {
+        ...safeContext,
+        ...redactSensitiveData(additionalContext || {}),
+      });
+    },
+    warn: (message: string, additionalContext?: LogContext) => {
+      console.warn(message, {
+        ...safeContext,
+        ...redactSensitiveData(additionalContext || {}),
+      });
+    },
+    error: (message: string, additionalContext?: LogContext) => {
+      console.error(message, {
+        ...safeContext,
+        ...redactSensitiveData(additionalContext || {}),
+      });
+    },
+    debug: (message: string, additionalContext?: LogContext) => {
+      console.debug(message, {
+        ...safeContext,
+        ...redactSensitiveData(additionalContext || {}),
+      });
+    },
+  };
+}
+
+/**
+ * Redact sensitive fields from an object
+ */
+function redactSensitiveData(data: LogContext): LogContext {
+  const result: LogContext = {};
+
+  for (const [key, value] of Object.entries(data)) {
+    if (redactPaths.some((path) => key.toLowerCase().includes(path))) {
+      result[key] = "[REDACTED]";
+    } else if (typeof value === "object" && value !== null) {
+      result[key] = redactSensitiveData(value as LogContext);
+    } else {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}
+
+// Default logger for general use
+export const logger = createLogger({});
