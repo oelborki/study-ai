@@ -45,7 +45,9 @@ export async function POST(req: Request) {
       .returning();
 
     // Fire and forget - don't block registration
-    sendWelcomeEmail(email, name || email.split("@")[0]);
+    sendWelcomeEmail(email, name || email.split("@")[0]).catch((error) => {
+      console.error("Failed to send welcome email:", error);
+    });
 
     return NextResponse.json({ success: true, userId: newUser.id });
   } catch (error) {
