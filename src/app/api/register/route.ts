@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db, schema } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
+import { sendWelcomeEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
   try {
@@ -42,6 +43,9 @@ export async function POST(req: Request) {
         hashedPassword,
       })
       .returning();
+
+    // Fire and forget - don't block registration
+    sendWelcomeEmail(email, name || email.split("@")[0]);
 
     return NextResponse.json({ success: true, userId: newUser.id });
   } catch (error) {
