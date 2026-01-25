@@ -72,25 +72,21 @@ interface Logger {
 /**
  * Log an error with optional context. Sends to Sentry in production.
  */
-export function logError(
+export async function logError(
   message: string,
   error: unknown,
   context?: LogContext
-): void {
+): Promise<void> {
   const errorObj = error instanceof Error ? error : new Error(String(error));
   const safeContext = context ? redactSensitiveData(context) : {};
 
   if (isServer) {
-    // Server-side: use pino
-    getServerLogger().then((logger) => {
-      logger?.error({ err: errorObj, ...safeContext }, message);
-    });
+    const logger = await getServerLogger();
+    logger?.error({ err: errorObj, ...safeContext }, message);
   } else {
-    // Client-side: use console
     console.error(message, errorObj, safeContext);
   }
 
-  // Send to Sentry
   Sentry.captureException(errorObj, {
     extra: {
       message,
