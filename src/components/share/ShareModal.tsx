@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { logError } from "@/lib/logger";
 
 interface ShareModalProps {
   deckId: string;
@@ -32,8 +33,11 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
       if (data.share?.shareCode) {
         setShareCode(data.share.shareCode);
       }
-    } catch {
-      // No existing share
+    } catch (error) {
+      await logError("Failed to check existing share", error, {
+        action: "checkExistingShare",
+        deckId
+      });
     } finally {
       setChecking(false);
     }
@@ -48,7 +52,10 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
         setShareCode(data.shareCode);
       }
     } catch (error) {
-      console.error("Failed to create share link:", error);
+      await logError("Failed to create share link", error, {
+        action: "createShareLink",
+        deckId
+      });
     } finally {
       setLoading(false);
     }
@@ -60,7 +67,10 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
       await fetch(`/api/decks/${deckId}/share`, { method: "DELETE" });
       setShareCode(null);
     } catch (error) {
-      console.error("Failed to remove share link:", error);
+      await logError("Failed to remove share link", error, {
+        action: "removeShareLink",
+        deckId
+      });
     } finally {
       setLoading(false);
     }
