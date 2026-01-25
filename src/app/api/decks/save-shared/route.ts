@@ -4,6 +4,7 @@ import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import crypto from "crypto";
 import { getStorage, getStorageKey, getAllDeckKeys } from "@/lib/storage";
+import { logError } from "@/lib/logger";
 
 export async function POST(request: Request) {
   const session = await auth();
@@ -11,8 +12,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  let shareCode: string | undefined;
   try {
-    const { shareCode } = await request.json();
+    const body = await request.json();
+    shareCode = body.shareCode;
 
     if (!shareCode) {
       return NextResponse.json({ error: "Share code required" }, { status: 400 });
@@ -65,7 +68,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ deckId: newDeckId });
   } catch (error) {
-    console.error("Failed to save shared deck:", error);
+    await logError("Failed to save shared deck", error, { shareCode });
     return NextResponse.json({ error: "Failed to save deck" }, { status: 500 });
   }
 }

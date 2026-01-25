@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import { getStorage, getAllDeckKeys } from "@/lib/storage";
+import { logError } from "@/lib/logger";
 
 export async function DELETE(
   request: Request,
@@ -38,7 +39,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Failed to delete deck:", error);
+    await logError("Failed to delete deck", error, { deckId: id });
     return NextResponse.json({ error: "Failed to delete deck" }, { status: 500 });
   }
 }

@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import { getStorage, getStorageKey } from "@/lib/storage";
+import { logError } from "@/lib/logger";
 
 async function canEditDeck(deckId: string, userId: string): Promise<boolean> {
   const deck = await db.query.decks.findFirst({
@@ -92,7 +93,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Failed to save content:", error);
+    await logError("Failed to save content", error, { deckId, type });
     return NextResponse.json(
       { error: "Failed to save content." },
       { status: 500 }

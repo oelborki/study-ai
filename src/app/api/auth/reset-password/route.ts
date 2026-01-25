@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { db, schema } from "@/lib/db";
 import { eq, and, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+import { logError } from "@/lib/logger";
 
 export async function POST(req: Request) {
   try {
@@ -55,7 +56,7 @@ export async function POST(req: Request) {
       message: "Password has been reset successfully.",
     });
   } catch (error) {
-    console.error("Reset password error:", error);
+    await logError("Reset password error", error);
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }

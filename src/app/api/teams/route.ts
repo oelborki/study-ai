@@ -3,6 +3,7 @@ import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
+import { logError } from "@/lib/logger";
 
 export async function GET() {
   const session = await auth();
@@ -34,7 +35,7 @@ export async function GET() {
       teams: teams.filter(Boolean),
     });
   } catch (error) {
-    console.error("Failed to fetch teams:", error);
+    await logError("Failed to fetch teams", error, { userId: session.user.id });
     return NextResponse.json(
       { error: "Failed to fetch teams" },
       { status: 500 }
@@ -78,7 +79,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ team });
   } catch (error) {
-    console.error("Failed to create team:", error);
+    await logError("Failed to create team", error, { userId: session.user.id });
     return NextResponse.json(
       { error: "Failed to create team" },
       { status: 500 }
