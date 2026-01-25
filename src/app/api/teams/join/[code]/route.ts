@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
+import { logError } from "@/lib/logger";
 
 export async function POST(
   req: Request,
@@ -48,7 +49,7 @@ export async function POST(
 
     return NextResponse.json({ team, joined: true });
   } catch (error) {
-    console.error("Failed to join team:", error);
+    logError("Failed to join team", error, { code });
     return NextResponse.json(
       { error: "Failed to join team" },
       { status: 500 }
@@ -84,7 +85,7 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Failed to get team:", error);
+    logError("Failed to get team", error, { code });
     return NextResponse.json(
       { error: "Failed to get team" },
       { status: 500 }

@@ -3,10 +3,14 @@ import { db, schema } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { sendWelcomeEmail } from "@/lib/email";
+import { logError } from "@/lib/logger";
 
 export async function POST(req: Request) {
+  let email: string | undefined;
   try {
-    const { email, password, name } = await req.json();
+    const body = await req.json();
+    email = body.email;
+    const { password, name } = body;
 
     if (!email || !password) {
       return NextResponse.json(
@@ -46,12 +50,12 @@ export async function POST(req: Request) {
 
     // Fire and forget - don't block registration
     sendWelcomeEmail(email, name || email.split("@")[0]).catch((error) => {
-      console.error("Failed to send welcome email:", error);
+      logError("Failed to send welcome email", error, { email });
     });
 
     return NextResponse.json({ success: true, userId: newUser.id });
   } catch (error) {
-    console.error("Registration error:", error);
+    logError("Registration error", error, { email });
     return NextResponse.json(
       { error: "Failed to register. Please try again." },
       { status: 500 }

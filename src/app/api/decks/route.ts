@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { db, schema } from "@/lib/db";
 import { eq, or, inArray } from "drizzle-orm";
+import { logError } from "@/lib/logger";
 
 export async function GET() {
   const session = await auth();
@@ -37,7 +38,7 @@ export async function GET() {
 
     return NextResponse.json({ decks });
   } catch (error) {
-    console.error("Failed to fetch decks:", error);
+    logError("Failed to fetch decks", error, { userId });
     return NextResponse.json(
       { error: "Failed to fetch decks" },
       { status: 500 }

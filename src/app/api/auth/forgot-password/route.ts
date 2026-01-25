@@ -2,10 +2,13 @@ import { NextResponse } from "next/server";
 import { db, schema } from "@/lib/db";
 import { eq, and, gt } from "drizzle-orm";
 import { sendPasswordResetEmail } from "@/lib/email";
+import { logError } from "@/lib/logger";
 
 export async function POST(req: Request) {
+  let email: string | undefined;
   try {
-    const { email } = await req.json();
+    const body = await req.json();
+    email = body.email;
 
     if (!email) {
       return NextResponse.json(
@@ -43,7 +46,7 @@ export async function POST(req: Request) {
       const emailResult = await sendPasswordResetEmail(email, resetUrl);
 
       if (!emailResult.success) {
-        console.error("Failed to send reset email:", emailResult.error);
+        logError("Failed to send reset email", new Error(emailResult.error || "Unknown error"), { email });
       }
     }
 
@@ -53,7 +56,7 @@ export async function POST(req: Request) {
       message: "If an account with that email exists, we sent a password reset link.",
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+    logError("Forgot password error", error, { email });
     return NextResponse.json(
       { error: "Something went wrong. Please try again." },
       { status: 500 }

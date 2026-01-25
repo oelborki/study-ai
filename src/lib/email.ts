@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { logError } from "@/lib/logger";
 
 // Lazy initialization to avoid build-time errors when API key is not set
 let resend: Resend | null = null;
@@ -33,13 +34,13 @@ If you didn't request this, you can ignore this email.`,
     });
 
     if (error) {
-      console.error("Error sending password reset email:", error);
+      logError("Error sending password reset email", new Error(error.message), { email });
       return { success: false, error: error.message };
     }
 
     return { success: true };
   } catch (error) {
-    console.error("Failed to send password reset email:", error);
+    logError("Failed to send password reset email", error, { email });
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
@@ -70,12 +71,12 @@ The QuickyNotes Team`,
     });
 
     if (error) {
-      console.error("Error sending welcome email:", error);
+      logError("Error sending welcome email", new Error(error.message), { email, name });
       return { success: false, error: error.message };
     }
     return { success: true };
   } catch (error) {
-    console.error("Failed to send welcome email:", error);
+    logError("Failed to send welcome email", error, { email, name });
     return {
       success: false,
       error: error instanceof Error ? error.message : "Unknown error",
