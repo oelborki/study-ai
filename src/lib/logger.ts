@@ -63,10 +63,10 @@ interface LogContext {
 }
 
 interface Logger {
-  info: (message: string, context?: LogContext) => void;
-  warn: (message: string, context?: LogContext) => void;
-  error: (message: string, context?: LogContext) => void;
-  debug: (message: string, context?: LogContext) => void;
+  info: (message: string, context?: LogContext) => Promise<void>;
+  warn: (message: string, context?: LogContext) => Promise<void>;
+  error: (message: string, context?: LogContext) => Promise<void>;
+  debug: (message: string, context?: LogContext) => Promise<void>;
 }
 
 /**
@@ -103,66 +103,38 @@ export function createLogger(context: LogContext): Logger {
 
   if (isServer) {
     return {
-      info: (message: string, additionalContext?: LogContext) => {
-        getServerLogger().then((logger) => {
-          logger?.info(
-            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
-            message
-          );
-        });
+      info: async (message: string, additionalContext?: LogContext) => {
+        const logger = await getServerLogger();
+        logger?.info({ ...safeContext, ...redactSensitiveData(additionalContext || {}) }, message);
       },
-      warn: (message: string, additionalContext?: LogContext) => {
-        getServerLogger().then((logger) => {
-          logger?.warn(
-            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
-            message
-          );
-        });
+      warn: async (message: string, additionalContext?: LogContext) => {
+        const logger = await getServerLogger();
+        logger?.warn({ ...safeContext, ...redactSensitiveData(additionalContext || {}) }, message);
       },
-      error: (message: string, additionalContext?: LogContext) => {
-        getServerLogger().then((logger) => {
-          logger?.error(
-            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
-            message
-          );
-        });
+      error: async (message: string, additionalContext?: LogContext) => {
+        const logger = await getServerLogger();
+        logger?.error({ ...safeContext, ...redactSensitiveData(additionalContext || {}) }, message);
       },
-      debug: (message: string, additionalContext?: LogContext) => {
-        getServerLogger().then((logger) => {
-          logger?.debug(
-            { ...safeContext, ...redactSensitiveData(additionalContext || {}) },
-            message
-          );
-        });
+      debug: async (message: string, additionalContext?: LogContext) => {
+        const logger = await getServerLogger();
+        logger?.debug({ ...safeContext, ...redactSensitiveData(additionalContext || {}) }, message);
       },
     };
   }
 
   // Client-side fallback
   return {
-    info: (message: string, additionalContext?: LogContext) => {
-      console.info(message, {
-        ...safeContext,
-        ...redactSensitiveData(additionalContext || {}),
-      });
+    info: async (message: string, additionalContext?: LogContext) => {
+      console.info(message, { ...safeContext, ...redactSensitiveData(additionalContext || {}) });
     },
-    warn: (message: string, additionalContext?: LogContext) => {
-      console.warn(message, {
-        ...safeContext,
-        ...redactSensitiveData(additionalContext || {}),
-      });
+    warn: async (message: string, additionalContext?: LogContext) => {
+      console.warn(message, { ...safeContext, ...redactSensitiveData(additionalContext || {}) });
     },
-    error: (message: string, additionalContext?: LogContext) => {
-      console.error(message, {
-        ...safeContext,
-        ...redactSensitiveData(additionalContext || {}),
-      });
+    error: async (message: string, additionalContext?: LogContext) => {
+      console.error(message, { ...safeContext, ...redactSensitiveData(additionalContext || {}) });
     },
-    debug: (message: string, additionalContext?: LogContext) => {
-      console.debug(message, {
-        ...safeContext,
-        ...redactSensitiveData(additionalContext || {}),
-      });
+    debug: async (message: string, additionalContext?: LogContext) => {
+      console.debug(message, { ...safeContext, ...redactSensitiveData(additionalContext || {}) });
     },
   };
 }
