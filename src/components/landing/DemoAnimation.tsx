@@ -16,7 +16,7 @@ export function DemoAnimation() {
       results: 6000,
     };
 
-    let timeouts: NodeJS.Timeout[] = [];
+    const timeouts: NodeJS.Timeout[] = [];
 
     const startCycle = () => {
       setPhase("upload");
