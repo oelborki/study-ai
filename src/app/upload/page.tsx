@@ -29,7 +29,7 @@ export default function UploadPage() {
         </button>
 
           <p className="text-xs text-[#737373]">
-            Tip: Results are cached, so re-clicking modes won't regenerate.
+            Tip: Results are cached, so re-clicking modes won&apos;t regenerate.
           </p>
         </form>
       </div>
