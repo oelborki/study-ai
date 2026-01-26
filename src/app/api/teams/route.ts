@@ -4,6 +4,8 @@ import { db, schema } from "@/lib/db";
 import { eq } from "drizzle-orm";
 import { nanoid } from "nanoid";
 import { logError } from "@/lib/logger";
+import { createTeamSchema, validationErrorResponse } from "@/lib/validation";
+import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rate-limit";
 
 export async function GET() {
   const session = await auth();
@@ -44,20 +46,30 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  // Check rate limit
+  const rateLimitResult = await checkRateLimit("general");
+  if (!rateLimitResult.success) {
+    return rateLimitExceededResponse(rateLimitResult);
+  }
+
   const session = await auth();
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
-    const { name } = await req.json();
+    const body = await req.json();
 
-    if (!name || typeof name !== "string" || name.trim().length === 0) {
-      return NextResponse.json(
-        { error: "Team name is required" },
-        { status: 400 }
+    // Validate request body
+    const validation = createTeamSchema.safeParse(body);
+    if (!validation.success) {
+      return validationErrorResponse(
+        validation.error.issues[0]?.message || "Validation failed",
+        validation.error.issues
       );
     }
+
+    const { name } = validation.data;
 
     const inviteCode = nanoid(8);
 

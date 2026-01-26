@@ -3,24 +3,29 @@ import { db, schema } from "@/lib/db";
 import { eq, and, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { logError } from "@/lib/logger";
+import { resetPasswordSchema, validationErrorResponse } from "@/lib/validation";
+import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  // Check rate limit
+  const rateLimitResult = await checkRateLimit("auth");
+  if (!rateLimitResult.success) {
+    return rateLimitExceededResponse(rateLimitResult);
+  }
+
   try {
-    const { token, newPassword } = await req.json();
+    const body = await req.json();
 
-    if (!token || !newPassword) {
-      return NextResponse.json(
-        { error: "Token and new password are required" },
-        { status: 400 }
+    // Validate request body
+    const validation = resetPasswordSchema.safeParse(body);
+    if (!validation.success) {
+      return validationErrorResponse(
+        validation.error.issues[0]?.message || "Validation failed",
+        validation.error.issues
       );
     }
 
-    if (newPassword.length < 8) {
-      return NextResponse.json(
-        { error: "Password must be at least 8 characters" },
-        { status: 400 }
-      );
-    }
+    const { token, password: newPassword } = validation.data;
 
     // Find the token and check if it's valid and not expired
     const resetToken = await db.query.passwordResetTokens.findFirst({

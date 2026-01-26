@@ -96,6 +96,23 @@ export async function logError(
 }
 
 /**
+ * Log a warning with optional context.
+ */
+export async function logWarn(
+  message: string,
+  context?: LogContext
+): Promise<void> {
+  const safeContext = context ? redactSensitiveData(context) : {};
+
+  if (isServer) {
+    const logger = await getServerLogger();
+    logger?.warn(safeContext, message);
+  } else {
+    console.warn(message, safeContext);
+  }
+}
+
+/**
  * Create a child logger with request context
  */
 export function createLogger(context: LogContext): Logger {

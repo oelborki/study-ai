@@ -1,21 +1,32 @@
 import { NextResponse } from "next/server";
 import { db, schema } from "@/lib/db";
-import { eq, and, gt } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { logError } from "@/lib/logger";
+import { forgotPasswordSchema, validationErrorResponse } from "@/lib/validation";
+import { checkRateLimit, rateLimitExceededResponse } from "@/lib/rate-limit";
 
 export async function POST(req: Request) {
+  // Check rate limit
+  const rateLimitResult = await checkRateLimit("auth");
+  if (!rateLimitResult.success) {
+    return rateLimitExceededResponse(rateLimitResult);
+  }
+
   let email: string | undefined;
   try {
     const body = await req.json();
-    email = body.email;
 
-    if (!email) {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 }
+    // Validate request body
+    const validation = forgotPasswordSchema.safeParse(body);
+    if (!validation.success) {
+      return validationErrorResponse(
+        validation.error.issues[0]?.message || "Validation failed",
+        validation.error.issues
       );
     }
+
+    email = validation.data.email;
 
     // Find user by email
     const user = await db.query.users.findFirst({
