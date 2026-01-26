@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import PasswordStrengthIndicator, { requirements } from "./PasswordStrengthIndicator";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -21,8 +22,10 @@ export default function RegisterForm() {
       return;
     }
 
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters");
+    // Check all password requirements
+    const failedRequirements = requirements.filter((req) => !req.test(password));
+    if (failedRequirements.length > 0) {
+      setError("Please meet all password requirements");
       return;
     }
 
@@ -153,23 +156,26 @@ export default function RegisterForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#0891B2] focus:outline-none transition-colors"
-            placeholder="At least 8 characters"
+            placeholder="Create a strong password"
           />
         </div>
 
-        <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#D4D4D4] mb-2">
-            Confirm Password
-          </label>
-          <input
-            id="confirmPassword"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#0891B2] focus:outline-none transition-colors"
-            placeholder="Confirm your password"
-          />
+        <div className="space-y-3">
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#D4D4D4] mb-2">
+              Confirm Password
+            </label>
+            <input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder-[#737373] focus:border-[#0891B2] focus:outline-none transition-colors"
+              placeholder="Confirm your password"
+            />
+          </div>
+          <PasswordStrengthIndicator password={password} />
         </div>
 
         <button
