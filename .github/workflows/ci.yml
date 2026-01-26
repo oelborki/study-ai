@@ -29,5 +29,5 @@ jobs:
       - name: Build application
         run: npm run build
         env:
-          # Dummy values for build (not used, just needed for Next.js build)
-          SKIP_ENV_VALIDATION: true
+          # Dummy values for build (not used, just needed for Next.js to compile)
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
