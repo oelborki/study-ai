@@ -18,14 +18,14 @@ export function HeroSection() {
           className="font-[family-name:var(--font-serif)] text-5xl md:text-6xl lg:text-7xl leading-[1.08] text-[#F8FAFC] animate-hero"
           style={{ letterSpacing: "-0.03em" }}
         >
-          Turn lectures into
+          Turn your notes into
           <br />
-          <span className="text-[#06B6D4]">study sessions</span>
+          <span className="text-[#06B6D4]">knowledge, fast</span>
         </h1>
 
         <p className="mt-8 md:mt-10 text-lg md:text-xl max-w-xl leading-relaxed animate-hero-delay">
           <span className="inline-block clay-subtle rounded-full px-5 py-2.5 text-[#94A3B8]">
-            Upload your documents and let AI create summaries, flashcards, and practice exams. Study smarter, not harder.
+            Upload your notes and let AI create summaries, flashcards, and practice exams — in seconds.
           </span>
         </p>
 

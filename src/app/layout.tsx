@@ -17,8 +17,8 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Study-AI - Turn lecture materials into study sessions",
-  description: "Upload PowerPoint or PDF documents and generate summaries, flashcards, and practice exams with scoring. All results are cached for instant access.",
+  title: "QuickyNotes - Turn your notes into knowledge, fast",
+  description: "Upload your lecture notes and let AI generate summaries, flashcards, and practice exams in seconds.",
 };
 
 export default function RootLayout({

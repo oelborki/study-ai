@@ -120,7 +120,7 @@ export function FeaturesSection() {
             <span className="text-sm font-medium text-[#06B6D4]">Features</span>
           </div>
           <h2 className="font-[family-name:var(--font-serif)] text-3xl md:text-4xl text-[#F8FAFC] mb-4">
-            Why students <span className="text-[#06B6D4]">love</span> Study AI
+            Why students <span className="text-[#06B6D4]">love</span> QuickyNotes
           </h2>
           <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto">
             Everything you need to ace your exams, all in one place

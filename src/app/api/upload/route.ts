@@ -82,7 +82,7 @@ export async function POST(req: Request) {
   const id = randomUUID();
 
   // Save file to temp directory (for Python extraction)
-  const tempDir = path.join(os.tmpdir(), "study-ai-upload");
+  const tempDir = path.join(os.tmpdir(), "quickynotes-upload");
   await mkdir(tempDir, { recursive: true });
   const tempFilePath = path.join(tempDir, `${id}.${fileExt}`);
   const buf = Buffer.from(await file.arrayBuffer());
