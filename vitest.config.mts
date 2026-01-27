@@ -9,6 +9,20 @@ export default defineConfig({
     environment: 'node',
     include: ['tests/**/*.test.ts'],
     globals: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      include: ['src/lib/**/*.ts', 'src/app/api/**/*.ts'],
+      exclude: ['**/*.d.ts', '**/types.ts', '**/schema.ts'],
+      thresholds: {
+        // Starting thresholds based on current coverage
+        // Increase these as coverage improves
+        lines: 30,
+        functions: 30,
+        branches: 20,
+        statements: 30,
+      },
+    },
   },
   resolve: {
     alias: {
