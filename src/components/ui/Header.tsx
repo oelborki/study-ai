@@ -13,7 +13,7 @@ export default async function Header() {
             href={session?.user ? "/dashboard" : "/"}
             className="text-2xl font-bold tracking-tight text-white hover:text-[#06B6D4] transition-colors duration-200"
           >
-            Study-AI
+            QuickyNotes
           </Link>
 
           <div className="flex items-center gap-4">

@@ -26,7 +26,7 @@ export default function Home() {
 
       <footer className="mx-auto mt-32 md:mt-40 max-w-3xl pb-10">
         <div className="clay-subtle px-8 py-6 text-center">
-          <p className="text-xs text-[#64748B]">Study smarter, not harder.</p>
+          <p className="text-xs text-[#64748B]">Your notes, supercharged.</p>
         </div>
       </footer>
     </main>

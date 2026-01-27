@@ -12,7 +12,7 @@ export function DemoSection() {
             <span className="text-sm font-medium text-[#06B6D4]">Live Demo</span>
           </div>
           <h2 className="font-[family-name:var(--font-serif)] text-3xl md:text-4xl text-[#F8FAFC] mb-4">
-            See Study AI in <span className="text-[#06B6D4]">action</span>
+            See QuickyNotes in <span className="text-[#06B6D4]">action</span>
           </h2>
           <p className="text-lg text-[#94A3B8] max-w-2xl mx-auto">
             Upload any document and watch as AI transforms it into comprehensive study materials

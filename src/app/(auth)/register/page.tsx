@@ -6,7 +6,7 @@ export default function RegisterPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white">Create an account</h1>
-          <p className="mt-2 text-[#A3A3A3]">Start studying smarter today</p>
+          <p className="mt-2 text-[#A3A3A3]">Start learning faster today</p>
         </div>
 
         <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8">

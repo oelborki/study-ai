@@ -10,10 +10,10 @@ export function CTASection() {
         {/* Modern clay card */}
         <div className="clay-hero p-8 md:p-12 text-center">
           <h2 className="font-[family-name:var(--font-serif)] text-3xl md:text-4xl text-[#F8FAFC] mb-4">
-            Ready to study <span className="text-[#06B6D4]">smarter</span>?
+            Ready to ace your next <span className="text-[#06B6D4]">exam</span>?
           </h2>
           <p className="text-lg text-[#94A3B8] mb-8 max-w-lg mx-auto">
-            Join students who are already learning more efficiently with AI-powered study materials.
+            Join students who are already learning faster with QuickyNotes.
           </p>
 
           <div className="flex flex-col items-center gap-4">
