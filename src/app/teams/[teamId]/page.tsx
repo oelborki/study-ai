@@ -3,6 +3,7 @@ import { redirect, notFound } from "next/navigation";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import Link from "next/link";
+import Image from "next/image";
 import InviteLinkSection from "./InviteLinkSection";
 
 interface PageProps {
@@ -38,24 +39,20 @@ export default async function TeamDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  // Get all members with user info
+  // Get all members with user info using Drizzle relations (single query)
   const members = await db.query.teamMembers.findMany({
     where: eq(schema.teamMembers.teamId, teamId),
+    with: {
+      user: true,
+    },
   });
 
-  const membersWithInfo = await Promise.all(
-    members.map(async (m) => {
-      const user = await db.query.users.findFirst({
-        where: eq(schema.users.id, m.userId),
-      });
-      return {
-        ...m,
-        name: user?.name || user?.email || "Unknown",
-        email: user?.email || "",
-        image: user?.image,
-      };
-    })
-  );
+  const membersWithInfo = members.map((m) => ({
+    ...m,
+    name: m.user?.name || m.user?.email || "Unknown",
+    email: m.user?.email || "",
+    image: m.user?.image,
+  }));
 
   // Get team decks
   const decks = await db.query.decks.findMany({
@@ -149,10 +146,12 @@ export default async function TeamDetailPage({ params }: PageProps) {
                     className="flex items-center gap-3"
                   >
                     {member.image ? (
-                      <img
+                      <Image
                         src={member.image}
                         alt={member.name}
-                        className="w-8 h-8 rounded-full"
+                        width={32}
+                        height={32}
+                        className="rounded-full"
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full bg-[#0891B2] flex items-center justify-center text-xs text-white font-semibold">

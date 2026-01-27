@@ -4,6 +4,17 @@ import { withSentryConfig } from "@sentry/nextjs";
 const nextConfig: NextConfig = {
   output: 'standalone',
   reactCompiler: true,
+  poweredByHeader: false, // Security: hide X-Powered-By
+  compress: true, // Enable gzip compression
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com', // Google profile pics
+      },
+    ],
+    formats: ['image/avif', 'image/webp'],
+  },
   async headers() {
     return [
       {

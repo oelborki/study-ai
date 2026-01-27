@@ -86,13 +86,11 @@ describe('GET /api/teams', () => {
 
   it('should return user teams with roles', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+    // New pattern: findMany returns memberships with team relation
     mockTeamMembersFindMany.mockResolvedValue([
-      { teamId: 'team-1', role: 'owner' },
-      { teamId: 'team-2', role: 'member' },
+      { teamId: 'team-1', role: 'owner', team: { id: 'team-1', name: 'Team Alpha' } },
+      { teamId: 'team-2', role: 'member', team: { id: 'team-2', name: 'Team Beta' } },
     ]);
-    mockTeamsFindFirst
-      .mockResolvedValueOnce({ id: 'team-1', name: 'Team Alpha' })
-      .mockResolvedValueOnce({ id: 'team-2', name: 'Team Beta' });
 
     const { GET } = await import('@/app/api/teams/route');
     const response = await GET();
@@ -108,13 +106,11 @@ describe('GET /api/teams', () => {
 
   it('should filter out null teams', async () => {
     mockAuth.mockResolvedValue({ user: { id: 'user-123' } });
+    // New pattern: memberships with team relation, null team filtered out
     mockTeamMembersFindMany.mockResolvedValue([
-      { teamId: 'team-1', role: 'owner' },
-      { teamId: 'team-2', role: 'member' },
+      { teamId: 'team-1', role: 'owner', team: { id: 'team-1', name: 'Team Alpha' } },
+      { teamId: 'team-2', role: 'member', team: null }, // Team was deleted
     ]);
-    mockTeamsFindFirst
-      .mockResolvedValueOnce({ id: 'team-1', name: 'Team Alpha' })
-      .mockResolvedValueOnce(null); // Team was deleted
 
     const { GET } = await import('@/app/api/teams/route');
     const response = await GET();

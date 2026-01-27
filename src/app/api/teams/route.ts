@@ -14,28 +14,30 @@ export async function GET() {
   }
 
   try {
+    // Use Drizzle relations to fetch memberships with team data in single query
     const memberships = await db.query.teamMembers.findMany({
       where: eq(schema.teamMembers.userId, session.user.id),
+      with: {
+        team: true,
+      },
     });
 
-    const teamIds = memberships.map((m) => m.teamId);
+    // Transform to include role with team data
+    const teams = memberships
+      .filter((m) => m.team)
+      .map((m) => ({
+        ...m.team,
+        role: m.role,
+      }));
 
-    if (teamIds.length === 0) {
-      return NextResponse.json({ teams: [] });
-    }
-
-    const teams = await Promise.all(
-      memberships.map(async (m) => {
-        const team = await db.query.teams.findFirst({
-          where: eq(schema.teams.id, m.teamId),
-        });
-        return team ? { ...team, role: m.role } : null;
-      })
+    return NextResponse.json(
+      { teams },
+      {
+        headers: {
+          "Cache-Control": "private, max-age=60, stale-while-revalidate=120",
+        },
+      }
     );
-
-    return NextResponse.json({
-      teams: teams.filter(Boolean),
-    });
   } catch (error) {
     await logError("Failed to fetch teams", error, { userId: session.user.id });
     return NextResponse.json(
