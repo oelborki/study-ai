@@ -77,13 +77,20 @@ export async function GET(
       where: eq(schema.teamMembers.teamId, team.id),
     });
 
-    return NextResponse.json({
-      team: {
-        id: team.id,
-        name: team.name,
-        memberCount: members.length,
+    return NextResponse.json(
+      {
+        team: {
+          id: team.id,
+          name: team.name,
+          memberCount: members.length,
+        },
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "public, max-age=300",
+        },
+      }
+    );
   } catch (error) {
     await logError("Failed to get team", error, { code });
     return NextResponse.json(

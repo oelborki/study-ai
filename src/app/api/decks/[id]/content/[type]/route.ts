@@ -52,15 +52,20 @@ export async function GET(
   const storage = getStorage();
   const storageKey = getStorageKey(id, type as ContentType);
 
+  // Immutable content - once generated, content doesn't change
+  const cacheHeaders = {
+    "Cache-Control": "public, max-age=31536000, immutable",
+  };
+
   try {
     const content = await storage.getString(storageKey);
     try {
-      return NextResponse.json(JSON.parse(content));
+      return NextResponse.json(JSON.parse(content), { headers: cacheHeaders });
     } catch {
       return NextResponse.json({ error: "Invalid content format" }, { status: 500 });
     }
   } catch {
-    // Return empty structure if file doesn't exist
+    // Return empty structure if file doesn't exist (no caching for empty content)
     const emptyContent: Record<string, unknown> = {
       deckId: id,
       type,

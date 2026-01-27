@@ -36,7 +36,14 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json({ decks });
+    return NextResponse.json(
+      { decks },
+      {
+        headers: {
+          "Cache-Control": "private, max-age=60, stale-while-revalidate=120",
+        },
+      }
+    );
   } catch (error) {
     await logError("Failed to fetch decks", error, { userId });
     return NextResponse.json(
