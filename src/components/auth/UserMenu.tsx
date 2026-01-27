@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import type { User } from "next-auth";
 
 export default function UserMenu({ user }: { user: User }) {
@@ -26,10 +27,12 @@ export default function UserMenu({ user }: { user: User }) {
         className="flex items-center gap-2 clay-subtle px-3 py-2 hover:brightness-110 transition-all"
       >
         {user.image ? (
-          <img
+          <Image
             src={user.image}
             alt={user.name || "User"}
-            className="w-6 h-6 rounded-full"
+            width={24}
+            height={24}
+            className="rounded-full"
           />
         ) : (
           <div className="w-6 h-6 rounded-full bg-[#0891B2] flex items-center justify-center text-xs text-white font-semibold">
