@@ -41,9 +41,8 @@ test.describe('Authentication', () => {
     await page.click('button[type="submit"]');
 
     // Should stay on register page or show error
-    await page.waitForTimeout(1000);
-    const url = page.url();
-    expect(url).toContain('register');
+    await page.waitForURL(/register/, { timeout: 5000 });
+    expect(page.url()).toContain('register');
   });
 
   test('should reject login with invalid credentials', async ({ page }) => {
@@ -54,10 +53,8 @@ test.describe('Authentication', () => {
     await page.click('button[type="submit"]');
 
     // Should stay on login page or redirect with error
-    await page.waitForTimeout(2000);
-    const url = page.url();
-    // Login page should still be shown or redirect to login with error
-    expect(url).toContain('login');
+    await page.waitForURL(/login/, { timeout: 5000 });
+    expect(page.url()).toContain('login');
   });
 
   test('should have link between login and register pages', async ({ page }) => {
@@ -84,8 +81,7 @@ test.describe('Authentication', () => {
     await page.goto('/dashboard');
 
     // Should redirect to login or show auth error
-    await page.waitForTimeout(2000);
-    const url = page.url();
-    expect(url.includes('login') || url.includes('auth')).toBeTruthy();
+    await page.waitForURL(/login|auth/, { timeout: 5000 });
+    expect(page.url()).toMatch(/login|auth/);
   });
 });

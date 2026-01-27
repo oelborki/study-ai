@@ -1,3 +1,4 @@
+// Playwright's `use` function triggers false positive for react-hooks/rules-of-hooks
 /* eslint-disable react-hooks/rules-of-hooks */
 import { test as base, expect, Page } from '@playwright/test';
 
