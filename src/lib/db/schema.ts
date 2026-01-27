@@ -7,6 +7,7 @@ import {
   primaryKey,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 // ============================================
 // NextAuth Required Tables
@@ -162,6 +163,70 @@ export const deckShares = pgTable("deck_shares", {
   ),
   expiresAt: timestamp("expires_at", { mode: "date" }),
 });
+
+// ============================================
+// Relations
+// ============================================
+
+export const usersRelations = relations(users, ({ many }) => ({
+  accounts: many(accounts),
+  sessions: many(sessions),
+  teamMembers: many(teamMembers),
+  decks: many(decks),
+}));
+
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, {
+    fields: [accounts.userId],
+    references: [users.id],
+  }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, {
+    fields: [sessions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const teamsRelations = relations(teams, ({ one, many }) => ({
+  owner: one(users, {
+    fields: [teams.ownerId],
+    references: [users.id],
+  }),
+  members: many(teamMembers),
+  decks: many(decks),
+}));
+
+export const teamMembersRelations = relations(teamMembers, ({ one }) => ({
+  team: one(teams, {
+    fields: [teamMembers.teamId],
+    references: [teams.id],
+  }),
+  user: one(users, {
+    fields: [teamMembers.userId],
+    references: [users.id],
+  }),
+}));
+
+export const decksRelations = relations(decks, ({ one, many }) => ({
+  user: one(users, {
+    fields: [decks.userId],
+    references: [users.id],
+  }),
+  team: one(teams, {
+    fields: [decks.teamId],
+    references: [teams.id],
+  }),
+  shares: many(deckShares),
+}));
+
+export const deckSharesRelations = relations(deckShares, ({ one }) => ({
+  deck: one(decks, {
+    fields: [deckShares.deckId],
+    references: [decks.id],
+  }),
+}));
 
 // ============================================
 // Type Exports
