@@ -511,6 +511,11 @@ body {
   color: #F8FAFC;
 }
 
+.glass-surface {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
 .flashcard-back {
   background: linear-gradient(135deg, #06B6D4 0%, #22D3EE 100%);
   border: 2px solid #22D3EE;
