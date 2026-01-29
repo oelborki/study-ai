@@ -39,7 +39,7 @@ export default function SummarySection({ summary, setSummary, deckId, onError }:
     }
 
     return (
-        <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+        <div className="rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
             <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
                 <h2 className="text-2xl font-bold text-white">Summary</h2>
                 {summary && !isEditing && (
