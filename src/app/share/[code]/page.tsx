@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { db, schema } from "@/lib/db";
 import { eq, and } from "drizzle-orm";
 import { getStorage, getStorageKey } from "@/lib/storage";
-import GenerateButtons from "@/app/deck/[id]/GenerateButtons";
+import GenerateButtons from "@/app/(app)/deck/[id]/GenerateButtons";
 import SaveDeckButton from "@/components/share/SaveDeckButton";
 
 interface PageProps {
