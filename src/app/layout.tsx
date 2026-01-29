@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/ui/Header";
+import HeaderConditional from "@/components/ui/HeaderConditional";
 import AuthProvider from "@/components/auth/AuthProvider";
 
 const instrumentSerif = Instrument_Serif({
@@ -32,7 +33,9 @@ export default function RootLayout({
         className={`${instrumentSerif.variable} ${dmSans.variable} antialiased`}
       >
         <AuthProvider>
-          <Header />
+          <HeaderConditional>
+            <Header />
+          </HeaderConditional>
           {children}
         </AuthProvider>
       </body>
