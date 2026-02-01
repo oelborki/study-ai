@@ -210,7 +210,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                         <button
                                             onClick={() => handleSaveQuestion(i)}
                                             disabled={saving}
-                                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
+                                            className="btn-gradient-accent rounded-lg px-4 py-2 text-xs font-medium disabled:opacity-50"
                                         >
                                             {saving ? "Saving..." : "Save"}
                                         </button>

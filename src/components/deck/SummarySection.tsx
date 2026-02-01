@@ -66,7 +66,7 @@ export default function SummarySection({ summary, setSummary, deckId, onError }:
                         <button
                             onClick={handleSave}
                             disabled={saving || !editedSummary.trim()}
-                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                            className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                         >
                             {saving ? "Saving..." : "Save Summary"}
                         </button>
