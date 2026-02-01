@@ -59,7 +59,7 @@ export default function DashboardActions() {
         </button>
         <Link
           href="/upload"
-          className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-5 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md"
+          className="rounded-lg btn-accent px-5 py-2.5 text-sm font-medium text-white transition-all duration-200 shadow-sm hover:shadow-md"
         >
           Upload New Deck
         </Link>
@@ -98,7 +98,8 @@ export default function DashboardActions() {
               onKeyDown={handleKeyDown}
               placeholder="Enter deck title..."
               autoFocus
-              className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder:text-[#737373] focus:border-[#06B6D4] focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-[#0A0A0A] transition-all"
+              className="w-full rounded-lg border-2 border-[#404040] bg-[#121212] px-4 py-3 text-white placeholder:text-[#737373] focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#0A0A0A] transition-all"
+              style={{ ["--tw-ring-color" as string]: "var(--color-accent)" }}
             />
 
             {error && (
@@ -116,7 +117,7 @@ export default function DashboardActions() {
               <button
                 onClick={handleCreate}
                 disabled={creating || !title.trim()}
-                className="flex-1 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-4 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all disabled:opacity-50"
+                className="flex-1 rounded-lg btn-accent px-4 py-2.5 text-sm font-medium text-white transition-all disabled:opacity-50"
               >
                 {creating ? "Creating..." : "Create"}
               </button>
