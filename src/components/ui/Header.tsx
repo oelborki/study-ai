@@ -11,7 +11,7 @@ export default async function Header() {
         <nav className="flex items-center justify-between">
           <Link
             href={session?.user ? "/dashboard" : "/"}
-            className="text-2xl font-bold tracking-tight text-white hover:text-[#06B6D4] transition-colors duration-200"
+            className="text-2xl font-bold tracking-tight text-white hover:text-accent transition-colors duration-200"
           >
             QuickyNotes
           </Link>
@@ -27,7 +27,7 @@ export default async function Header() {
                 </Link>
                 <Link
                   href="/upload"
-                  className="rounded-lg bg-[#06B6D4] px-5 py-2.5 text-sm font-medium text-[#0A0A0F] hover:bg-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-[#06B6D4]/20"
+                  className="rounded-lg btn-accent px-5 py-2.5 text-sm font-medium shadow-sm hover:shadow-md"
                 >
                   Upload Deck
                 </Link>
@@ -43,7 +43,7 @@ export default async function Header() {
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-lg bg-[#06B6D4] px-5 py-2.5 text-sm font-medium text-[#0A0A0F] hover:bg-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md hover:shadow-[#06B6D4]/20"
+                  className="rounded-lg btn-accent px-5 py-2.5 text-sm font-medium shadow-sm hover:shadow-md"
                 >
                   Get Started
                 </Link>

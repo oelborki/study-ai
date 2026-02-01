@@ -23,13 +23,13 @@ export default function LoadingSpinner({
       {/* Spinning ring container */}
       <div className={`${sizeClasses[size]} relative animate-spin-smooth`}>
         {/* Gradient ring */}
-        <div className="absolute inset-0 rounded-full border-4 border-transparent bg-gradient-to-br from-[#0891B2] to-[#06B6D4] spinner-ring" />
+        <div className="absolute inset-0 rounded-full border-4 border-transparent spinner-ring" style={{ background: `linear-gradient(to bottom right, var(--color-accent-hover), var(--color-accent))` }} />
         {/* Inner circle for ring effect */}
         <div className="absolute inset-2 rounded-full bg-[#0A0A0A]" />
       </div>
 
       {/* Loading text */}
-      <p className="mt-6 text-base font-medium text-[#06B6D4]">
+      <p className="mt-6 text-base font-medium text-accent">
         {modeText[mode]}...
       </p>
     </div>
