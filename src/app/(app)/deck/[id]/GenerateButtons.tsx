@@ -314,10 +314,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                         {summary && (
                             <button
                                 onClick={() => setActive("summary")}
-                                className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all ${
-                                    active === "summary"
-                                        ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                                        : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE]"
+                                className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md ${
+                                    active === "summary" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                                 }`}
                             >
                                 Summary
@@ -326,10 +324,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                         {flashcards && flashcards.length > 0 && (
                             <button
                                 onClick={() => { setActive("flashcards"); setIdx(0); setRevealed(false); }}
-                                className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all ${
-                                    active === "flashcards"
-                                        ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                                        : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE]"
+                                className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md ${
+                                    active === "flashcards" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                                 }`}
                             >
                                 Flashcards
@@ -338,10 +334,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                         {exam?.questions && exam.questions.length > 0 && (
                             <button
                                 onClick={() => { setActive("exam"); setQIdx(0); setShowAnswer(false); setProgress({}); setFinished(false); }}
-                                className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all ${
-                                    active === "exam"
-                                        ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                                        : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE]"
+                                className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md ${
+                                    active === "exam" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                                 }`}
                             >
                                 Practice Exam
@@ -425,10 +419,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 <button
                     onClick={generateSummary}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black ${
-                        active === "summary"
-                            ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                            : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE] shadow-sm hover:shadow-md"
+                    className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black ${
+                        active === "summary" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                     }`}
                 >
                     {loading === "summary" ? "Generating..." : "Summary"}
@@ -437,10 +429,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 <button
                     onClick={generateFlashcards}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black ${
-                        active === "flashcards"
-                            ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                            : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE] shadow-sm hover:shadow-md"
+                    className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black ${
+                        active === "flashcards" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                     }`}
                 >
                     {loading === "flashcards" ? "Generating..." : "Flashcards"}
@@ -449,10 +439,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 <button
                     onClick={generateExam}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black ${
-                        active === "exam"
-                            ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                            : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE] shadow-sm hover:shadow-md"
+                    className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black ${
+                        active === "exam" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                     }`}
                 >
                     {loading === "exam" ? "Generating..." : "Practice Exam"}
@@ -555,7 +543,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                 }
                                             }}
                                             disabled={saving}
-                                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                            className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                                         >
                                             {saving ? "Saving..." : "Save"}
                                         </button>
@@ -647,7 +635,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                         }
                                                     }}
                                                     disabled={saving}
-                                                    className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                                    className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                                                 >
                                                     {saving ? "Saving..." : "Save"}
                                                 </button>
@@ -687,13 +675,13 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                     </div>
                                                 </div>
                                                 <div className="flashcard-back">
-                                                    <div className="text-sm font-semibold text-[#0E7490] mb-3 text-center">
+                                                    <div className="text-sm font-semibold text-[#000000] mb-3 text-center">
                                                         Answer:
                                                     </div>
                                                     <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">
                                                         {current.a}
                                                     </div>
-                                                    <div className="text-xs text-[#0E7490] text-center mt-2">
+                                                    <div className="text-xs text-[#000000] text-center mt-2">
                                                         Click to flip back
                                                     </div>
                                                 </div>
@@ -800,14 +788,14 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                 <div className="mt-4 flex gap-3">
                                                     <button
                                                         onClick={retakeExam}
-                                                        className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                                                        className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
                                                     >
                                                         Retake
                                                     </button>
 
                                                     <button
                                                         onClick={() => setFinished(false)}
-                                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
                                                         title="Go back to review questions"
                                                     >
                                                         Review
@@ -934,7 +922,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                                     }
                                                                 }}
                                                                 disabled={saving}
-                                                                className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                                                className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                                                             >
                                                                 {saving ? "Saving..." : "Save"}
                                                             </button>
@@ -1024,7 +1012,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                                 {!p.graded && !showAnswer && (
                                                                     <button
                                                                         onClick={() => setShowAnswer(true)}
-                                                                        className="mt-3 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                                                                        className="btn-gradient-accent mt-3 rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
                                                                     >
                                                                         Show Answer
                                                                     </button>
