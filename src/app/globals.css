@@ -514,7 +514,7 @@ body {
 
 .glass-surface {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-  border-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .flashcard-back {
@@ -777,7 +777,7 @@ body {
 /* Gradient accent button - for primary action buttons */
 .btn-gradient-accent {
   background: linear-gradient(to bottom right, var(--color-accent-hover), var(--color-accent));
-  color: white;
+  color: #0A0A0F;
   transition: all 0.2s;
 }
 
@@ -787,9 +787,9 @@ body {
 
 .btn-gradient-accent:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #0A0A0A, 0 0 0 4px var(--color-accent);
+  box-shadow: 0 0 0 2px #0A0A0F, 0 0 0 4px var(--color-accent);
 }
 
 .btn-gradient-accent.active {
-  box-shadow: 0 0 0 2px #0A0A0A, 0 0 0 4px var(--color-accent);
+  box-shadow: 0 0 0 2px #0A0A0F, 0 0 0 4px var(--color-accent);
 }
