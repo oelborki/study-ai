@@ -314,10 +314,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                         {summary && (
                             <button
                                 onClick={() => setActive("summary")}
-                                className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all ${
-                                    active === "summary"
-                                        ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                                        : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE]"
+                                className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md ${
+                                    active === "summary" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                                 }`}
                             >
                                 Summary
@@ -326,10 +324,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                         {flashcards && flashcards.length > 0 && (
                             <button
                                 onClick={() => { setActive("flashcards"); setIdx(0); setRevealed(false); }}
-                                className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all ${
-                                    active === "flashcards"
-                                        ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                                        : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE]"
+                                className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md ${
+                                    active === "flashcards" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                                 }`}
                             >
                                 Flashcards
@@ -338,10 +334,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                         {exam?.questions && exam.questions.length > 0 && (
                             <button
                                 onClick={() => { setActive("exam"); setQIdx(0); setShowAnswer(false); setProgress({}); setFinished(false); }}
-                                className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-all ${
-                                    active === "exam"
-                                        ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                                        : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE]"
+                                className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md ${
+                                    active === "exam" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                                 }`}
                             >
                                 Practice Exam
@@ -356,7 +350,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                     {/* Summary view */}
                     {active === "summary" && summary && (
                         <AnimatedPanel activeKey="summary">
-                            <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                            <div className="rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
                                 <h2 className="text-2xl font-bold text-white mb-6 pb-3 border-b border-[#404040]">Summary</h2>
                                 <MarkdownRenderer content={summary} />
                             </div>
@@ -425,10 +419,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 <button
                     onClick={generateSummary}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black ${
-                        active === "summary"
-                            ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                            : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE] shadow-sm hover:shadow-md"
+                    className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black ${
+                        active === "summary" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                     }`}
                 >
                     {loading === "summary" ? "Generating..." : "Summary"}
@@ -437,10 +429,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 <button
                     onClick={generateFlashcards}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black ${
-                        active === "flashcards"
-                            ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                            : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE] shadow-sm hover:shadow-md"
+                    className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black ${
+                        active === "flashcards" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                     }`}
                 >
                     {loading === "flashcards" ? "Generating..." : "Flashcards"}
@@ -449,10 +439,8 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                 <button
                     onClick={generateExam}
                     disabled={loading !== null}
-                    className={`rounded-lg px-6 py-2.5 text-sm font-medium text-white disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black ${
-                        active === "exam"
-                            ? "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] ring-2 ring-[#06B6D4] ring-offset-2 shadow-md"
-                            : "bg-gradient-to-br from-[#0891B2] to-[#06B6D4] hover:from-[#0E7490] hover:to-[#22D3EE] shadow-sm hover:shadow-md"
+                    className={`btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black ${
+                        active === "exam" ? "ring-2 ring-accent ring-offset-2 ring-offset-black" : ""
                     }`}
                 >
                     {loading === "exam" ? "Generating..." : "Practice Exam"}
@@ -500,13 +488,13 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
             {active === "summary" && (
                 loading === "summary" ? (
                     <AnimatedPanel activeKey="summary-loading">
-                        <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] shadow-md">
+                        <div className="mt-8 rounded-xl border border-[#404040] bg-[#0c0c12] shadow-md">
                             <LoadingSpinner mode="summary" />
                         </div>
                     </AnimatedPanel>
                 ) : summary ? (
                     <AnimatedPanel activeKey="summary">
-                        <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                        <div className="mt-8 rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
                             <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
                                 <h2 className="text-2xl font-bold text-white">
                                     Summary
@@ -555,7 +543,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                 }
                                             }}
                                             disabled={saving}
-                                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                            className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                                         >
                                             {saving ? "Saving..." : "Save"}
                                         </button>
@@ -582,13 +570,13 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
             {active === "flashcards" && (
                 loading === "flashcards" ? (
                     <AnimatedPanel activeKey="flashcards-loading">
-                        <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] shadow-md">
+                        <div className="mt-8 rounded-xl border border-[#404040] bg-[#0c0c12] shadow-md">
                             <LoadingSpinner mode="flashcards" />
                         </div>
                     </AnimatedPanel>
                 ) : flashcards?.length ? (
                     <AnimatedPanel activeKey="flashcards">
-                        <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                        <div className="mt-8 rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
                             <div className="flex items-center justify-between gap-3 mb-6 pb-3 border-b border-[#404040]">
                                 <h2 className="text-2xl font-bold text-white">Flashcards</h2>
                                 <div className="text-sm text-[#A3A3A3] font-medium">
@@ -647,7 +635,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                         }
                                                     }}
                                                     disabled={saving}
-                                                    className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                                    className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                                                 >
                                                     {saving ? "Saving..." : "Save"}
                                                 </button>
@@ -687,13 +675,13 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                     </div>
                                                 </div>
                                                 <div className="flashcard-back">
-                                                    <div className="text-sm font-semibold text-[#0E7490] mb-3 text-center">
+                                                    <div className="text-sm font-semibold text-[#000000] mb-3 text-center">
                                                         Answer:
                                                     </div>
                                                     <div className="text-base text-center flex-grow flex items-center justify-center whitespace-pre-wrap">
                                                         {current.a}
                                                     </div>
-                                                    <div className="text-xs text-[#0E7490] text-center mt-2">
+                                                    <div className="text-xs text-[#000000] text-center mt-2">
                                                         Click to flip back
                                                     </div>
                                                 </div>
@@ -762,13 +750,13 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
             {active === "exam" && (
                 loading === "exam" ? (
                     <AnimatedPanel activeKey="exam-loading">
-                        <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] shadow-md">
+                        <div className="mt-8 rounded-xl border border-[#404040] bg-[#0c0c12] shadow-md">
                             <LoadingSpinner mode="exam" />
                         </div>
                     </AnimatedPanel>
                 ) : exam?.questions?.length ? (
                     <AnimatedPanel activeKey="exam">
-                        <div className="mt-8 rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                        <div className="mt-8 rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
                             <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#404040] mb-4">
                                 <h2 className="text-2xl font-bold text-white">{exam.title || "Practice Exam"}</h2>
                                 {!finished && (
@@ -783,7 +771,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                             )}
 
                             {finished ? (
-                                <div className="mt-4 rounded-lg border border-[#404040] p-6 bg-[#0A0A0A]">
+                                <div className="mt-4 rounded-lg border p-6 glass-surface">
                                     {(() => {
                                         const { correct, total } = scoreSummary();
                                         const percent = total ? Math.round((correct / total) * 100) : 0;
@@ -800,14 +788,14 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                 <div className="mt-4 flex gap-3">
                                                     <button
                                                         onClick={retakeExam}
-                                                        className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                                                        className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
                                                     >
                                                         Retake
                                                     </button>
 
                                                     <button
                                                         onClick={() => setFinished(false)}
-                                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                                                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
                                                         title="Go back to review questions"
                                                     >
                                                         Review
@@ -822,7 +810,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                     })()}
                                 </div>
                             ) : (
-                                <div className="mt-4 rounded-lg border border-[#404040] p-4 bg-[#0A0A0A]">
+                                <div className="mt-4 rounded-lg border p-4 glass-surface">
                                     {(() => {
                                         const q = exam.questions[Math.min(qIdx, exam.questions.length - 1)];
                                         const p = progress[q.id] || {};
@@ -934,7 +922,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                                     }
                                                                 }}
                                                                 disabled={saving}
-                                                                className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                                                                className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                                                             >
                                                                 {saving ? "Saving..." : "Save"}
                                                             </button>
@@ -1024,7 +1012,7 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                                                 {!p.graded && !showAnswer && (
                                                                     <button
                                                                         onClick={() => setShowAnswer(true)}
-                                                                        className="mt-3 rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                                                                        className="btn-gradient-accent mt-3 rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-black"
                                                                     >
                                                                         Show Answer
                                                                     </button>

@@ -39,7 +39,7 @@ export default function SummarySection({ summary, setSummary, deckId, onError }:
     }
 
     return (
-        <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+        <div className="rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
             <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
                 <h2 className="text-2xl font-bold text-white">Summary</h2>
                 {summary && !isEditing && (
@@ -66,7 +66,7 @@ export default function SummarySection({ summary, setSummary, deckId, onError }:
                         <button
                             onClick={handleSave}
                             disabled={saving || !editedSummary.trim()}
-                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-6 py-2.5 text-sm font-medium text-white hover:from-[#0E7490] hover:to-[#22D3EE] transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+                            className="btn-gradient-accent rounded-lg px-6 py-2.5 text-sm font-medium shadow-sm hover:shadow-md disabled:opacity-50"
                         >
                             {saving ? "Saving..." : "Save Summary"}
                         </button>

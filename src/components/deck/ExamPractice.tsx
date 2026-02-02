@@ -51,7 +51,7 @@ export default function ExamPractice({ exam, onFinish }: ExamPracticeProps) {
 
         return (
             <AnimatedPanel activeKey="exam-finished">
-                <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+                <div className="rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
                     <h2 className="text-2xl font-bold text-white mb-4">Results</h2>
                     <p className="text-[#D4D4D4]">
                         Score: <span className="font-semibold">{correct}</span> / <span className="font-semibold">{total}</span> ({percent}%)
@@ -77,13 +77,13 @@ export default function ExamPractice({ exam, onFinish }: ExamPracticeProps) {
 
     return (
         <AnimatedPanel activeKey="exam">
-            <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+            <div className="rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
                 <div className="flex items-center justify-between gap-3 pb-3 border-b border-[#404040] mb-4">
                     <h2 className="text-2xl font-bold text-white">{exam.title || "Practice Exam"}</h2>
                     <div className="text-sm text-[#A3A3A3] font-medium">{qIdx + 1} / {exam.questions.length}</div>
                 </div>
 
-                <div className="rounded-lg border border-[#404040] p-4 bg-[#0A0A0A]">
+                <div className="rounded-lg border p-4 glass-surface">
                     <div className="text-sm text-[#A3A3A3]">Difficulty: {q.difficulty}</div>
                     <div className="mt-3 text-base font-semibold text-white">{q.id}: {q.question}</div>
 

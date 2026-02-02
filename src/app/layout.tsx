@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Instrument_Serif, DM_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/ui/Header";
+import HeaderConditional from "@/components/ui/HeaderConditional";
 import AuthProvider from "@/components/auth/AuthProvider";
+import { ThemeProvider } from "@/components/ui/ThemeContext";
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-serif",
@@ -32,8 +34,12 @@ export default function RootLayout({
         className={`${instrumentSerif.variable} ${dmSans.variable} antialiased`}
       >
         <AuthProvider>
-          <Header />
-          {children}
+          <ThemeProvider>
+            <HeaderConditional>
+              <Header />
+            </HeaderConditional>
+            {children}
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>

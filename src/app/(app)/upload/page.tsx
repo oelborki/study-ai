@@ -1,6 +1,6 @@
 export default function UploadPage() {
   return (
-    <main className="min-h-[calc(100vh-73px)] px-6 py-12 bg-[#000000]">
+    <main className="min-h-screen px-6 py-12 bg-[#12121c]">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold text-white tracking-tight">Upload Your Document</h1>
         <p className="mt-3 text-lg text-[#D4D4D4] max-w-3xl">

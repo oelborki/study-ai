@@ -49,7 +49,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
     <>
       <div
         onClick={handleCardClick}
-        className="group relative rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-6 hover:border-[#0891B2] transition-all duration-200 cursor-pointer"
+        className="group relative rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-6 hover:border-accent transition-all duration-200 cursor-pointer"
       >
         {/* Delete button - shows on hover */}
         <button
@@ -65,7 +65,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
         <div className="flex items-start justify-between mb-4">
           <div className="w-10 h-10 rounded-lg bg-[#1A1A1A] flex items-center justify-center">
             {deck.fileType === "manual" ? (
-              <svg className="w-5 h-5 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-accent" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
               </svg>
             ) : deck.fileType === "pdf" ? (
@@ -83,7 +83,7 @@ export default function DeckCard({ deck }: DeckCardProps) {
           </span>
         </div>
 
-        <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-[#06B6D4] transition-colors line-clamp-2">
+        <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-accent transition-colors line-clamp-2">
           {deck.title}
         </h3>
 

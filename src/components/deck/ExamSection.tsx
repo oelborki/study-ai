@@ -107,7 +107,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
     }
 
     return (
-        <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 shadow-md">
+        <div className="rounded-xl border border-[#404040] bg-[#0c0c12] p-8 shadow-md">
             <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#404040]">
                 <h2 className="text-2xl font-bold text-white">Practice Exam</h2>
                 {exam?.questions && exam.questions.length > 0 && (
@@ -210,7 +210,7 @@ export default function ExamSection({ exam, setExam, deckId, onError }: ExamSect
                                         <button
                                             onClick={() => handleSaveQuestion(i)}
                                             disabled={saving}
-                                            className="rounded-lg bg-gradient-to-br from-[#0891B2] to-[#06B6D4] px-4 py-2 text-xs font-medium text-white disabled:opacity-50"
+                                            className="btn-gradient-accent rounded-lg px-4 py-2 text-xs font-medium disabled:opacity-50"
                                         >
                                             {saving ? "Saving..." : "Save"}
                                         </button>

@@ -25,7 +25,7 @@ export default async function DeckPage(
     // Not logged in - show 403
     if (!session?.user?.id) {
         return (
-            <main className="min-h-[calc(100vh-73px)] flex items-center justify-center px-6 py-12 bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
+            <main className="min-h-screen flex items-center justify-center px-6 py-12 bg-[#12121c]">
                 <div className="text-center">
                     <h1 className="text-6xl font-bold text-white">403</h1>
                     <p className="mt-4 text-xl text-[#A3A3A3]">You need to be logged in to view this deck.</p>
@@ -60,7 +60,7 @@ export default async function DeckPage(
 
     if (!hasAccess) {
         return (
-            <main className="min-h-[calc(100vh-73px)] flex items-center justify-center px-6 py-12 bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
+            <main className="min-h-screen flex items-center justify-center px-6 py-12 bg-[#12121c]">
                 <div className="text-center">
                     <h1 className="text-6xl font-bold text-white">403</h1>
                     <p className="mt-4 text-xl text-[#A3A3A3]">You don&apos;t have access to this deck.</p>
@@ -88,7 +88,7 @@ export default async function DeckPage(
     }
 
     return (
-        <main className="min-h-[calc(100vh-73px)] px-6 py-12 bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
+        <main className="min-h-screen px-6 py-12 bg-[#12121c]">
             <div className="max-w-7xl mx-auto">
                 <h1 className="text-4xl font-bold text-white tracking-tight">
                     {isManual ? deck.title : "Your Study Materials"}

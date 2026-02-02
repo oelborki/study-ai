@@ -89,7 +89,7 @@ export default function JoinTeamPage({
 
   if (loading) {
     return (
-      <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000]">
+      <main className="min-h-screen flex items-center justify-center bg-[#12121c]">
         <div className="w-8 h-8 border-2 border-[#0891B2] border-t-transparent rounded-full animate-spin"></div>
       </main>
     );
@@ -97,7 +97,7 @@ export default function JoinTeamPage({
 
   if (error && !team) {
     return (
-      <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000] px-6">
+      <main className="min-h-screen flex items-center justify-center bg-[#12121c] px-6">
         <div className="w-full max-w-md text-center">
           <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
             <svg
@@ -128,7 +128,7 @@ export default function JoinTeamPage({
   }
 
   return (
-    <main className="min-h-[calc(100vh-73px)] flex items-center justify-center bg-gradient-to-b from-[#0a1a1f] via-[#000000] to-[#000000] px-6">
+    <main className="min-h-screen flex items-center justify-center bg-[#12121c] px-6">
       <div className="w-full max-w-md">
         <div className="rounded-xl border border-[#404040] bg-gradient-to-br from-[#121212] to-[#0A0A0A] p-8 text-center">
           {joined ? (
