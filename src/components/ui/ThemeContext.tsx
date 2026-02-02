@@ -33,17 +33,17 @@ type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
-function getInitialAccentColor(): ThemeColorKey {
-  if (typeof window === "undefined") return "cyan";
-  const saved = localStorage.getItem("theme-accent");
-  if (saved && saved in THEME_COLORS) {
-    return saved as ThemeColorKey;
-  }
-  return "cyan";
-}
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [accentColor, setAccentColorState] = useState<ThemeColorKey>(getInitialAccentColor);
+  const [accentColor, setAccentColorState] = useState<ThemeColorKey>("cyan");
+
+  // Hydrate from localStorage after mount (avoids SSR mismatch)
+  useEffect(() => {
+    const saved = localStorage.getItem("theme-accent");
+    if (saved && saved in THEME_COLORS) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- One-time hydration from localStorage on mount
+      setAccentColorState(saved as ThemeColorKey);
+    }
+  }, []);
 
   // Update CSS variables and save to localStorage when color changes
   useEffect(() => {

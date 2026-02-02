@@ -10,8 +10,8 @@ export default function HeaderConditional({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAuthRoute = AUTH_PREFIXES.some((prefix) =>
-    pathname.startsWith(prefix)
+  const isAuthRoute = AUTH_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
   );
 
   if (isAuthRoute) return null;
