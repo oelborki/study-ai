@@ -14,6 +14,7 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [checking, setChecking] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const shareUrl = shareCode
     ? `${typeof window !== "undefined" ? window.location.origin : ""}/share/${shareCode}`
@@ -21,6 +22,7 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
 
   useEffect(() => {
     if (isOpen) {
+      setError(null);
       checkExistingShare();
     }
   }, [isOpen, deckId]);
@@ -45,17 +47,23 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
 
   async function createShareLink() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch(`/api/decks/${deckId}/share`, { method: "POST" });
       const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to create share link");
+        return;
+      }
       if (data.shareCode) {
         setShareCode(data.shareCode);
       }
-    } catch (error) {
-      await logError("Failed to create share link", error, {
+    } catch (err) {
+      await logError("Failed to create share link", err, {
         action: "createShareLink",
         deckId
       });
+      setError("Failed to create share link");
     } finally {
       setLoading(false);
     }
@@ -100,6 +108,10 @@ export default function ShareModal({ deckId, isOpen, onClose }: ShareModalProps)
             </svg>
           </button>
         </div>
+
+        {error && (
+          <p className="mb-3 text-sm text-red-400">{error}</p>
+        )}
 
         {checking ? (
           <div className="py-8 text-center">
