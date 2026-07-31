@@ -341,6 +341,12 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                                 Practice Exam
                             </button>
                         )}
+                        <button
+                            onClick={() => setIsShareOpen(true)}
+                            className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                        >
+                            Share
+                        </button>
                     </div>
 
                     {!summary && !flashcards?.length && !exam?.questions?.length && (
@@ -366,6 +372,12 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
                     {active === "exam" && exam?.questions && exam.questions.length > 0 && (
                         <ExamPractice exam={exam} />
                     )}
+
+                    <ShareModal
+                        deckId={deckId}
+                        isOpen={isShareOpen}
+                        onClose={() => setIsShareOpen(false)}
+                    />
                 </div>
             );
         }
@@ -373,12 +385,20 @@ export default function GenerateButtons({ deckId, isManual = false }: { deckId: 
         // Edit mode - use extracted components
         return (
             <div className="mt-6 space-y-8">
-                <ManualModeToggle
-                    mode={manualMode}
-                    setMode={setManualMode}
-                    onSaveAll={saveAll}
-                    saving={saving}
-                />
+                <div className="flex items-center justify-between">
+                    <ManualModeToggle
+                        mode={manualMode}
+                        setMode={setManualMode}
+                        onSaveAll={saveAll}
+                        saving={saving}
+                    />
+                    <button
+                        onClick={() => setIsShareOpen(true)}
+                        className="rounded-lg border-2 border-[#404040] px-5 py-2.5 text-sm font-medium text-[#D4D4D4] hover:border-[#525252] hover:bg-[#1A1A1A] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#06B6D4] focus:ring-offset-2 focus:ring-offset-black"
+                    >
+                        Share
+                    </button>
+                </div>
 
                 {error && <p className="text-sm text-red-600">{error}</p>}
 
