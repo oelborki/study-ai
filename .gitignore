@@ -55,3 +55,9 @@ __pycache__/
 *.pyc
 
 nul
+
+# local docs
+OPERATIONS.txt
+PRODUCTION_ROADMAP.txt
+issues_and_plans.txt
+phase3_details.txt
