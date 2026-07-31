@@ -61,9 +61,11 @@ export default async function SharedDeckPage({ params }: PageProps) {
         </div>
 
         <h1 className="text-3xl font-bold text-white mb-2">{deck.title}</h1>
-        <p className="text-[#A3A3A3] mb-8">
-          {slides.length} {slides.length === 1 ? "slide" : "slides"}
-        </p>
+        {slides.length > 0 && (
+          <p className="text-[#A3A3A3] mb-8">
+            {slides.length} {slides.length === 1 ? "slide" : "slides"}
+          </p>
+        )}
 
         <GenerateButtons deckId={deck.id} />
       </div>
